@@ -1049,8 +1049,6 @@ function AdminView({ unlocked, setUnlocked, data, loading, age, setAge, load, ex
 
 // ── MAIN APP ───────────────────────────────────────────────────────────────────
 
-const btnBase = { border: 'none', borderRadius: 50, cursor: 'pointer', fontFamily: F, fontWeight: 900 }
-
 export default function App() {
   const [mode, setMode] = useState('activity')
   const [stage, setStage] = useState('landing')
