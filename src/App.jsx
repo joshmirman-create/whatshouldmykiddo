@@ -17,7 +17,7 @@ STRICT RULES:
 8. Every material listed in the steps must have a clear stated purpose. No filler.
 9. The activity is either a THING TO MAKE or a GAME TO PLAY. Not both muddled together. Make it clear from step one.
 10. If an occasion is provided, theme the activity to it specifically.
-11. Book must be a REAL published children's book that actually exists and is age-appropriate for the age given. No adult books, no coffee table books, no encyclopedias for young children.
+11. Book must be a REAL published children's book that actually exists and is age-appropriate for the age given. No adult books, no coffee table books, no encyclopedias for young children. AVOID the most commonly known default books (no Chicka Chicka Boom Boom, no Very Hungry Caterpillar, no Goodnight Moon unless they are genuinely the single best fit). Choose something specific, surprising, and closely tied to this exact child's interests.
 12. Spice-up products must be specific items under $25 that directly enhance this exact activity.
 13. Parent tip must end with: This is just a springboard. Add your own imagination, personal touches, and make it completely yours!
 
@@ -61,14 +61,26 @@ const DIFFICULTY = [
 ]
 
 const MATERIAL_CATS = [
-  { id: 'paper', l: 'Paper & drawing', desc: 'paper, cardstock, crayons, markers, colored pencils, watercolors, paint', e: '✏️' },
-  { id: 'cardboard', l: 'Cardboard & boxes', desc: 'cardboard boxes, cardboard sheets, paper tubes, egg cartons, toilet paper rolls', e: '📦' },
-  { id: 'tape', l: 'Tape, glue & scissors', desc: 'scotch tape, masking tape, duct tape, glue stick, white glue, scissors', e: '✂️' },
-  { id: 'food', l: 'Food & kitchen', desc: 'flour, sugar, salt, pasta, rice, dried beans, food coloring, baking soda, vinegar', e: '🍳' },
-  { id: 'fabric', l: 'Fabric & yarn', desc: 'fabric scraps, yarn, string, ribbon, felt sheets, old socks, old t-shirts', e: '🧵' },
-  { id: 'building', l: 'Building toys', desc: 'LEGO bricks, wooden blocks, magnetic tiles, Lincoln Logs', e: '🧱' },
-  { id: 'outdoor', l: 'Outdoor & nature', desc: 'sticks, leaves, rocks, pebbles, flowers, dirt, pinecones', e: '🌿' },
-  { id: 'craft', l: 'Art & craft supplies', desc: 'pipe cleaners, googly eyes, foam sheets, pom poms, stickers, glitter, feathers, cotton balls, rubber bands, aluminum foil', e: '🎨' },
+  { id: 'plain-paper', l: 'Plain paper', desc: 'plain white or colored paper', e: '📄' },
+  { id: 'crayons-markers', l: 'Crayons & markers', desc: 'crayons, markers, colored pencils', e: '🖍️' },
+  { id: 'paint', l: 'Paint & brushes', desc: 'paint (watercolor, acrylic, or finger paint) and paintbrushes', e: '🎨' },
+  { id: 'cardboard', l: 'Cardboard & boxes', desc: 'cardboard boxes, toilet paper rolls, paper towel rolls, egg cartons', e: '📦' },
+  { id: 'tape', l: 'Tape', desc: 'scotch tape, masking tape, or duct tape', e: '🩹' },
+  { id: 'glue-scissors', l: 'Glue & scissors', desc: 'glue stick, white glue, and scissors', e: '✂️' },
+  { id: 'aluminum-foil', l: 'Aluminum foil', desc: 'aluminum foil', e: '✨' },
+  { id: 'dried-food', l: 'Dried pantry items', desc: 'dried pasta, dried beans, rice, flour, salt, sugar', e: '🫙' },
+  { id: 'baking', l: 'Baking supplies', desc: 'baking soda, vinegar, food coloring, cornstarch', e: '🧪' },
+  { id: 'fabric-yarn', l: 'Fabric & yarn', desc: 'fabric scraps, yarn, string, ribbon, old socks', e: '🧵' },
+  { id: 'lego', l: 'LEGO bricks', desc: 'LEGO bricks and baseplates', e: '🧱' },
+  { id: 'blocks', l: 'Wooden blocks', desc: 'wooden building blocks', e: '🪵' },
+  { id: 'outdoor', l: 'Outdoor & nature', desc: 'sticks, leaves, rocks, pebbles, pinecones, flowers, dirt', e: '🌿' },
+  { id: 'pipe-cleaners', l: 'Pipe cleaners', desc: 'pipe cleaners (chenille stems)', e: '🌀' },
+  { id: 'pom-poms', l: 'Pom poms & googly eyes', desc: 'pom poms, googly eyes, feathers, cotton balls', e: '👀' },
+  { id: 'stickers', l: 'Stickers & foam', desc: 'stickers, foam sheets, foam stickers', e: '⭐' },
+  { id: 'rubber-bands', l: 'Rubber bands & string', desc: 'rubber bands, string, twine, yarn', e: '🪢' },
+  { id: 'balloons', l: 'Balloons', desc: 'balloons', e: '🎈' },
+  { id: 'old-magazines', l: 'Old magazines & newspapers', desc: 'old magazines, newspapers, catalogs for cutting up', e: '📰' },
+  { id: 'plastic-cups', l: 'Cups & containers', desc: 'plastic cups, bowls, containers, plastic bottles', e: '🥤' },
 ]
 
 const BUDGETS = [
@@ -130,18 +142,25 @@ function buildActivityMsg(a) {
   const occ = a.occasion
     ? `Occasion: ${a.occasion}${a.holiday ? ` (${a.holiday})` : ''}${a.birthdayDetails ? `, details: ${a.birthdayDetails}` : ''}`
     : ''
-  const mats = [
-    ...(a.materialCategories || []).map(id => MATERIAL_CATS.find(c => c.id === id)?.desc || ''),
-    a.materialsExtra || '',
-  ].filter(Boolean).join(', ')
+  const catItems = (a.materialCategories || [])
+    .map(id => MATERIAL_CATS.find(c => c.id === id)?.desc || '')
+    .filter(Boolean)
+  const extras = (a.materialsExtra || '').trim()
+  const matLines = [
+    ...catItems.map(d => `- ${d}`),
+    ...(extras ? [`- ${extras}`] : [])
+  ].join('\n')
   return `Child age: ${a.age}
 ${occ}
 Child's interests: ${a.interests}
 Energy level: ${a.energy}
 Difficulty: ${a.difficulty}
-Materials available: ${mats}
+Materials the parent confirmed they have (use ONLY items from this list, do not assume anything else):
+${matLines}
 
-Generate a personalized activity using ONLY the materials listed.`
+IMPORTANT: Each category above lists example items. The parent has SOME of those items, not necessarily all. Pick the most basic and common items from each category. When in doubt, use the simplest option (e.g. plain paper, not cardstock).
+
+Generate a personalized activity using ONLY materials from the list above.`
 }
 
 function buildGiftMsg(g) {
@@ -563,8 +582,17 @@ function DifficultyStep({ a, set }) {
 
 function ResultView({ activity: act, answers: a, currentPostId, votedIds, profileSaved, emailSent, savedProfile, shareMsg, hiddenProducts, setHiddenProducts, onUpvote, onSave, onEmail, onShare, onNew, onNewSaved }) {
   const voted = votedIds.has(currentPostId || '')
-  const book = act.book || null
-  const spiceUps = (act.spice_ups || []).filter(sp => !hiddenProducts.has(sp.name))
+  const [bookIndex, setBookIndex] = useState(0)
+  const [spiceIndexes, setSpiceIndexes] = useState({})
+  const books = act.books || (act.book ? [act.book] : [])
+  const book = books[bookIndex] || null
+  const spiceUps = (act.spice_ups || []).map((sp, i) => {
+    const idx = spiceIndexes[i] || 0
+    if (idx === -1) return null
+    if (idx === 0) return sp
+    const alt = sp.alternatives?.[idx - 1]
+    return alt ? { ...alt, _baseIdx: i } : null
+  }).filter(Boolean)
   const ag = AGE_GROUPS.find(x => x.v === a.age)
   const occ = OCCASIONS.find(x => x.v === a.occasion)
 
@@ -618,18 +646,37 @@ function ResultView({ activity: act, answers: a, currentPostId, votedIds, profil
           Your kid can do this <strong>right now</strong> with what you have. These are totally optional extras.
         </p>
 
-        {book && (
-          <div onClick={() => window.open(AMZN(`${book.title} ${book.author} children book`), '_blank')}
-            style={{ background: '#fff', border: '1.5px solid #E8D5FF', borderRadius: 14, padding: '16px 18px', marginBottom: 10, cursor: 'pointer' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+        {books.length > 0 && bookIndex < books.length && (
+          <div style={{ background: '#fff', border: '1.5px solid #E8D5FF', borderRadius: 14, padding: '16px 18px', marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
               <div style={{ width: 40, height: 52, background: 'linear-gradient(135deg,#7C3AED,#A855F7)', borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>📖</div>
               <div style={{ flex: 1 }}>
-                <span style={SectionLabel('#7C3AED')}>Read together after</span>
+                <span style={SectionLabel('#7C3AED')}>Read together after {bookIndex > 0 ? `(suggestion ${bookIndex + 1} of ${books.length})` : ''}</span>
                 <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 2, lineHeight: 1.3, fontFamily: F }}>{book.title}</div>
                 <div style={{ fontSize: 11, color: '#888', marginBottom: 5 }}>by {book.author}</div>
                 <div style={{ fontSize: 12, color: '#5B21B6', lineHeight: 1.5, fontStyle: 'italic' }}>{book.why}</div>
               </div>
-              <div style={{ flexShrink: 0, background: '#7C3AED', color: '#fff', borderRadius: 50, padding: '6px 12px', fontSize: 11, fontWeight: 800, whiteSpace: 'nowrap', fontFamily: F }}>Amazon</div>
+            </div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              <a href={AMZN(`${book.title} ${book.author} children book`)} target="_blank" rel="noopener"
+                style={{ background: '#7C3AED', color: '#fff', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 800, textDecoration: 'none', fontFamily: F }}>
+                Love it! Find on Amazon
+              </a>
+              {bookIndex < books.length - 1 && (
+                <button onClick={() => setBookIndex(i => i + 1)}
+                  style={{ background: '#E8F5E9', color: '#2D6A4F', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
+                  Already have it — show another
+                </button>
+              )}
+              {bookIndex < books.length - 1 && (
+                <button onClick={() => setBookIndex(i => i + 1)}
+                  style={{ background: '#FEF2F2', color: '#DC2626', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
+                  Not for us — try another
+                </button>
+              )}
+              {bookIndex === books.length - 1 && (
+                <span style={{ fontSize: 11, color: '#8C6E3F', padding: '5px 0', fontStyle: 'italic' }}>These are all our suggestions for this activity!</span>
+              )}
             </div>
           </div>
         )}
@@ -637,26 +684,54 @@ function ResultView({ activity: act, answers: a, currentPostId, votedIds, profil
         {spiceUps.length > 0 && (
           <div style={{ background: '#fff', border: '1.5px solid #FFE4B5', borderRadius: 14, padding: '16px 18px', marginBottom: 10 }}>
             <span style={SectionLabel()}>Spice up playtime</span>
-            {spiceUps.map((sp, i) => (
-              <div key={i} style={{ background: '#F8F5F0', border: '1.5px solid #EEE', borderRadius: 11, padding: '11px 13px', marginBottom: i < spiceUps.length - 1 ? 8 : 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 3, fontFamily: F }}>{sp.name}</div>
-                <div style={{ fontSize: 12, color: '#8C6E3F', lineHeight: 1.4, marginBottom: 10 }}>{sp.why}</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  <a href={AMZN(sp.search)} target="_blank" rel="noopener"
-                    style={{ background: '#FF9900', color: '#2C2416', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 800, textDecoration: 'none', fontFamily: F }}>
-                    Love it! Buy it
-                  </a>
-                  <button onClick={() => setHiddenProducts(prev => new Set([...prev, sp.name]))}
-                    style={{ background: '#E8F5E9', color: '#2D6A4F', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
-                    Already have it
-                  </button>
-                  <button onClick={() => setHiddenProducts(prev => new Set([...prev, sp.name]))}
-                    style={{ background: '#FEF2F2', color: '#DC2626', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
-                    Not for us
-                  </button>
+            {(act.spice_ups || []).map((sp, i) => {
+              const idx = spiceIndexes[i] || 0
+              if (idx === -1) return null
+              const current = idx === 0 ? sp : (sp.alternatives?.[idx - 1] || null)
+              if (!current) return null
+              const hasMore = idx < (sp.alternatives?.length || 0)
+              const isLast = !hasMore
+              return (
+                <div key={i} style={{ background: '#F8F5F0', border: '1.5px solid #EEE', borderRadius: 11, padding: '11px 13px', marginBottom: i < (act.spice_ups || []).length - 1 ? 8 : 0 }}>
+                  {idx > 0 && <div style={{ fontSize: 10, color: '#8C6E3F', fontWeight: 700, marginBottom: 4, fontFamily: F }}>ALTERNATIVE SUGGESTION</div>}
+                  <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 3, fontFamily: F }}>{current.name}</div>
+                  <div style={{ fontSize: 12, color: '#8C6E3F', lineHeight: 1.4, marginBottom: 10 }}>{current.why}</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <a href={AMZN(current.search)} target="_blank" rel="noopener"
+                      style={{ background: '#FF9900', color: '#2C2416', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 800, textDecoration: 'none', fontFamily: F }}>
+                      Love it! Buy it
+                    </a>
+                    {hasMore && (
+                      <button onClick={() => setSpiceIndexes(prev => ({ ...prev, [i]: idx + 1 }))}
+                        style={{ background: '#E8F5E9', color: '#2D6A4F', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
+                        Already have it — show another
+                      </button>
+                    )}
+                    {hasMore && (
+                      <button onClick={() => setSpiceIndexes(prev => ({ ...prev, [i]: idx + 1 }))}
+                        style={{ background: '#FEF2F2', color: '#DC2626', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
+                        Not for us — try another
+                      </button>
+                    )}
+                    {isLast && idx > 0 && (
+                      <span style={{ fontSize: 11, color: '#8C6E3F', padding: '5px 0', fontStyle: 'italic' }}>No more suggestions for this one!</span>
+                    )}
+                    {isLast && idx === 0 && (
+                      <>
+                        <button onClick={() => setSpiceIndexes(prev => ({ ...prev, [i]: -1 }))}
+                          style={{ background: '#E8F5E9', color: '#2D6A4F', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
+                          Already have it
+                        </button>
+                        <button onClick={() => setSpiceIndexes(prev => ({ ...prev, [i]: -1 }))}
+                          style={{ background: '#FEF2F2', color: '#DC2626', border: 'none', borderRadius: 50, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: F }}>
+                          Not for us
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
 
