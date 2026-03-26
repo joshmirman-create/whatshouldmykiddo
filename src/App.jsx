@@ -1389,12 +1389,31 @@ export default function App() {
     if (!activity) return
     const books = activity.books || (activity.book ? [activity.book] : [])
     const bookLine = books.length > 0 ? `\n\nRecommended reading: ${books[0].title} by ${books[0].author}` : ''
+    const steps = activity.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')
     const sub = encodeURIComponent(`Activity: ${activity.activity_name}`)
-    const body = encodeURIComponent(`${activity.activity_name}\n${activity.tagline}\n\nTime: ${activity.duration}\n\nSteps:\n${activity.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\nParent tip: ${activity.parent_tip || ''}${bookLine}\n\nGenerated at whatshouldmykiddo.com`)
-    const mailtoLink = `mailto:?subject=${sub}&body=${body}`
-    window.open(mailtoLink, '_self')
-    // Small delay so mailto has time to open before we show the confirmation
-    setTimeout(() => setEmailSent(true), 500)
+    const bodyText = [
+      activity.activity_name,
+      activity.tagline,
+      '',
+      `Time: ${activity.duration}`,
+      '',
+      'Steps:',
+      steps,
+      '',
+      `Parent tip: ${activity.parent_tip || ''}`,
+      bookLine,
+      '',
+      'Generated at whatshouldmykiddo.com'
+    ].join('\n')
+    const body = encodeURIComponent(bodyText)
+    // Create a temporary link and click it — most reliable cross-browser mailto trigger
+    const a = document.createElement('a')
+    a.href = `mailto:?subject=${sub}&body=${body}`
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => setEmailSent(true), 300)
   }
 
   const exportCSV = () => {
