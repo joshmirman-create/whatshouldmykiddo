@@ -41,6 +41,7 @@ const AGE_GROUPS = [
 ]
 
 const OCCASIONS = [
+  { v: 'regular', l: 'Just a regular day', e: '😊' },
   { v: 'after-school', l: 'After school', e: '🎒' },
   { v: 'weekend', l: 'Weekend fun', e: '☀️' },
   { v: 'vacation', l: "We're on vacation", e: '✈️' },
@@ -479,7 +480,7 @@ function QuizView({ step, setStep, answers, setAnswers, totalSteps, onGenerate }
         {step === 5 && <DifficultyStep a={answers} set={setAnswers} />}
         <div style={{ display: 'flex', gap: 8, marginTop: 22 }}>
           {step > 0 && <button onClick={handlePrev} style={BtnOutline()}>Back</button>}
-          <button onClick={canAdvance() ? handleNext : undefined} disabled={!canAdvance()} style={{ flex: 1, ...BtnOrange(), opacity: canAdvance() ? 1 : 0.38, cursor: canAdvance() ? 'pointer' : 'not-allowed', pointerEvents: canAdvance() ? 'auto' : 'none' }}>
+          <button id="next-btn" onClick={handleNext} style={{ flex: 1, ...BtnOrange(), opacity: canAdvance() ? 1 : 0.38, cursor: canAdvance() ? 'pointer' : 'default' }}>
             {step < totalSteps - 1 ? 'Next' : 'Build my activity'}
           </button>
         </div>
@@ -586,6 +587,10 @@ function InterestsStep({ a }) {
         placeholder="Tell us about your kid's interests, passions, and current obsessions..."
         style={{ width: '100%', border: '2px solid #C8E6C9', borderRadius: 13, padding: '13px 15px', fontSize: 14, fontFamily: F2, resize: 'vertical', minHeight: 110, color: '#2C2416', background: '#FAFDF7', outline: 'none', boxSizing: 'border-box', lineHeight: 1.7 }}
         onFocus={e => e.target.style.borderColor = '#2E7D4F'}
+        onChange={e => {
+          const el = document.getElementById('next-btn')
+          if (el) el.style.opacity = e.target.value.trim().length > 3 ? '1' : '0.38'
+        }}
         onBlur={e => e.target.style.borderColor = e.target.value.trim().length > 3 ? '#2E7D4F' : '#C8E6C9'}
       />
       <div style={{ marginTop: 10, background: '#F5F0E8', borderRadius: 11, padding: '10px 13px' }}>
@@ -649,6 +654,14 @@ function MaterialsStep({ a, set }) {
         placeholder="Favorite toys, holiday decorations, unique items... anything goes!"
         style={{ width: '100%', border: '2px solid #C8E6C9', borderRadius: 12, padding: '11px 14px', fontSize: 13, fontFamily: F2, resize: 'vertical', minHeight: 70, color: '#2C2416', background: '#FAFDF7', outline: 'none', boxSizing: 'border-box', lineHeight: 1.6 }}
         onFocus={e => e.target.style.borderColor = '#2E7D4F'}
+        onChange={e => {
+          const el = document.getElementById('next-btn')
+          if (el) {
+            const cats = document.querySelectorAll('[data-matcat]')
+            const anyCat = [...cats].some(c => c.dataset.selected === 'true')
+            if (anyCat || e.target.value.trim().length > 3) el.style.opacity = '1'
+          }
+        }}
       />
     </>
   )
@@ -997,7 +1010,7 @@ function GiftQuizView({ step, setStep, answers, setAnswers, onGenerate, onCancel
 
         <div style={{ display: 'flex', gap: 8, marginTop: 22 }}>
           {step > 0 && <button onClick={() => { flush(); setStep(step - 1) }} style={BtnOutline({ color: '#7C3AED', borderColor: '#7C3AED' })}>Back</button>}
-          <button onClick={canAdvance() ? handleNext : undefined} disabled={!canAdvance()} style={{ flex: 1, ...BtnPurple(), opacity: canAdvance() ? 1 : 0.38, cursor: canAdvance() ? 'pointer' : 'not-allowed', pointerEvents: canAdvance() ? 'auto' : 'none' }}>
+          <button onClick={handleNext} style={{ flex: 1, ...BtnPurple(), opacity: canAdvance() ? 1 : 0.38, cursor: canAdvance() ? 'pointer' : 'default' }}>
             {step < 3 ? 'Next' : 'Find the perfect gift'}
           </button>
         </div>
