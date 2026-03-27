@@ -114,7 +114,7 @@ function extractJSON(text) {
   }
   const nm = cleaned.match(/"activity_name"\s*:\s*"([^"]+)"/)
   const tm = cleaned.match(/"tagline"\s*:\s*"([^"]+)"/)
-  if (nm && tm) return { activity_name:nm[1], tagline:tm[1], duration:'20-30 min', steps:['Get materials ready.','Follow the steps.','Have fun and make it your own!'], why_kids_love_it:'', parent_tip:'Think of this as your spark — change it, add your own twist, make it completely yours!', materials_used:[], materials_checklist:[], books:[], spice_ups:[], variations:{} }
+  if (nm && tm) throw new Error('The response was cut short. Please try again.')
   throw new Error('Response was incomplete. Please try again.')
 }
 
@@ -222,24 +222,39 @@ function SiteFooter() {
 function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
   return (
     <header style={{background:T.white,borderBottom:`1.5px solid ${T.border}`,position:'sticky',top:0,zIndex:100,boxShadow:'0 1px 8px rgba(0,0,0,0.04)'}}>
-      <div style={{maxWidth:1200,margin:'0 auto',padding:'0 20px',display:'flex',alignItems:'center',justifyContent:'space-between',height:58}}>
-        <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:8}}>
-          <span style={{fontSize:20}}>🎨</span>
-          <span style={{fontSize:window.innerWidth<400?11:13,fontWeight:900,color:T.charcoal,fontFamily:F}}>what should my kid do today?</span>
+      <div style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
+        <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0,minWidth:0}}>
+          <span style={{fontSize:18,flexShrink:0}}>🎨</span>
+          <span className="hdrFull" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kiddo do?</span>
         </button>
-        <nav style={{display:'flex',gap:4,alignItems:'center'}}>
+        <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
           {[{k:'generator',l:'Activity Builder'},{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
-            <button key={t.k} onClick={()=>onSwitch(t.k)} style={{background:'none',border:'none',cursor:'pointer',padding:'6px 12px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F}}>
+            <button key={t.k} onClick={()=>onSwitch(t.k)} className="deskNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>
               {t.l}
             </button>
           ))}
-          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8}}>✨ Build an activity</Btn>
+          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}} className="btnLong">✨ Build an activity</Btn>
+          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}} className="btnShort">✨ Build</Btn>
         </nav>
       </div>
-
+      <style>{`
+        .deskNav{display:none}
+        .btnShort{display:none !important}
+        .hdrFull{display:inline}
+        @media(min-width:640px){.deskNav{display:block !important}}
+        @media(max-width:520px){
+          .btnLong{display:none !important}
+          .btnShort{display:inline-flex !important}
+          .hdrFull{display:none !important}
+        }
+        @media(max-width:520px){
+          .hdrFull::after{content:'kiddo?';display:inline;font-size:13px;font-weight:900}
+        }
+      `}</style>
     </header>
   )
 }
+
 
 // ── HOMEPAGE ──────────────────────────────────────────────────────────────────
 function HeroPreview() {
@@ -1076,7 +1091,7 @@ export default function App() {
   const generate = useCallback(async (ans) => {
     setStage('loading'); setErrorMsg(''); setHiddenProducts(new Set()); setSharedToCommunity(false); startLoadAnim()
     try {
-      const result = await callAPI({model:'claude-sonnet-4-20250514',max_tokens:2200,system:SYSTEM_PROMPT,messages:[{role:'user',content:buildActivityMsg(ans)}]})
+      const result = await callAPI({model:'claude-sonnet-4-20250514',max_tokens:3000,system:SYSTEM_PROMPT,messages:[{role:'user',content:buildActivityMsg(ans)}]})
       clearInterval(timerRef.current); setActivity(result); setStage('result'); setActiveNav('generator')
     } catch(e) { clearInterval(timerRef.current); setErrorMsg(e.message||'Something went wrong'); setStage('error') }
   }, [])
