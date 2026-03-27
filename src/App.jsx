@@ -248,15 +248,6 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
 }
 
 
-        @media(max-width:520px){
-          .hdrFull::after{content:'kiddo?';display:inline;font-size:13px;font-weight:900}
-        }
-      `}</style>
-    </header>
-  )
-}
-
-
 // ── HOMEPAGE ──────────────────────────────────────────────────────────────────
 function HeroPreview() {
   return (
