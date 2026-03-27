@@ -97,6 +97,8 @@ const LOAD_STAGES = [
 const ADMIN_KEY = 'zsadmin2026'
 const KIWICO = 'https://www.kiwico.com/?ref=YOURAFFILIATEID'
 const AMZN = q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}&tag=zenmonkeystud-20`
+const BOOKSHOP = (title, author) => `https://bookshop.org/search?keywords=${encodeURIComponent(title + ' ' + author)}&affiliate=122560`
+const BAM = (title, author) => `https://www.dpbolvw.net/click-101712536-11173806?url=${encodeURIComponent('https://www.booksamillion.com/search?query=' + title + ' ' + author)}`
 const SAMPLE_ACTIVITIES = [
   {title:'Shape-Shifting Dance Floor',age:'4-5 yrs',time:'30 min',energy:'Wild',summary:'Create geometric dance zones from cardboard and challenge each other to move only inside them.'},
   {title:'Dino Fossil Dig Lab',age:'6-8 yrs',time:'45 min',energy:'Calm',summary:'Mix flour and salt dough, hide small toys inside, let it dry, then excavate with craft sticks.'},
@@ -743,7 +745,9 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                 </div>
               </div>
               <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                <Btn size="sm" href={AMZN(`${book.title} ${book.author} children book`)} target="_blank" style={{background:'#7C3AED',fontSize:12}}>View on Amazon</Btn>
+                <Btn size="sm" href={AMZN(`${book.title} ${book.author} children book`)} target="_blank" style={{background:'#7C3AED',fontSize:12}}>Amazon</Btn>
+                <Btn size="sm" href={BOOKSHOP(book.title, book.author)} target="_blank" style={{background:'#1A1A2E',fontSize:12}}>Bookshop.org</Btn>
+                <Btn size="sm" href={BAM(book.title, book.author)} target="_blank" style={{background:'#CC0000',fontSize:12}}>Books-A-Million</Btn>
                 {bookIndex < books.length-1 && <>
                   <Btn size="sm" variant="success" onClick={()=>setBookIndex(i=>i+1)} style={{fontSize:11}}>{bookIndex===0?'Already read it and loved it?':'Have it — show another'}</Btn>
                   <Btn size="sm" variant="danger" onClick={()=>setBookIndex(i=>i+1)} style={{fontSize:11}}>Not for us</Btn>
@@ -903,6 +907,8 @@ function CommCard({ post, voted, onUpvote }) {
           <div key={i} style={{marginTop:8,background:'#F5F3FF',borderRadius:T.rSm,padding:'9px 12px',fontSize:12,color:'#5B21B6',display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
             <span><strong>📖 Read after:</strong> <em>{b.title}</em> by {b.author}</span>
             <Btn size="sm" href={AMZN(`${b.title} ${b.author} children book`)} target="_blank" style={{background:'#7C3AED',fontSize:10,padding:'3px 9px'}}>Amazon</Btn>
+            <Btn size="sm" href={BOOKSHOP(b.title, b.author)} target="_blank" style={{background:'#1A1A2E',fontSize:10,padding:'3px 9px'}}>Bookshop</Btn>
+            <Btn size="sm" href={BAM(b.title, b.author)} target="_blank" style={{background:'#CC0000',fontSize:10,padding:'3px 9px'}}>BAM</Btn>
           </div>
         ))}
         {(post.spice_ups||[]).slice(0,2).map((sp,i)=>(
