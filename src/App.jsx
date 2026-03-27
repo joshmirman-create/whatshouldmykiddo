@@ -223,38 +223,30 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
   return (
     <header style={{background:T.white,borderBottom:`1.5px solid ${T.border}`,position:'sticky',top:0,zIndex:100,boxShadow:'0 1px 8px rgba(0,0,0,0.04)'}}>
       <style>{`
-        .kNavBtn{display:none}
-        .kBtnLong{display:inline-flex}
-        .kBtnShort{display:none}
-        .kLogoFull{display:inline}
+        .kNav{display:none}
+        @media(min-width:600px){.kNav{display:block}}
+        @media(max-width:480px){.kLogoFull{display:none !important}.kLogoShort{display:inline !important}}
         .kLogoShort{display:none}
-        @media(min-width:600px){.kNavBtn{display:block}}
-        @media(max-width:480px){
-          .kBtnLong{display:none !important}
-          .kBtnShort{display:inline-flex !important}
-          .kLogoFull{display:none !important}
-          .kLogoShort{display:inline !important}
-        }
       `}</style>
       <div style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
         <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
           <span style={{fontSize:18}}>🎨</span>
-          <span className="kLogoFull" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kiddo do?</span>
-          <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kiddo?</span>
+          <span className="kLogoFull" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
+          <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kid do?</span>
         </button>
         <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
           {[{k:'generator',l:'Activity Builder'},{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
-            <button key={t.k} onClick={()=>onSwitch(t.k)} className="kNavBtn" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>
+            <button key={t.k} onClick={()=>onSwitch(t.k)} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>
               {t.l}
             </button>
           ))}
-          <span className="kBtnLong"><Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}}>✨ Build an activity</Btn></span>
-          <span className="kBtnShort"><Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:4,whiteSpace:'nowrap'}}>✨ Build</Btn></span>
+          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}}>✨ Build</Btn>
         </nav>
       </div>
     </header>
   )
 }
+
 
         @media(max-width:520px){
           .hdrFull::after{content:'kiddo?';display:inline;font-size:13px;font-weight:900}
