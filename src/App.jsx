@@ -242,6 +242,7 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
               {t.l}
             </button>
           ))}
+          <a href="/browse" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Nunito',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Browse</a>
           <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}}>✨ Build</Btn>
         </nav>
       </div>
