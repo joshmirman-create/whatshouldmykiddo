@@ -691,18 +691,19 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             </Card>
           )}
 
+
           <Card style={{padding:'16px 18px',marginBottom:16}}>
-            <SLabel>SHARE WITH THE COMMUNITY?</SLabel>
-            <p style={{margin:'0 0 10px',fontSize:13,color:T.gray,lineHeight:1.5}}>Help other parents discover great activities. Appears anonymously.</p>
+            <SLabel>ADD TO THE COMMUNITY VOTE BOARD?</SLabel>
+            <p style={{margin:'0 0 10px',fontSize:13,color:T.gray,lineHeight:1.5}}>Add this activity anonymously to our on-site community feed so other parents can discover and vote on it. No account, no name, just one tap.</p>
             <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
               {!sharedToCommunity
-                ? <Btn size="sm" onClick={onShareToCommunity}>Yes, share it!</Btn>
+                ? <Btn size="sm" onClick={onShareToCommunity}>Add to community board</Btn>
                 : <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
-                    <span style={{background:T.greenLight,color:T.green,borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,fontFamily:F}}>✓ Shared!</span>
-                    <button onClick={()=>currentPostId&&onUpvote(currentPostId)} style={{display:'flex',alignItems:'center',gap:5,background:voted?T.greenLight:T.grayPale,border:`1.5px solid ${voted?T.green:T.border}`,borderRadius:50,padding:'5px 12px',cursor:voted?'default':'pointer',fontSize:12,fontWeight:700,fontFamily:F,color:voted?T.green:T.gray}}>{voted?'🧡 Liked!':'🤍 Like it'}</button>
+                    <span style={{background:T.greenLight,color:T.green,borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,fontFamily:F}}>✓ Added!</span>
+                    <button onClick={()=>currentPostId&&onUpvote(currentPostId)} style={{display:'flex',alignItems:'center',gap:5,background:voted?T.greenLight:T.grayPale,border:`1.5px solid ${voted?T.green:T.border}`,borderRadius:50,padding:'5px 12px',cursor:voted?'default':'pointer',fontSize:12,fontWeight:700,fontFamily:F,color:voted?T.green:T.gray}}>{voted?'🧡 Upvoted!':'🤍 Upvote it'}</button>
                   </div>
               }
-              <Btn size="sm" variant="outline" onClick={onShare}>↗ Share</Btn>
+              <Btn size="sm" variant="outline" onClick={onShare}>↗ Share with friends</Btn>
             </div>
             {shareMsg && <div style={{marginTop:8,fontSize:12,color:T.green,fontWeight:700}}>{shareMsg}</div>}
           </Card>
@@ -938,7 +939,7 @@ function CommunityView({ posts, loading, votedIds, onUpvote, onRefresh, onBuild 
         ))}
       </div>
       {loading ? <Spinner/> : filt.length===0
-        ? <EmptyState icon="🌱" title="No activities yet" sub="Generate the first one and it will appear here automatically."><Btn onClick={onBuild} style={{marginTop:4}}>Build an activity</Btn></EmptyState>
+        ? <EmptyState icon="🌱" title="No activities yet" sub="Generate an activity and add it to the community board using the button on your result page."><Btn onClick={onBuild} style={{marginTop:4}}>Build an activity</Btn></EmptyState>
         : filt.map((p,i)=>(
           <React.Fragment key={p.id||p.ts}>
             <CommCard post={p} voted={votedIds.has(p.id)} onUpvote={onUpvote}/>
