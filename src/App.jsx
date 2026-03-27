@@ -257,11 +257,11 @@ function HeroPreview() {
         </div>
       </Card>
       <Card style={{padding:14,marginBottom:10}}>
-        <SLabel color={T.grayLight}>BASED ON YOUR KID</SLabel>
+        <SLabel color={T.grayLight}>EXAMPLE PROFILE</SLabel>
         <div style={{display:'flex',alignItems:'center',gap:10}}>
           <div style={{width:36,height:36,borderRadius:'50%',background:T.greenLight,display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,flexShrink:0}}>👦</div>
           <div>
-            <div style={{fontWeight:800,fontSize:13,fontFamily:F,color:T.charcoal}}>Jordan, 6 years old</div>
+            <div style={{fontWeight:800,fontSize:13,fontFamily:F,color:T.charcoal}}>Age 6-8 · Elementary</div>
             <div style={{fontSize:11,color:T.gray}}>💚 Loves shapes, math, and dancing</div>
             <div style={{fontSize:11,color:T.gray}}>📦 Cardboard, markers, and tape</div>
           </div>
