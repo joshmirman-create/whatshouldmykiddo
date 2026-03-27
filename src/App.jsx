@@ -228,14 +228,12 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
           <span style={{fontSize:window.innerWidth<400?11:13,fontWeight:900,color:T.charcoal,fontFamily:F}}>what should my kid do today?</span>
         </button>
         <nav style={{display:'flex',gap:4,alignItems:'center'}}>
-          {window.innerWidth>=640&&[{k:'generator',l:'Generator'},{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
+          {[{k:'generator',l:'Activity Builder'},{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
             <button key={t.k} onClick={()=>onSwitch(t.k)} style={{background:'none',border:'none',cursor:'pointer',padding:'6px 12px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F}}>
               {t.l}
             </button>
           ))}
-          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:4}}>
-            {window.innerWidth<500?'Generate':'Generate an activity'}
-          </Btn>
+          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8}}>✨ Build an activity</Btn>
         </nav>
       </div>
 
