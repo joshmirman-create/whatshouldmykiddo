@@ -576,8 +576,48 @@ function ErrorView({ msg, onRetry, onBack }) {
   )
 }
 
+
+// ── SHARE SHEET ───────────────────────────────────────────────────────────────
+function ShareSheet({ activity, onCopy, onClose }) {
+  const name = activity?.activity_name || 'this activity'
+  const url = 'https://whatshouldmykiddo.com'
+  const msg = encodeURIComponent(`We just did "${name}" with things we already had at home and my kid LOVED it! Try whatshouldmykiddo.com`)
+  const shareLinks = [
+    { label: 'Share on Facebook', icon: '📘', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${msg}`, color: '#1877F2' },
+    { label: 'Share on X / Twitter', icon: '🐦', href: `https://twitter.com/intent/tweet?text=${msg}`, color: '#000' },
+    { label: 'Share on WhatsApp', icon: '💬', href: `https://wa.me/?text=${msg}`, color: '#25D366' },
+    { label: 'Share via Instagram (copy text)', icon: '📸', href: null, color: '#E1306C', action: onCopy },
+  ]
+  return (
+    <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:200,display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:T.white,borderRadius:'20px 20px 0 0',padding:'24px 20px 32px',width:'100%',maxWidth:480}}>
+        <div style={{width:36,height:4,background:T.border,borderRadius:2,margin:'0 auto 20px'}}/>
+        <div style={{fontSize:15,fontWeight:800,color:T.charcoal,fontFamily:F,marginBottom:16}}>Share this activity</div>
+        <div style={{display:'grid',gap:10,marginBottom:16}}>
+          {shareLinks.map(s=>(
+            s.href
+              ? <a key={s.label} href={s.href} target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:12,padding:'12px 16px',border:`1.5px solid ${T.border}`,borderRadius:12,textDecoration:'none',color:T.charcoal,fontFamily:F,fontWeight:700,fontSize:14}}>
+                  <span style={{fontSize:20,width:28,textAlign:'center'}}>{s.icon}</span>
+                  <span>{s.label}</span>
+                </a>
+              : <button key={s.label} onClick={s.action} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 16px',border:`1.5px solid ${T.border}`,borderRadius:12,background:'transparent',cursor:'pointer',fontFamily:F,fontWeight:700,fontSize:14,color:T.charcoal,width:'100%',textAlign:'left'}}>
+                  <span style={{fontSize:20,width:28,textAlign:'center'}}>{s.icon}</span>
+                  <span>{s.label}</span>
+                </button>
+          ))}
+          <button onClick={onCopy} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 16px',border:`1.5px solid ${T.border}`,borderRadius:12,background:T.greenPale,cursor:'pointer',fontFamily:F,fontWeight:700,fontSize:14,color:T.green,width:'100%',textAlign:'left'}}>
+            <span style={{fontSize:20,width:28,textAlign:'center'}}>📋</span>
+            <span>Copy activity text</span>
+          </button>
+        </div>
+        <button onClick={onClose} style={{width:'100%',background:T.grayPale,border:'none',borderRadius:12,padding:'12px',fontSize:14,fontWeight:700,cursor:'pointer',color:T.gray,fontFamily:F}}>Cancel</button>
+      </div>
+    </div>
+  )
+}
+
 // ── RESULT PAGE ────────────────────────────────────────────────────────────────
-function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileSaved, emailSent, savedProfile, shareMsg, hiddenProducts, setHiddenProducts, sharedToCommunity, onUpvote, onSave, onEmail, onShare, onShareToCommunity, onNew, onNewSaved, onTweakAnswers }) {
+function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileSaved, emailSent, savedProfile, shareMsg, hiddenProducts, setHiddenProducts, sharedToCommunity, showShareSheet, onUpvote, onSave, onEmail, onShare, onShareToCommunity, copyActivity, closeShareSheet, onNew, onNewSaved, onTweakAnswers }) {
   const [bookIndex, setBookIndex] = useState(0)
   const [spiceIndexes, setSpiceIndexes] = useState({})
   const [showVar, setShowVar] = useState(false)
@@ -619,7 +659,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
         <div className="fade-up">
           <AdUnit style={{marginBottom:20}}/>
 
-          <Card style={{padding:'22px 22px 16px',marginBottom:16}}>
+          <Card id="activity-steps" style={{padding:'22px 22px 16px',marginBottom:16}}>
             <SLabel>YOUR ACTIVITY</SLabel>
             <p style={{fontSize:13,color:T.gray,margin:'0 0 16px',lineHeight:1.5,fontStyle:'italic'}}>{act.why_kids_love_it}</p>
             <SLabel>STEPS</SLabel>
@@ -654,7 +694,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                     <button onClick={()=>currentPostId&&onUpvote(currentPostId)} style={{display:'flex',alignItems:'center',gap:5,background:voted?T.greenLight:T.grayPale,border:`1.5px solid ${voted?T.green:T.border}`,borderRadius:50,padding:'5px 12px',cursor:voted?'default':'pointer',fontSize:12,fontWeight:700,fontFamily:F,color:voted?T.green:T.gray}}>{voted?'🧡 Liked!':'🤍 Like it'}</button>
                   </div>
               }
-              <Btn size="sm" variant="outline" onClick={onShare}>Share with friends</Btn>
+              <Btn size="sm" variant="outline" onClick={onShare}>↗ Share</Btn>
             </div>
             {shareMsg && <div style={{marginTop:8,fontSize:12,color:T.green,fontWeight:700}}>{shareMsg}</div>}
           </Card>
@@ -743,6 +783,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
         </div>
       </div>
 
+      {showShareSheet && <ShareSheet activity={act} onCopy={copyActivity} onClose={closeShareSheet}/>}
       <SiteFooter />
 
     </div>
@@ -1017,6 +1058,7 @@ export default function App() {
   const [shareMsg, setShareMsg] = useState('')
   const [hiddenProducts, setHiddenProducts] = useState(new Set())
   const [sharedToCommunity, setSharedToCommunity] = useState(false)
+  const [showShareSheet, setShowShareSheet] = useState(false)
   const timerRef = useRef(null)
 
   useEffect(() => {
@@ -1099,9 +1141,25 @@ export default function App() {
   const doSaveProfile = () => { saveProfileLocal(answers); setSavedProfile({...answers}); setProfileSaved(true) }
 
   const handleShare = () => {
-    const txt = `We just did "${activity.activity_name}" with things we already had at home and my kid LOVED it. Try whatshouldmykiddo.com`
-    if (navigator.share) { navigator.share({text:txt,url:'https://whatshouldmykiddo.com'}).catch(()=>{}) }
-    else { navigator.clipboard?.writeText(txt).then(()=>{ setShareMsg('Copied! Paste it in your group chat.'); setTimeout(()=>setShareMsg(''),3000) }) }
+    const txt = `We just did "${activity?.activity_name}" with things we already had at home and my kid LOVED it. Try whatshouldmykiddo.com`
+    const url = 'https://whatshouldmykiddo.com'
+    if (navigator.share) {
+      navigator.share({text:txt, url}).catch(()=>{})
+    } else {
+      setShowShareSheet(true)
+    }
+  }
+
+  const closeShareSheet = () => setShowShareSheet(false)
+
+  const copyActivity = () => {
+    if (!activity) return
+    const books = activity.books||(activity.book?[activity.book]:[])
+    const bookLine = books.length>0 ? `\n\nRead after: ${books[0].title} by ${books[0].author}` : ''
+    const steps = activity.steps.map((s,i)=>`${i+1}. ${s}`).join('\n')
+    const txt = `${activity.activity_name}\n${activity.tagline}\n\nTime: ${activity.duration}\n\nSteps:\n${steps}\n\nParent tip: ${activity.parent_tip||''}${bookLine}\n\nGenerated at whatshouldmykiddo.com`
+    navigator.clipboard?.writeText(txt).then(()=>{ setShareMsg('Activity copied! Paste it anywhere.'); setTimeout(()=>setShareMsg(''),3000) })
+    closeShareSheet()
   }
 
   const handleEmail = () => {
@@ -1113,7 +1171,12 @@ export default function App() {
     const sub = encodeURIComponent(`Activity: ${activity.activity_name}`)
     const body = encodeURIComponent(bodyText)
     const a = document.createElement('a'); a.href=`mailto:?subject=${sub}&body=${body}`; a.style.display='none'; document.body.appendChild(a); a.click(); document.body.removeChild(a)
-    setTimeout(()=>setEmailSent(true), 300)
+    // On desktop, mailto often silently fails — fall back to clipboard after short delay
+    setTimeout(()=>{
+      setEmailSent(true)
+      // Also copy to clipboard as fallback
+      navigator.clipboard?.writeText(bodyText).catch(()=>{})
+    }, 400)
   }
 
   const exportCSV = () => {
@@ -1143,7 +1206,7 @@ export default function App() {
     <div style={{fontFamily:F2,minHeight:'100vh',background:T.cream,color:T.charcoal}}>
       <SiteHeader activeNav={activeNav} onSwitch={switchNav} onGeneratorClick={startFresh}/>
       {stage==='error' && <ErrorView msg={errorMsg} onRetry={()=>mode==='gift'?generateGift(giftAnswers):generate(answers)} onBack={()=>setStage('quiz')}/>}
-      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')}/>}
+      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} showShareSheet={showShareSheet} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} copyActivity={copyActivity} closeShareSheet={closeShareSheet} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')}/>}
       {stage==='gift-result' && activeNav==='generator' && <GiftResultView gift={gift} answers={giftAnswers} onNew={startGift} onActivity={()=>{setMode('activity');setStage('landing')}}/>}
       {activeNav==='community' && <CommunityView posts={communityPosts} loading={communityLoading} votedIds={votedIds} onUpvote={handleUpvote} onRefresh={loadCommunity} onBuild={startFresh}/>}
       {activeNav==='bestof' && <BestOfView posts={bestOf} loading={bestOfLoading} filter={bestFilter} setFilter={setBestFilter} votedIds={votedIds} onUpvote={handleUpvote} onRefresh={loadBestOf}/>}
