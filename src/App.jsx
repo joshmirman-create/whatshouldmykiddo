@@ -307,7 +307,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
               Turn <em style={{color:T.green,fontStyle:'normal'}}>"I'm bored!"</em><br/>into their new favorite activity
             </h1>
             <p style={{fontSize:'clamp(15px,2vw,17px)',color:T.gray,margin:'0 0 28px',lineHeight:1.6,maxWidth:480}}>
-              Tell us your kid's age, what they love, and what you have at home. We build a personalized activity in under two minutes. No shopping, no prep, no stress.
+              Tell us your kid's age, what they love, and what you have at home. We build a personalized activity in just a few minutes. No shopping, no prep, no stress.
             </p>
             <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:20,flexDirection:window.innerWidth<500?'column':'row',alignItems:window.innerWidth<500?'stretch':'center'}}>
               <Btn size="lg" onClick={onStart}>✨ Build an activity for my kid</Btn>
@@ -315,7 +315,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
               <Btn size="md" variant="outline" onClick={onGift}>🎁 Find a gift instead</Btn>
             </div>
             <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
-              {[['⚡','Takes 2 minutes'],['🎯','Personalized for your child'],['📦','No shopping required']].map(([e,l])=>(
+              {[['⚡','Quick to set up'],['🎯','Personalized for your child'],['📦','No shopping required']].map(([e,l])=>(
                 <div key={l} style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:T.gray,fontWeight:600,fontFamily:F}}><span>{e}</span>{l}</div>
               ))}
             </div>
