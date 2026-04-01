@@ -857,12 +857,9 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
       </div>
       <div style={{maxWidth:700,margin:'0 auto',padding:'24px 20px'}} className="fade-up">
         <Card style={{padding:'20px 22px',marginBottom:14}}>
-          <div style={{marginBottom:14}}>
-            <div style={{flex:1}}>
-              <SLabel color='#7C3AED'>WHY THEY'LL LOVE IT</SLabel>
-              <p style={{margin:'0 0 10px',fontSize:14,color:T.charcoal,lineHeight:1.6}}>{gift.why_theyll_love_it}</p>
-              {gift.age_appropriateness && <p style={{margin:0,fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
-            </div>
+          <SLabel color='#7C3AED'>WHY THEY'LL LOVE IT</SLabel>
+          <p style={{margin:'0 0 10px',fontSize:14,color:T.charcoal,lineHeight:1.6}}>{gift.why_theyll_love_it}</p>
+          {gift.age_appropriateness && <p style={{margin:'0 0 14px',fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
           {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
           <Btn href={AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
