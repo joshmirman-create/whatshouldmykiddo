@@ -242,6 +242,7 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
               {t.l}
             </button>
           ))}
+          <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Nunito',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
           <a href="/browse" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Nunito',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Browse</a>
           <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}}>✨ Build</Btn>
         </nav>
@@ -624,6 +625,7 @@ function ShareSheet({ activity, onCopy, onClose }) {
   )
 }
 
+
 // ── RESULT PAGE ────────────────────────────────────────────────────────────────
 function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileSaved, emailSent, savedProfile, shareMsg, hiddenProducts, setHiddenProducts, sharedToCommunity, showShareSheet, onUpvote, onSave, onEmail, onShare, onShareToCommunity, copyActivity, closeShareSheet, onNew, onNewSaved, onTweakAnswers }) {
   const [bookIndex, setBookIndex] = useState(0)
@@ -772,23 +774,10 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                 if (!cur) return null
                 const hasMore = idx < (sp.alternatives?.length||0)
                 return (
-                  <div key={i} style={{background:T.white,border:`1.5px solid ${T.border}`,borderRadius:T.rSm,padding:'12px',marginBottom:10,boxShadow:'0 1px 4px rgba(0,0,0,.06)'}}>
-                    <div style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:8}}>
-                      <div style={{position:'relative',flexShrink:0}}>
-                        <img
-                          src={`https://loremflickr.com/80/80/${encodeURIComponent((cur.search||cur.name).split(' ').slice(0,3).join(','))}`}
-                          alt={cur.name}
-                          onError={e=>{e.target.src='';e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
-                          style={{width:80,height:80,objectFit:'cover',borderRadius:8,display:'block'}}
-                        />
-                        <div style={{width:80,height:80,background:'linear-gradient(135deg,#FF9900,#FFB347)',borderRadius:8,display:'none',alignItems:'center',justifyContent:'center',fontSize:28}}>🛍️</div>
-                      </div>
-                      <div style={{flex:1,minWidth:0}}>
-                        {idx>0 && <div style={{fontSize:9,color:T.grayLight,fontWeight:700,marginBottom:2,fontFamily:F,letterSpacing:1}}>ALTERNATIVE</div>}
-                        <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:T.charcoal,lineHeight:1.3,marginBottom:3}}>{cur.name}</div>
-                        <div style={{fontSize:11,color:T.gray,lineHeight:1.4}}>{cur.why}</div>
-                      </div>
-                    </div>
+                  <div key={i} style={{background:T.grayPale,borderRadius:T.rSm,padding:'12px 14px',marginBottom:10}}>
+                    {idx>0 && <div style={{fontSize:9,color:T.grayLight,fontWeight:700,marginBottom:4,fontFamily:F,letterSpacing:1}}>ALTERNATIVE</div>}
+                    <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:T.charcoal,marginBottom:3,lineHeight:1.3}}>{cur.name}</div>
+                    <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:8}}>{cur.why}</div>
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                       <Btn size="sm" href={AMZN(cur.search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Love it! Buy it</Btn>
                       {hasMore ? <>
@@ -868,22 +857,12 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
       </div>
       <div style={{maxWidth:700,margin:'0 auto',padding:'24px 20px'}} className="fade-up">
         <Card style={{padding:'20px 22px',marginBottom:14}}>
-          <div style={{display:'flex',gap:14,marginBottom:14,alignItems:'flex-start'}}>
-            <div style={{flexShrink:0}}>
-              <img
-                src={`https://loremflickr.com/120/120/${encodeURIComponent((gift.amazon_search||gift.gift_name).split(' ').slice(0,3).join(','))}`}
-                alt={gift.gift_name}
-                onError={e=>{e.target.src='';e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
-                style={{width:110,height:110,objectFit:'cover',borderRadius:12,display:'block',boxShadow:'0 2px 12px rgba(0,0,0,.12)'}}
-              />
-              <div style={{width:110,height:110,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:12,display:'none',alignItems:'center',justifyContent:'center',fontSize:36}}>🎁</div>
-            </div>
+          <div style={{marginBottom:14}}>
             <div style={{flex:1}}>
               <SLabel color='#7C3AED'>WHY THEY'LL LOVE IT</SLabel>
               <p style={{margin:'0 0 10px',fontSize:14,color:T.charcoal,lineHeight:1.6}}>{gift.why_theyll_love_it}</p>
               {gift.age_appropriateness && <p style={{margin:0,fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
             </div>
-          </div>
           {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
           <Btn href={AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
@@ -892,21 +871,10 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
             <SLabel color='#7C3AED'>MORE IDEAS</SLabel>
             <div style={{display:'grid',gap:10}}>
             {gift.alternatives.map((alt,i)=>(
-              <div key={i} style={{background:'#F8F5FF',border:'1px solid #E8D5FF',borderRadius:T.rSm,padding:'10px 12px',display:'flex',gap:10,alignItems:'flex-start'}}>
-                <div style={{flexShrink:0}}>
-                  <img
-                    src={`https://loremflickr.com/72/72/${encodeURIComponent((alt.search||alt.name).split(' ').slice(0,3).join(','))}`}
-                    alt={alt.name}
-                    onError={e=>{e.target.src='';e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
-                    style={{width:72,height:72,objectFit:'cover',borderRadius:8,display:'block'}}
-                  />
-                  <div style={{width:72,height:72,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:8,display:'none',alignItems:'center',justifyContent:'center',fontSize:24}}>🎁</div>
-                </div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:'#5B21B6',marginBottom:2,lineHeight:1.3}}>{alt.name}</div>
-                  <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:6}}>{alt.reason}</div>
-                  <Btn size="sm" href={AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
-                </div>
+              <div key={i} style={{background:'#F8F5FF',border:'1px solid #E8D5FF',borderRadius:T.rSm,padding:'12px 14px'}}>
+                <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:'#5B21B6',marginBottom:3,lineHeight:1.3}}>{alt.name}</div>
+                <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:8}}>{alt.reason}</div>
+                <Btn size="sm" href={AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
               </div>
             ))}
             </div>
@@ -914,7 +882,6 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
         )}
         <AdUnit style={{marginBottom:14}}/>
         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-        <AdUnit style={{marginBottom:14}}/>
           <Btn style={{flex:1,background:'#7C3AED'}} onClick={onNew}>Find another gift</Btn>
           <Btn variant="outline" style={{color:'#7C3AED',borderColor:'#7C3AED'}} onClick={onActivity}>Try activity generator</Btn>
         </div>
