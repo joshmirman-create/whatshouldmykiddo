@@ -668,8 +668,6 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
           <AdUnit style={{marginBottom:20}}/>
 
           <Card id="activity-steps" style={{padding:'22px 22px 16px',marginBottom:16}}>
-            <SLabel>YOUR ACTIVITY</SLabel>
-            <p style={{fontSize:13,color:T.gray,margin:'0 0 16px',lineHeight:1.5,fontStyle:'italic'}}>{act.why_kids_love_it}</p>
             <SLabel>STEPS</SLabel>
             {act.steps.map((s,i)=>(
               <div key={i} style={{display:'flex',gap:12,marginBottom:13,alignItems:'flex-start'}}>
@@ -694,8 +692,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
 
           <Card style={{padding:'16px 18px',marginBottom:16}}>
             <SLabel>ADD TO THE COMMUNITY VOTE BOARD?</SLabel>
-            <p style={{margin:'0 0 10px',fontSize:13,color:T.gray,lineHeight:1.5}}>Add this activity anonymously to our on-site community feed so other parents can discover and vote on it. No account, no name, just one tap.</p>
-            <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',marginTop:4}}>
               {!sharedToCommunity
                 ? <Btn size="sm" onClick={onShareToCommunity}>Add to community board</Btn>
                 : <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
@@ -731,16 +728,22 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
           )}
 
           <div style={{display:'flex',alignItems:'center',gap:10,margin:'4px 0 14px'}}>
-            <div style={{flex:1,height:1,background:T.border}}/><span style={{fontSize:10,fontWeight:800,color:T.grayLight,whiteSpace:'nowrap',fontFamily:F}}>⬆ MAKE IT EVEN MORE SPECIAL</span><div style={{flex:1,height:1,background:T.border}}/>
+            <div style={{flex:1,height:1,background:T.border}}/><span style={{fontSize:10,fontWeight:800,color:T.grayLight,whiteSpace:'nowrap',fontFamily:F}}>OPTIONAL EXTRAS</span><div style={{flex:1,height:1,background:T.border}}/>
           </div>
-          <p style={{fontSize:12,color:T.gray,margin:'0 0 14px',lineHeight:1.5,textAlign:'center'}}>Your kid can do this <strong>right now</strong> with what you have. These are totally optional.</p>
+
 
           {books.length > 0 && bookIndex < books.length && book && (
             <Card style={{padding:'16px 18px',marginBottom:12,border:'1.5px solid #E8D5FF'}}>
-              <div style={{display:'flex',gap:10,marginBottom:10}}>
-                <div style={{width:36,height:48,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,flexShrink:0}}>📖</div>
-                <div style={{flex:1}}>
-                  <SLabel color='#7C3AED'>{bookIndex===0?'READ TOGETHER AFTER':`ANOTHER GREAT OPTION (${bookIndex+1}/${books.length})`}</SLabel>
+              <SLabel color='#7C3AED'>{bookIndex===0?'READ TOGETHER AFTER':`ANOTHER OPTION (${bookIndex+1}/${books.length})`}</SLabel>
+              <div style={{display:'flex',gap:12,marginBottom:10,alignItems:'flex-start'}}>
+                <img
+                  src={`https://covers.openlibrary.org/b/title/${encodeURIComponent(book.title)}-M.jpg`}
+                  alt={book.title}
+                  onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
+                  style={{width:52,height:72,objectFit:'cover',borderRadius:6,flexShrink:0,boxShadow:'0 2px 8px rgba(0,0,0,.15)'}}
+                />
+                <div style={{width:52,height:72,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:6,display:'none',alignItems:'center',justifyContent:'center',fontSize:22,flexShrink:0}}>📖</div>
+                <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:14,fontWeight:900,fontFamily:F,color:T.charcoal,lineHeight:1.3,marginBottom:2}}>{book.title}</div>
                   <div style={{fontSize:11,color:T.grayLight,marginBottom:5}}>by {book.author}</div>
                   <div style={{fontSize:12,color:'#5B21B6',lineHeight:1.5,fontStyle:'italic'}}>{book.why}</div>
@@ -769,10 +772,23 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                 if (!cur) return null
                 const hasMore = idx < (sp.alternatives?.length||0)
                 return (
-                  <div key={i} style={{background:T.grayPale,borderRadius:T.rSm,padding:'12px 14px',marginBottom:10}}>
-                    {idx>0 && <div style={{fontSize:10,color:T.grayLight,fontWeight:700,marginBottom:4,fontFamily:F}}>ALTERNATIVE SUGGESTION</div>}
-                    <div style={{fontSize:13,fontWeight:800,fontFamily:F,color:T.charcoal,marginBottom:3}}>{cur.name}</div>
-                    <div style={{fontSize:12,color:T.gray,lineHeight:1.4,marginBottom:10}}>{cur.why}</div>
+                  <div key={i} style={{background:T.white,border:`1.5px solid ${T.border}`,borderRadius:T.rSm,padding:'12px',marginBottom:10,boxShadow:'0 1px 4px rgba(0,0,0,.06)'}}>
+                    <div style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:8}}>
+                      <div style={{position:'relative',flexShrink:0}}>
+                        <img
+                          src={`https://loremflickr.com/80/80/${encodeURIComponent((cur.search||cur.name).split(' ').slice(0,3).join(','))}`}
+                          alt={cur.name}
+                          onError={e=>{e.target.src='';e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
+                          style={{width:80,height:80,objectFit:'cover',borderRadius:8,display:'block'}}
+                        />
+                        <div style={{width:80,height:80,background:'linear-gradient(135deg,#FF9900,#FFB347)',borderRadius:8,display:'none',alignItems:'center',justifyContent:'center',fontSize:28}}>🛍️</div>
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        {idx>0 && <div style={{fontSize:9,color:T.grayLight,fontWeight:700,marginBottom:2,fontFamily:F,letterSpacing:1}}>ALTERNATIVE</div>}
+                        <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:T.charcoal,lineHeight:1.3,marginBottom:3}}>{cur.name}</div>
+                        <div style={{fontSize:11,color:T.gray,lineHeight:1.4}}>{cur.why}</div>
+                      </div>
+                    </div>
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                       <Btn size="sm" href={AMZN(cur.search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Love it! Buy it</Btn>
                       {hasMore ? <>
@@ -852,25 +868,53 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
       </div>
       <div style={{maxWidth:700,margin:'0 auto',padding:'24px 20px'}} className="fade-up">
         <Card style={{padding:'20px 22px',marginBottom:14}}>
-          <SLabel color='#7C3AED'>WHY THEY'LL LOVE IT</SLabel>
-          <p style={{margin:'0 0 14px',fontSize:14,color:T.charcoal,lineHeight:1.7}}>{gift.why_theyll_love_it}</p>
-          {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'14px 16px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.7}}>{gift.what_parents_say}</p></div>}
-          {gift.age_appropriateness && <p style={{margin:'0 0 14px',fontSize:13,color:T.gray,lineHeight:1.5,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
+          <div style={{display:'flex',gap:14,marginBottom:14,alignItems:'flex-start'}}>
+            <div style={{flexShrink:0}}>
+              <img
+                src={`https://loremflickr.com/120/120/${encodeURIComponent((gift.amazon_search||gift.gift_name).split(' ').slice(0,3).join(','))}`}
+                alt={gift.gift_name}
+                onError={e=>{e.target.src='';e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
+                style={{width:110,height:110,objectFit:'cover',borderRadius:12,display:'block',boxShadow:'0 2px 12px rgba(0,0,0,.12)'}}
+              />
+              <div style={{width:110,height:110,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:12,display:'none',alignItems:'center',justifyContent:'center',fontSize:36}}>🎁</div>
+            </div>
+            <div style={{flex:1}}>
+              <SLabel color='#7C3AED'>WHY THEY'LL LOVE IT</SLabel>
+              <p style={{margin:'0 0 10px',fontSize:14,color:T.charcoal,lineHeight:1.6}}>{gift.why_theyll_love_it}</p>
+              {gift.age_appropriateness && <p style={{margin:0,fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
+            </div>
+          </div>
+          {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
           <Btn href={AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
         {gift.alternatives?.length > 0 && (
           <Card style={{padding:'16px 18px',marginBottom:14}}>
-            <SLabel color='#7C3AED'>ALREADY HAVE IT? NOT QUITE RIGHT? HERE ARE MORE IDEAS.</SLabel>
+            <SLabel color='#7C3AED'>MORE IDEAS</SLabel>
+            <div style={{display:'grid',gap:10}}>
             {gift.alternatives.map((alt,i)=>(
-              <div key={i} style={{background:'#F8F5FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:i<gift.alternatives.length-1?8:0}}>
-                <div style={{fontSize:13,fontWeight:800,fontFamily:F,color:'#5B21B6',marginBottom:3}}>{alt.name}</div>
-                <div style={{fontSize:12,color:T.gray,lineHeight:1.4,marginBottom:8}}>{alt.reason}</div>
-                <Btn size="sm" href={AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
+              <div key={i} style={{background:'#F8F5FF',border:'1px solid #E8D5FF',borderRadius:T.rSm,padding:'10px 12px',display:'flex',gap:10,alignItems:'flex-start'}}>
+                <div style={{flexShrink:0}}>
+                  <img
+                    src={`https://loremflickr.com/72/72/${encodeURIComponent((alt.search||alt.name).split(' ').slice(0,3).join(','))}`}
+                    alt={alt.name}
+                    onError={e=>{e.target.src='';e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
+                    style={{width:72,height:72,objectFit:'cover',borderRadius:8,display:'block'}}
+                  />
+                  <div style={{width:72,height:72,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:8,display:'none',alignItems:'center',justifyContent:'center',fontSize:24}}>🎁</div>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:'#5B21B6',marginBottom:2,lineHeight:1.3}}>{alt.name}</div>
+                  <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:6}}>{alt.reason}</div>
+                  <Btn size="sm" href={AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
+                </div>
               </div>
             ))}
+            </div>
           </Card>
         )}
+        <AdUnit style={{marginBottom:14}}/>
         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+        <AdUnit style={{marginBottom:14}}/>
           <Btn style={{flex:1,background:'#7C3AED'}} onClick={onNew}>Find another gift</Btn>
           <Btn variant="outline" style={{color:'#7C3AED',borderColor:'#7C3AED'}} onClick={onActivity}>Try activity generator</Btn>
         </div>
