@@ -7,8 +7,8 @@ const T = {
   gray:'#4A5568', grayLight:'#718096', grayPale:'#F7F8F5', border:'#E2E8E0',
   shadow:'0 2px 12px rgba(45,106,79,0.08)', r:'16px', rSm:'10px',
 }
-const F = "'Nunito','Trebuchet MS',system-ui,sans-serif"
-const F2 = "'Nunito Sans','Trebuchet MS',system-ui,sans-serif"
+const F = "'Montserrat','Trebuchet MS',system-ui,sans-serif"
+const F2 = "'DM Sans','Trebuchet MS',system-ui,sans-serif"
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
 const ACTIVITY_TYPES = `watercolor painting, collage making, origami, papier-mache construction, printing and stamping art, finger weaving, handmade bookmaking, comic strip creation, fashion design and costume making, jewelry and accessory making, shadow silhouette art, nature printing, bubble painting, blow painting, splatter painting, salt painting, coffee filter art, tape resist painting, leaf rubbings and nature art, recycled sculpture, paper mosaic, string art, baking soda volcano, color mixing lab, sink or float experiment, magnet exploration station, shadow and light play, ice melting experiment, static electricity experiment, homemade slime, density rainbow jar, seed planting and mini garden, ramp and rolling race, paper bridge weight challenge, kite making and flying, paper airplane design lab, boat building and water testing, tallest tower challenge, puppet theater construction, marble maze design, obstacle course design and race, dance choreography show, yoga adventure story, freeze dance, indoor bowling alley, balloon keep-up challenge, hopscotch with twists, relay race setup, mirror movement game, sock ball basketball, baking and decorating treats, fruit and veggie sculpture, smoothie invention lab, sandwich or pizza art, homemade play dough from scratch, ice cube painting, texture collage, edible art project, shadow puppet theater, sock puppet show, newspaper reporter project, mystery detective setup, fort building and adventure roleplay, dress-up performance show, story cube game, movie trailer storyboard, homemade instrument making, rhythm and percussion patterns, lip sync music video, sound experiment lab, body percussion routine, musical freeze game, scavenger hunt with clues, treasure map adventure, friendship bracelet making, greeting card workshop, gift wrapping art, paper doll fashion show, dream catcher weaving, catapult building and launching, stop motion animation setup, kaleidoscope making, rock painting, pressed flower art, tie dye with household items, vegetable stamping, cloud dough sensory play, oobleck science experiment, balloon rocket race, straw bridge challenge`
@@ -237,13 +237,13 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
           <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kid do?</span>
         </button>
         <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
-          {[{k:'generator',l:'Activity Builder'},{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
+          {[{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
             <button key={t.k} onClick={()=>onSwitch(t.k)} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>
               {t.l}
             </button>
           ))}
-          <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Nunito',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
-          <a href="/browse" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Nunito',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Browse</a>
+          <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
+          <a href="/browse" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Browse</a>
           <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}}>✨ Build</Btn>
         </nav>
       </div>
@@ -324,6 +324,89 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
           {window.innerWidth >= 900 && <HeroPreview />}
         </div>
 
+      </section>
+
+      {/* Need it now — urgency chips */}
+      <section style={{padding:'36px 20px 40px',background:T.white,borderBottom:`1px solid ${T.border}`}}>
+        <div style={{maxWidth:900,margin:'0 auto'}}>
+          <p style={{fontSize:12,fontWeight:800,color:T.grayLight,letterSpacing:1.5,textTransform:'uppercase',marginBottom:14,fontFamily:F}}>What do you need right now?</p>
+          <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+            {[
+              {e:'⚡',l:'15-Minute Fix',href:'/quick-15-minute-activities-for-kids'},
+              {e:'🌧️',l:'Rainy Day',href:'/rainy-day-activities-for-kids'},
+              {e:'🛋️',l:'Sick Day',href:'/sick-day-activities-for-kids'},
+              {e:'☁️',l:'Quiet Time',href:'/quiet-activities-for-kids'},
+              {e:'🎒',l:'After School',href:'/after-school-activities-for-kids'},
+              {e:'🏠',l:'Stuck Inside',href:'/indoor-activities-for-kids'},
+              {e:'✅',l:'Low Mess',href:'/low-mess-activities-for-kids'},
+            ].map(c=>(
+              <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:7,background:T.grayPale,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'8px 16px',textDecoration:'none',fontSize:13,fontWeight:700,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap',transition:'all .15s'}}
+                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
+                onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.charcoal}}>
+                <span>{c.e}</span>{c.l}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What do you have at home — materials chips */}
+      <section style={{padding:'36px 20px 40px',background:T.cream,borderBottom:`1px solid ${T.border}`}}>
+        <div style={{maxWidth:900,margin:'0 auto'}}>
+          <p style={{fontSize:12,fontWeight:800,color:T.grayLight,letterSpacing:1.5,textTransform:'uppercase',marginBottom:14,fontFamily:F}}>What do you have at home right now?</p>
+          <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+            {[
+              {e:'📦',l:'Cardboard',href:'/activities-with-cardboard'},
+              {e:'✏️',l:'Crayons & Paper',href:'/activities-with-crayons-and-paper'},
+              {e:'🎨',l:'Easy Crafts',href:'/easy-crafts-for-kids-at-home'},
+              {e:'🧺',l:'Laundry Basket',href:'/quick-15-minute-activities-for-kids'},
+              {e:'✂️',l:'Scissors & Tape',href:'/easy-crafts-for-kids-at-home'},
+              {e:'🖊️',l:'Just Paper',href:'/activities-with-crayons-and-paper'},
+            ].map(c=>(
+              <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:7,background:T.white,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'8px 16px',textDecoration:'none',fontSize:13,fontWeight:700,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap',transition:'all .15s'}}
+                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
+                onMouseOut={e=>{e.currentTarget.style.background=T.white;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.charcoal}}>
+                <span>{c.e}</span>{c.l}
+              </a>
+            ))}
+            <button onClick={onStart} style={{display:'flex',alignItems:'center',gap:7,background:T.green,border:'none',borderRadius:50,padding:'8px 16px',fontSize:13,fontWeight:700,color:'#fff',fontFamily:F,cursor:'pointer',whiteSpace:'nowrap'}}>
+              ✨ Something else — build it
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Ready-Made Ideas — featured cards */}
+      <section style={{padding:'52px 20px',background:T.white}}>
+        <div style={{maxWidth:1000,margin:'0 auto'}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:10,marginBottom:24}}>
+            <div>
+              <h2 style={{fontSize:'clamp(20px,4vw,28px)',fontWeight:900,color:T.charcoal,margin:'0 0 4px',fontFamily:F}}>Ready-Made Ideas</h2>
+              <p style={{fontSize:13,color:T.gray,margin:0}}>No quiz needed. Pick one and go.</p>
+            </div>
+            <a href="/ready-made-ideas" style={{fontSize:13,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F}}>See all collections →</a>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:14,marginBottom:20}}>
+            {[
+              {e:'⚡',title:'15-Minute Activities',desc:'Eight fully written activities you can start in under a minute. Full steps, no shopping.',href:'/quick-15-minute-activities-for-kids',tag:'8 activities'},
+              {e:'🌧️',title:'Rainy Day Activities',desc:'When the weather kills every plan. Activities that work inside with what you have.',href:'/rainy-day-activities-for-kids',tag:'All ages'},
+              {e:'🎒',title:'After School Wind-Down',desc:'The hour after school is hard. These help kids decompress without more screen time.',href:'/after-school-activities-for-kids',tag:'Ages 4-12'},
+              {e:'☁️',title:'Quiet Time Activities',desc:'Low-energy, genuinely absorbing activities for when you need the volume turned down.',href:'/quiet-activities-for-kids',tag:'No mess'},
+            ].map(c=>(
+              <a key={c.title} href={c.href} style={{background:T.grayPale,borderRadius:T.r,padding:'20px',textDecoration:'none',color:T.charcoal,display:'block',border:`1.5px solid ${T.border}`,transition:'all .15s'}}
+                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green}}
+                onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border}}>
+                <div style={{fontSize:28,marginBottom:10}}>{c.e}</div>
+                <div style={{fontSize:12,fontWeight:700,color:T.green,marginBottom:6,fontFamily:F,letterSpacing:.5}}>{c.tag}</div>
+                <div style={{fontSize:15,fontWeight:800,color:T.charcoal,marginBottom:6,fontFamily:F,lineHeight:1.3}}>{c.title}</div>
+                <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>{c.desc}</div>
+              </a>
+            ))}
+          </div>
+          <div style={{textAlign:'center'}}>
+            <a href="/ready-made-ideas" style={{fontSize:13,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F,padding:'10px 20px',border:`1.5px solid ${T.green}`,borderRadius:50,display:'inline-block'}}>Browse all ready-made collections →</a>
+          </div>
+        </div>
       </section>
 
       {/* How it works */}
@@ -539,6 +622,7 @@ function GeneratorShell({ step, setStep, answers, setAnswers, totalSteps, onGene
               </Btn>
             </div>
             <p style={{fontSize:11,color:T.grayLight,textAlign:'center',marginTop:12,lineHeight:1.6}}>Parents fill this out about their child · No children's data collected</p>
+            {step===0 && <p style={{fontSize:12,color:T.grayLight,textAlign:'center',marginTop:6}}>In a rush? <a href="/ready-made-ideas" style={{color:T.green,fontWeight:700,textDecoration:'none'}}>Browse ready-made ideas instead →</a></p>}
           </Card>
         </div>
         {window.innerWidth >= 900 && <PreviewSidebar answers={answers}/>}
@@ -632,6 +716,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
   const [spiceIndexes, setSpiceIndexes] = useState({})
   const [showVar, setShowVar] = useState(false)
   const [checked, setChecked] = useState(new Set())
+  const [swapMsg, setSwapMsg] = useState('')
   const voted = votedIds.has(currentPostId||'')
   const books = act.books||(act.book?[act.book]:[])
   const book = books[bookIndex]||null
@@ -691,6 +776,35 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             </Card>
           )}
 
+
+          <Card style={{padding:'16px 18px',marginBottom:16}}>
+            <SLabel>NOT QUITE RIGHT? SWAP ONE THING</SLabel>
+            <p style={{margin:'2px 0 12px',fontSize:12,color:T.gray,lineHeight:1.5}}>Keep your kid's profile. Just nudge the activity.</p>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+              {[
+                {l:'Too messy',e:'🧹',t:'quieter'},
+                {l:'Too active',e:'🪑',t:'quieter'},
+                {l:'Less setup',e:'⚡',t:'easier'},
+                {l:'Make it sillier',e:'🤪',t:'more_active'},
+                {l:'Make it calmer',e:'🌿',t:'quieter'},
+                {l:'Add a sibling',e:'👫',t:'sibling'},
+              ].map(sw=>(
+                <button key={sw.l} onClick={()=>{
+                  if(act.variations&&act.variations[sw.t]){setSwapMsg(act.variations[sw.t])}
+                  else{onTweakAnswers()}
+                }} style={{display:'flex',alignItems:'center',gap:5,background:swapMsg&&act.variations?.[sw.t]===swapMsg?T.greenLight:T.grayPale,border:`1.5px solid ${swapMsg&&act.variations?.[sw.t]===swapMsg?T.green:T.border}`,borderRadius:50,padding:'6px 12px',cursor:'pointer',fontSize:12,fontWeight:700,fontFamily:F,color:swapMsg&&act.variations?.[sw.t]===swapMsg?T.green:T.charcoal}}>
+                  <span>{sw.e}</span>{sw.l}
+                </button>
+              ))}
+            </div>
+            {swapMsg && (
+              <div style={{marginTop:12,background:T.greenPale,border:`1.5px solid ${T.greenLight}`,borderRadius:T.rSm,padding:'12px 14px'}}>
+                <div style={{fontSize:11,fontWeight:800,color:T.green,marginBottom:4,fontFamily:F,letterSpacing:.5}}>TRY THIS INSTEAD</div>
+                <p style={{margin:'0 0 8px',fontSize:13,color:T.greenDark,lineHeight:1.6}}>{swapMsg}</p>
+                <button onClick={onNew} style={{fontSize:11,fontWeight:700,color:T.green,background:'none',border:'none',cursor:'pointer',fontFamily:F,padding:0,textDecoration:'underline'}}>Need something totally different? Build a new one →</button>
+              </div>
+            )}
+          </Card>
 
           <Card style={{padding:'16px 18px',marginBottom:16}}>
             <SLabel>ADD TO THE COMMUNITY VOTE BOARD?</SLabel>
@@ -844,6 +958,11 @@ function GiftQuizView({ step, setStep, answers, setAnswers, onGenerate, onCancel
 
 // ── GIFT RESULT ────────────────────────────────────────────────────────────────
 function GiftResultView({ gift, answers, onNew, onActivity }) {
+  const [copied, setCopied] = useState(false)
+  const shareText = `🎁 Gift idea for a ${answers.age} year old who loves ${answers.interests}:\n\n${gift.gift_name} (${gift.price_range})\n${gift.tagline}\n\nMore ideas & alternatives: ${window.location.origin}`
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
+  const smsUrl = `sms:?body=${encodeURIComponent(shareText)}`
+  const copyGift = () => { navigator.clipboard.writeText(shareText).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000)}) }
   return (
     <div style={{background:T.cream,minHeight:'100vh'}}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}.fade-up{animation:fadeUp .35s ease forwards}`}</style>
@@ -877,10 +996,30 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
             </div>
           </Card>
         )}
+        {/* Share gift ideas */}
+        <Card style={{padding:'16px 18px',marginBottom:14}}>
+          <SLabel color='#7C3AED'>SEND THESE IDEAS</SLabel>
+          <p style={{margin:'2px 0 12px',fontSize:12,color:T.gray,lineHeight:1.5}}>Share with a co-parent, grandparent, or anyone who needs a nudge.</p>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+            <a href={waUrl} target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:6,background:'#25D366',color:'#fff',borderRadius:50,padding:'8px 14px',textDecoration:'none',fontSize:12,fontWeight:700,fontFamily:F}}>💬 WhatsApp</a>
+            <a href={smsUrl} style={{display:'flex',alignItems:'center',gap:6,background:T.charcoal,color:'#fff',borderRadius:50,padding:'8px 14px',textDecoration:'none',fontSize:12,fontWeight:700,fontFamily:F}}>📱 Text message</a>
+            <button onClick={copyGift} style={{display:'flex',alignItems:'center',gap:6,background:copied?T.greenLight:T.grayPale,color:copied?T.green:T.charcoal,border:`1.5px solid ${copied?T.green:T.border}`,borderRadius:50,padding:'8px 14px',fontSize:12,fontWeight:700,fontFamily:F,cursor:'pointer'}}>{copied?'✓ Copied!':'📋 Copy to clipboard'}</button>
+          </div>
+        </Card>
+
+        {/* Cross-promo to activity generator */}
+        <Card style={{padding:'16px 18px',marginBottom:14,background:T.greenPale,border:`1.5px solid ${T.greenLight}`,boxShadow:'none'}}>
+          <SLabel color={T.green}>ALSO NEED SOMETHING TO DO TODAY?</SLabel>
+          <p style={{margin:'4px 0 12px',fontSize:13,color:T.greenDark,lineHeight:1.5}}>Build a personalized activity based on their age, mood, and what you already have at home.</p>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+            <Btn size="sm" onClick={onActivity} style={{background:T.green}}>✨ Build an activity</Btn>
+            <a href="/ready-made-ideas" style={{fontSize:12,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F}}>Or browse ready-made ideas →</a>
+          </div>
+        </Card>
+
         <AdUnit style={{marginBottom:14}}/>
         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
           <Btn style={{flex:1,background:'#7C3AED'}} onClick={onNew}>Find another gift</Btn>
-          <Btn variant="outline" style={{color:'#7C3AED',borderColor:'#7C3AED'}} onClick={onActivity}>Try activity generator</Btn>
         </div>
       </div>
       <SiteFooter />
@@ -934,21 +1073,59 @@ function CommCard({ post, voted, onUpvote }) {
 
 function CommunityView({ posts, loading, votedIds, onUpvote, onRefresh, onBuild }) {
   const [filter, setFilter] = useState('all')
+  const [sort, setSort] = useState('newest')
+
   const filt = filter==='all' ? posts : posts.filter(p=>p.age===filter||p.occasion===filter)
+
+  const sorted = [...filt].sort((a,b)=>{
+    if(sort==='most-loved') return (b.votes||0)-(a.votes||0)
+    if(sort==='fastest') {
+      const mins = p => parseInt((p.duration||'').match(/\d+/)?.[0]||999)
+      return mins(a)-mins(b)
+    }
+    if(sort==='lowest-prep') {
+      const prep = p => (p.setup_time||'').toLowerCase().includes('no')?0:parseInt((p.setup_time||'').match(/\d+/)?.[0]||10)
+      return prep(a)-prep(b)
+    }
+    if(sort==='quietest') {
+      const q = p => p.energy==='calm'?0:p.energy==='medium'?1:2
+      return q(a)-q(b)
+    }
+    // newest (default)
+    return (b.ts||0)-(a.ts||0)
+  })
+
   return (
     <div style={{maxWidth:700,margin:'0 auto',padding:'28px 20px'}}>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,flexWrap:'wrap',gap:8}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16,flexWrap:'wrap',gap:8}}>
         <div><h2 style={{fontSize:20,fontWeight:900,margin:'0 0 4px',fontFamily:F,color:T.charcoal}}>🌍 Community Activities</h2><p style={{margin:0,fontSize:13,color:T.gray}}>Real activities from parents. Upvote your favorites.</p></div>
         <Btn size="sm" variant="subtleGray" onClick={onRefresh}>↻ Refresh</Btn>
       </div>
-      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:20}}>
+
+      {/* Age/occasion filter */}
+      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:10}}>
         {[{v:'all',l:'All activities'},...AGE_GROUPS.map(a=>({v:a.v,l:a.l})),{v:'rainy-day',l:'🌧 Rainy day'},{v:'weekend',l:'☀️ Weekend'}].map(f=>(
           <button key={f.v} onClick={()=>setFilter(f.v)} style={{background:filter===f.v?T.green:T.grayPale,color:filter===f.v?'#fff':T.gray,border:'none',borderRadius:50,padding:'5px 13px',fontSize:12,fontWeight:700,cursor:'pointer',fontFamily:F}}>{f.l}</button>
         ))}
       </div>
-      {loading ? <Spinner/> : filt.length===0
+
+      {/* Sort tabs */}
+      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:20,paddingTop:10,borderTop:`1px solid ${T.border}`}}>
+        <span style={{fontSize:11,fontWeight:700,color:T.grayLight,alignSelf:'center',fontFamily:F,marginRight:2}}>SORT:</span>
+        {[
+          {v:'newest',l:'✨ Newest'},
+          {v:'most-loved',l:'🧡 Most loved'},
+          {v:'fastest',l:'⚡ Fastest'},
+          {v:'lowest-prep',l:'📦 Lowest prep'},
+          {v:'quietest',l:'🤫 Quietest'},
+        ].map(s=>(
+          <button key={s.v} onClick={()=>setSort(s.v)} style={{background:sort===s.v?T.goldLight:T.grayPale,color:sort===s.v?'#C05621':T.gray,border:`1.5px solid ${sort===s.v?T.gold:T.border}`,borderRadius:50,padding:'4px 11px',fontSize:11,fontWeight:700,cursor:'pointer',fontFamily:F}}>{s.l}</button>
+        ))}
+      </div>
+
+      {loading ? <Spinner/> : sorted.length===0
         ? <EmptyState icon="🌱" title="No activities yet" sub="Generate an activity and add it to the community board using the button on your result page."><Btn onClick={onBuild} style={{marginTop:4}}>Build an activity</Btn></EmptyState>
-        : filt.map((p,i)=>(
+        : sorted.map((p,i)=>(
           <React.Fragment key={p.id||p.ts}>
             <CommCard post={p} voted={votedIds.has(p.id)} onUpvote={onUpvote}/>
             {(i===2||i===5)&&<AdUnit style={{marginBottom:14}}/>}
