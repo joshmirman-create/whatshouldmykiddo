@@ -27,7 +27,7 @@ STRICT RULES:
 8. Every material in the steps must have a clear stated purpose. No filler.
 9. The activity is either a THING TO MAKE or a GAME TO PLAY. Not both muddled together.
 10. If an occasion is provided, theme the activity to it specifically.
-11. Book: provide 5 DIFFERENT real published children's books. AVOID the most obvious defaults (no Chicka Chicka Boom Boom, no Very Hungry Caterpillar unless genuinely best). Include range from well-known to specific and surprising. CRITICAL: Double-check every author name — only include books and authors you are certain exist together. A wrong author name is worse than a generic recommendation.
+11. Books: ONLY include books if they genuinely enhance this specific activity — a story that connects to the theme, a reference that deepens the experience, or a read-aloud that fits naturally. Skip entirely for purely physical activities (freeze dance, obstacle course, sports games, active movement). When you do include books, provide 2-3 maximum — not 5. Every book must have a clear specific reason it belongs with this exact activity. A wrong author name is worse than no book at all.
 12. Spice-up products: specific items under $25. Provide 4 alternatives per product.
 13. Parent tip must end with: Think of this as your spark — change it, add your own twist, make it completely yours!
 14. Include variations: easier, more_active, quieter, sibling.
@@ -35,14 +35,14 @@ STRICT RULES:
 16. Include setup_time (e.g. "5 min") and cleanup_level (Low/Medium/High).
 
 Respond with ONLY a JSON object. No text before or after. No markdown:
-{"activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[{"title":"Real title","author":"Author","why":"why"},{"title":"Real title","author":"Author","why":"why"},{"title":"Real title","author":"Author","why":"why"},{"title":"Real title","author":"Author","why":"why"},{"title":"Real title","author":"Author","why":"why"}],"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}],"kiwico_angle":"one sentence"}`
+{"activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}],"kiwico_angle":"one sentence"}`
 
 const GIFT_PROMPT = `You are a children's gift recommendation expert. Recommend the single best gift for this child.
 
 RULES:
 1. The main gift should be a specific, tangible product (toy, kit, game, art supply, etc.)
-2. Always include a book recommendation — this can be ANY format: picture book, graphic novel, comic, activity book, pop-up book, coloring book, magazine subscription, young adult novel, joke book, choose-your-own-adventure, field guide, anything. Match it to their age and interests. Encourage literacy naturally.
-3. Include 4 alternatives — one of the alternatives should always be a book or reading-related gift.
+2. Include a book recommendation ONLY when it genuinely connects to the recipient's specific interests and the gift theme. If the child loves Minecraft, a Minecraft guide or novel fits naturally. If the child loves soccer, a book feels forced. When in doubt, omit it. Never include a book just to include one.
+3. Include 4 alternatives — varied directions, not just versions of the same thing.
 4. Be specific. "Minecraft Handbook" is better than "a gaming book."
 
 Respond with ONLY a JSON object. No text before or after:
@@ -97,7 +97,7 @@ const BUDGETS = [{v:'10-20',l:'Up to $20',e:'💚'},{v:'20-40',l:'$20-$40',e:'�
 const LOAD_STAGES = [
   {label:"Reading your kid's profile...",pct:15},{label:"Matching age and attention span...",pct:28},
   {label:"Looking at your available materials...",pct:45},{label:"Tuning for energy level...",pct:62},
-  {label:"Finding a strong book pairing...",pct:78},{label:"Building your activity...",pct:92},
+  {label:"Adding the finishing touches...",pct:78},{label:"Building your activity...",pct:92},
   {label:"Almost ready!",pct:98},
 ]
 const ADMIN_KEY = 'zsadmin2026'
@@ -243,14 +243,9 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
           <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kid do?</span>
         </button>
         <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
-          {[{k:'community',l:'Community'},{k:'bestof',l:'Best Of'}].map(t=>(
-            <button key={t.k} onClick={()=>onSwitch(t.k)} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav===t.k?T.green:T.gray,borderBottom:activeNav===t.k?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>
-              {t.l}
-            </button>
-          ))}
+          <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
           <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
-          <a href="/browse" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Browse</a>
-          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:6,whiteSpace:'nowrap'}}>✨ Build</Btn>
+          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>✨ Build</Btn>
         </nav>
       </div>
     </header>
@@ -400,22 +395,6 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
         </div>
       </section>
 
-      {/* How it works */}
-      <section style={{padding:'64px 20px',background:T.white}}>
-        <div style={{maxWidth:900,margin:'0 auto',textAlign:'center'}}>
-          <h2 style={{fontSize:'clamp(22px,4vw,34px)',fontWeight:900,color:T.charcoal,margin:'0 0 8px',fontFamily:F}}>How it works</h2>
-          <p style={{fontSize:15,color:T.gray,margin:'0 0 40px'}}>Answer a few quick questions and we'll build something your kid can start right now, using only what you already have at home.</p>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16}}>
-            {[{n:'1',title:'Tell us about your kid',desc:'Tell us your child\'s age, interests, the occasion, their energy level, and what you have at home.'},{n:'2',title:'We build it instantly',desc:'A personalized activity that matches their personality and your situation.'},{n:'3',title:'Do it today',desc:'You get clear instructions, simple materials, and optional product ideas to make it even more special.'}].map(s=>(
-              <div key={s.n} style={{background:T.grayPale,borderRadius:T.r,padding:'28px 20px',textAlign:'center'}}>
-                <div style={{width:48,height:48,borderRadius:'50%',background:T.green,color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,fontWeight:900,fontFamily:F,margin:'0 auto 14px'}}>{s.n}</div>
-                <div style={{fontSize:16,fontWeight:800,color:T.charcoal,marginBottom:8,fontFamily:F}}>{s.title}</div>
-                <div style={{fontSize:13,color:T.gray,lineHeight:1.6}}>{s.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Examples */}
       <section style={{padding:'64px 20px',background:T.cream}}>
@@ -441,15 +420,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <section style={{padding:'56px 20px',background:T.greenDark}}>
-        <div style={{maxWidth:600,margin:'0 auto',textAlign:'center'}}>
-          <h2 style={{fontSize:'clamp(22px,4vw,34px)',fontWeight:900,color:'#fff',margin:'0 0 12px',fontFamily:F}}>Ready to build something together?</h2>
-          <p style={{fontSize:15,color:'rgba(255,255,255,.75)',margin:'0 0 28px',lineHeight:1.6}}>Answer a few questions and we'll put together something your kid can do right now with what you already have at home.</p>
-          <Btn size="lg" variant="gold" onClick={onStart}>✨ Build an activity now</Btn>
-          <p style={{fontSize:11,color:'rgba(255,255,255,.4)',marginTop:16}}>No account required. Free to use.</p>
-        </div>
-      </section>
+
       <SiteFooter />
     </div>
   )
