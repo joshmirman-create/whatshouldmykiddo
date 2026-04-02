@@ -39,8 +39,14 @@ Respond with ONLY a JSON object. No text before or after. No markdown:
 
 const GIFT_PROMPT = `You are a children's gift recommendation expert. Recommend the single best gift for this child.
 
+RULES:
+1. The main gift should be a specific, tangible product (toy, kit, game, art supply, etc.)
+2. Always include a book recommendation — this can be ANY format: picture book, graphic novel, comic, activity book, pop-up book, coloring book, magazine subscription, young adult novel, joke book, choose-your-own-adventure, field guide, anything. Match it to their age and interests. Encourage literacy naturally.
+3. Include 4 alternatives — one of the alternatives should always be a book or reading-related gift.
+4. Be specific. "Minecraft Handbook" is better than "a gaming book."
+
 Respond with ONLY a JSON object. No text before or after:
-{"gift_name":"Specific product","tagline":"Why perfect","why_theyll_love_it":"2-3 sentences specific to interests and age","price_range":"$25-40","amazon_search":"search term","what_parents_say":"2-3 sentence summary of what parents generally report. Write as genuine summary not fake quote.","age_appropriateness":"one sentence","alternatives":[{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"}]}`
+{"gift_name":"Specific product","tagline":"Why perfect","why_theyll_love_it":"2-3 sentences specific to interests and age","price_range":"$25-40","amazon_search":"search term","what_parents_say":"2-3 sentence summary of what parents generally report. Write as genuine summary not fake quote.","age_appropriateness":"one sentence","book":{"title":"Real book title","author":"Real author name","why":"one sentence why this book fits this child","type":"picture book / graphic novel / activity book / etc"},"alternatives":[{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"}]}`
 
 const AGE_GROUPS = [
   {v:'0-1',l:'0-1',e:'🍼',d:'Infant'},{v:'2-3',l:'2-3',e:'🐣',d:'Toddler'},
@@ -310,10 +316,19 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
             <p style={{fontSize:'clamp(15px,2vw,17px)',color:T.gray,margin:'0 0 28px',lineHeight:1.6,maxWidth:480}}>
               Tell us your kid's age, what they love, and what you have at home. We build a personalized activity in just a few minutes. No shopping, no prep, no stress.
             </p>
-            <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:20,flexDirection:window.innerWidth<500?'column':'row',alignItems:window.innerWidth<500?'stretch':'center'}}>
+            <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:24,flexDirection:window.innerWidth<500?'column':'row',alignItems:window.innerWidth<500?'stretch':'center'}}>
               <Btn size="lg" onClick={onStart}>✨ Build an activity for my kid</Btn>
               {savedProfile && <Btn size="lg" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none'}}>Use saved profile</Btn>}
-              <Btn size="md" variant="outline" onClick={onGift}>🎁 Find a gift instead</Btn>
+            </div>
+            <div style={{background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:T.r,padding:'14px 16px',marginBottom:20,cursor:'pointer'}} onClick={onGift}>
+              <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
+                <span style={{fontSize:24}}>🎁</span>
+                <div style={{flex:1,minWidth:200}}>
+                  <div style={{fontWeight:800,fontSize:14,color:T.charcoal,fontFamily:F,marginBottom:2}}>Looking for a gift idea instead?</div>
+                  <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>Tell us their age and what they love. Works great for grandparents, family friends, or that kid whose party is this weekend and all you know is they're into Super Mario.</div>
+                </div>
+                <Btn size="sm" variant="gold" onClick={onGift} style={{flexShrink:0}}>🎁 Find a gift →</Btn>
+              </div>
             </div>
             <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
               {[['⚡','Quick to set up'],['🎯','Personalized for your child'],['📦','No shopping required']].map(([e,l])=>(
@@ -326,52 +341,28 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
 
       </section>
 
-      {/* Need it now — urgency chips */}
-      <section style={{padding:'36px 20px 40px',background:T.white,borderBottom:`1px solid ${T.border}`}}>
-        <div style={{maxWidth:900,margin:'0 auto'}}>
-          <p style={{fontSize:12,fontWeight:800,color:T.grayLight,letterSpacing:1.5,textTransform:'uppercase',marginBottom:14,fontFamily:F}}>What do you need right now?</p>
-          <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+      {/* Quick jump strip — one compact section */}
+      <section style={{padding:'20px 20px',background:T.white,borderBottom:`1px solid ${T.border}`}}>
+        <div style={{maxWidth:1000,margin:'0 auto'}}>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+            <span style={{fontSize:11,fontWeight:800,color:T.grayLight,letterSpacing:1,textTransform:'uppercase',fontFamily:F,whiteSpace:'nowrap',marginRight:4}}>Quick jump:</span>
             {[
-              {e:'⚡',l:'15-Minute Fix',href:'/quick-15-minute-activities-for-kids'},
-              {e:'🌧️',l:'Rainy Day',href:'/rainy-day-activities-for-kids'},
-              {e:'🛋️',l:'Sick Day',href:'/sick-day-activities-for-kids'},
-              {e:'☁️',l:'Quiet Time',href:'/quiet-activities-for-kids'},
-              {e:'🎒',l:'After School',href:'/after-school-activities-for-kids'},
-              {e:'🏠',l:'Stuck Inside',href:'/indoor-activities-for-kids'},
-              {e:'✅',l:'Low Mess',href:'/low-mess-activities-for-kids'},
-            ].map(c=>(
-              <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:7,background:T.grayPale,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'8px 16px',textDecoration:'none',fontSize:13,fontWeight:700,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap',transition:'all .15s'}}
-                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
-                onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.charcoal}}>
-                <span>{c.e}</span>{c.l}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* What do you have at home — materials chips */}
-      <section style={{padding:'36px 20px 40px',background:T.cream,borderBottom:`1px solid ${T.border}`}}>
-        <div style={{maxWidth:900,margin:'0 auto'}}>
-          <p style={{fontSize:12,fontWeight:800,color:T.grayLight,letterSpacing:1.5,textTransform:'uppercase',marginBottom:14,fontFamily:F}}>What do you have at home right now?</p>
-          <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
-            {[
+              {e:'⚡',l:'15 min',href:'/quick-15-minute-activities-for-kids'},
+              {e:'🌧️',l:'Rainy day',href:'/rainy-day-activities-for-kids'},
+              {e:'🛋️',l:'Sick day',href:'/sick-day-activities-for-kids'},
+              {e:'☁️',l:'Quiet time',href:'/quiet-activities-for-kids'},
+              {e:'🎒',l:'After school',href:'/after-school-activities-for-kids'},
               {e:'📦',l:'Cardboard',href:'/activities-with-cardboard'},
-              {e:'✏️',l:'Crayons & Paper',href:'/activities-with-crayons-and-paper'},
-              {e:'🎨',l:'Easy Crafts',href:'/easy-crafts-for-kids-at-home'},
-              {e:'🧺',l:'Laundry Basket',href:'/quick-15-minute-activities-for-kids'},
-              {e:'✂️',l:'Scissors & Tape',href:'/easy-crafts-for-kids-at-home'},
-              {e:'🖊️',l:'Just Paper',href:'/activities-with-crayons-and-paper'},
+              {e:'✏️',l:'Crayons',href:'/activities-with-crayons-and-paper'},
+              {e:'✅',l:'Low mess',href:'/low-mess-activities-for-kids'},
             ].map(c=>(
-              <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:7,background:T.white,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'8px 16px',textDecoration:'none',fontSize:13,fontWeight:700,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap',transition:'all .15s'}}
+              <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:5,background:T.grayPale,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'5px 12px',textDecoration:'none',fontSize:12,fontWeight:700,color:T.gray,fontFamily:F,whiteSpace:'nowrap'}}
                 onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
-                onMouseOut={e=>{e.currentTarget.style.background=T.white;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.charcoal}}>
+                onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.gray}}>
                 <span>{c.e}</span>{c.l}
               </a>
             ))}
-            <button onClick={onStart} style={{display:'flex',alignItems:'center',gap:7,background:T.green,border:'none',borderRadius:50,padding:'8px 16px',fontSize:13,fontWeight:700,color:'#fff',fontFamily:F,cursor:'pointer',whiteSpace:'nowrap'}}>
-              ✨ Something else — build it
-            </button>
+            <button onClick={onStart} style={{display:'flex',alignItems:'center',gap:5,background:T.green,border:'none',borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,color:'#fff',fontFamily:F,cursor:'pointer',whiteSpace:'nowrap'}}>✨ Build something custom</button>
           </div>
         </div>
       </section>
@@ -996,6 +987,30 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
             </div>
           </Card>
         )}
+        {gift.book && (
+          <Card style={{padding:'16px 18px',marginBottom:14,border:'1.5px solid #E8D5FF'}}>
+            <SLabel color='#7C3AED'>📚 ALSO CONSIDER A BOOK</SLabel>
+            <div style={{display:'flex',gap:12,marginTop:8,alignItems:'flex-start'}}>
+              <img
+                src={`https://covers.openlibrary.org/b/title/${encodeURIComponent(gift.book.title)}-M.jpg`}
+                alt={gift.book.title}
+                onError={e=>{e.target.style.display='none'}}
+                style={{width:52,height:72,objectFit:'cover',borderRadius:6,flexShrink:0,boxShadow:'0 2px 8px rgba(0,0,0,.15)'}}
+              />
+              <div style={{flex:1,minWidth:0}}>
+                {gift.book.type && <div style={{fontSize:10,fontWeight:800,color:'#7C3AED',letterSpacing:.5,marginBottom:3,fontFamily:F,textTransform:'uppercase'}}>{gift.book.type}</div>}
+                <div style={{fontSize:14,fontWeight:900,fontFamily:F,color:T.charcoal,lineHeight:1.3,marginBottom:2}}>{gift.book.title}</div>
+                {gift.book.author && <div style={{fontSize:11,color:T.grayLight,marginBottom:5}}>by {gift.book.author}</div>}
+                <div style={{fontSize:12,color:'#5B21B6',lineHeight:1.5,fontStyle:'italic',marginBottom:10}}>{gift.book.why}</div>
+                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                  <Btn size="sm" href={AMZN(`${gift.book.title} children book`)} target="_blank" style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Amazon</Btn>
+                  <Btn size="sm" href={BOOKSHOP(gift.book.title)} target="_blank" style={{background:'#1A1A2E',fontSize:11}}>Bookshop.org</Btn>
+                  <Btn size="sm" href={BAM(gift.book.title)} target="_blank" style={{background:'#CC0000',fontSize:11}}>Books-A-Million</Btn>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
         {/* Share gift ideas */}
         <Card style={{padding:'16px 18px',marginBottom:14}}>
           <SLabel color='#7C3AED'>SEND THESE IDEAS</SLabel>
@@ -1284,7 +1299,7 @@ export default function App() {
   const generateGift = useCallback(async (ans) => {
     setStage('loading'); setErrorMsg(''); startLoadAnim()
     try {
-      const result = await callAPI({model:'claude-sonnet-4-20250514',max_tokens:1200,system:GIFT_PROMPT,messages:[{role:'user',content:buildGiftMsg(ans)}]})
+      const result = await callAPI({model:'claude-sonnet-4-20250514',max_tokens:1600,system:GIFT_PROMPT,messages:[{role:'user',content:buildGiftMsg(ans)}]})
       clearInterval(timerRef.current); setGift(result); setStage('gift-result')
     } catch(e) { clearInterval(timerRef.current); setErrorMsg(e.message||'Something went wrong'); setStage('error') }
   }, [])
