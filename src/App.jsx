@@ -635,13 +635,23 @@ function ErrorView({ msg, onRetry, onBack }) {
 // ── SHARE SHEET ───────────────────────────────────────────────────────────────
 function ShareSheet({ activity, onCopy, onClose }) {
   const name = activity?.activity_name || 'this activity'
+  const tagline = activity?.tagline || ''
+  const duration = activity?.duration || ''
+  const steps = (activity?.steps||[]).slice(0,3).map((s,i)=>`${i+1}. ${s}`).join('\n')
+  const materials = (activity?.materials_checklist||activity?.materials_used||[]).slice(0,4).join(', ')
   const url = 'https://whatshouldmykiddo.com'
-  const msg = encodeURIComponent(`We just did "${name}" with things we already had at home and my kid LOVED it! Try whatshouldmykiddo.com`)
+
+  const richMsg = `🎨 ${name}\n${tagline}\n\n⏱ ${duration}${materials?`\n📦 You'll need: ${materials}`:''}\n\nSteps:\n${steps}${(activity?.steps||[]).length>3?'\n...and more':''}` +
+    `\n\nGenerated free at whatshouldmykiddo.com — it builds personalized activities around what your kid loves, using only what you have at home.`
+
+  const shortMsg = `🎨 "${name}" — ${tagline} (${duration}, using stuff you already have)\n\nGet your own at whatshouldmykiddo.com`
+
   const shareLinks = [
-    { label: 'Share on Facebook', icon: '📘', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${msg}`, color: '#1877F2' },
-    { label: 'Share on X / Twitter', icon: '🐦', href: `https://twitter.com/intent/tweet?text=${msg}`, color: '#000' },
-    { label: 'Share on WhatsApp', icon: '💬', href: `https://wa.me/?text=${msg}`, color: '#25D366' },
-    { label: 'Share via Instagram (copy text)', icon: '📸', href: null, color: '#E1306C', action: onCopy },
+    { label: 'Send on WhatsApp', icon: '💬', href: `https://wa.me/?text=${encodeURIComponent(richMsg)}`, color: '#25D366' },
+    { label: 'Send via text message', icon: '📱', href: `sms:?body=${encodeURIComponent(richMsg)}` , color: '#000' },
+    { label: 'Share on Facebook', icon: '📘', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(shortMsg)}`, color: '#1877F2' },
+    { label: 'Share on X / Twitter', icon: '🐦', href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shortMsg)}`, color: '#000' },
+    { label: 'Copy full activity text', icon: '📋', href: null, color: T.green, action: onCopy },
   ]
   return (
     <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:200,display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
@@ -818,6 +828,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                   src={`https://covers.openlibrary.org/b/title/${encodeURIComponent(book.title)}-M.jpg`}
                   alt={book.title}
                   onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
+                  onLoad={e=>{if(e.target.naturalWidth<=1){e.target.style.display='none';e.target.nextSibling.style.display='flex'}}}
                   style={{width:52,height:72,objectFit:'cover',borderRadius:6,flexShrink:0,boxShadow:'0 2px 8px rgba(0,0,0,.15)'}}
                 />
                 <div style={{width:52,height:72,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:6,display:'none',alignItems:'center',justifyContent:'center',fontSize:22,flexShrink:0}}>📖</div>
@@ -965,9 +976,11 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
               <img
                 src={`https://covers.openlibrary.org/b/title/${encodeURIComponent(gift.book.title)}-M.jpg`}
                 alt={gift.book.title}
-                onError={e=>{e.target.style.display='none'}}
+                onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex'}}
+                onLoad={e=>{if(e.target.naturalWidth<=1){e.target.style.display='none';e.target.nextSibling.style.display='flex'}}}
                 style={{width:52,height:72,objectFit:'cover',borderRadius:6,flexShrink:0,boxShadow:'0 2px 8px rgba(0,0,0,.15)'}}
               />
+              <div style={{width:52,height:72,background:'linear-gradient(135deg,#7C3AED,#A855F7)',borderRadius:6,display:'none',alignItems:'center',justifyContent:'center',fontSize:24,flexShrink:0}}>📖</div>
               <div style={{flex:1,minWidth:0}}>
                 {gift.book.type && <div style={{fontSize:10,fontWeight:800,color:'#7C3AED',letterSpacing:.5,marginBottom:3,fontFamily:F,textTransform:'uppercase'}}>{gift.book.type}</div>}
                 <div style={{fontSize:14,fontWeight:900,fontFamily:F,color:T.charcoal,lineHeight:1.3,marginBottom:2}}>{gift.book.title}</div>
