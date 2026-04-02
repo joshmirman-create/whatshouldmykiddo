@@ -71,7 +71,7 @@ footer span{font-size:12px;color:rgba(255,255,255,.4);font-family:'Montserrat',s
 @media(max-width:480px){.logo-full{display:none}.logo-short{display:inline}}
 .nav-link{font-family:'Montserrat','Trebuchet MS',system-ui,sans-serif;font-weight:700;font-size:13px;color:#4A5568;text-decoration:none;padding:6px 14px;white-space:nowrap;display:inline-block;border-bottom:2px solid transparent}
 .nav-link:hover{color:#2D6A4F;text-decoration:none;border-bottom-color:#2D6A4F}
-@media(max-width:520px){.nav-link{display:none}}
+@media(max-width:520px){.nav-link{display:none}.nav-link-mobile{display:inline-block}}
 .logo-short{display:none}
 </style>
 </head>
@@ -85,8 +85,9 @@ footer span{font-size:12px;color:rgba(255,255,255,.4);font-family:'Montserrat',s
     </a>
     <nav style="display:flex;align-items:center;gap:2px;flex-wrap:nowrap">
       <a href="/community" class="nav-link">Community</a>
-      <a href="/ready-made-ideas" class="nav-link">Ready-Made Ideas</a>
-      <a href="/" class="cta-btn" style="margin-left:12px">✨ Build</a>
+      <a href="/ready-made-ideas" class="nav-link nav-link-mobile">Ideas</a>
+      <a href="/#gift" class="nav-link nav-link-mobile">🎁 Gifts</a>
+      <a href="/" class="cta-btn" style="margin-left:8px">✨ Build</a>
     </nav>
   </div>
 </header>

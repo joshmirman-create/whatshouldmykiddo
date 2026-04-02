@@ -1262,6 +1262,7 @@ export default function App() {
     try { const s=localStorage.getItem('kid_profile_v4'); if(s)setSavedProfile(JSON.parse(s)) } catch {}
     try { const v=localStorage.getItem('voted_ids'); if(v)setVotedIds(new Set(JSON.parse(v))) } catch {}
     if (window.location.hash==='#admin') setIsAdmin(true)
+    if (window.location.hash==='#gift') { setMode('gift'); setStage('quiz'); setGiftStep(0); setActiveNav('generator') }
   }, [])
 
   const saveVoted = ids => { try { localStorage.setItem('voted_ids',JSON.stringify([...ids])) } catch {} }
