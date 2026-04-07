@@ -25,6 +25,7 @@ STRICT RULES:
 6. Age-appropriate.
 7. Pick ONE activity type from this list: ${ACTIVITY_TYPES}. Rotate variety widely. Never repeat the same format.
 8. Every material in the steps must have a clear stated purpose. No filler.
+8b. Steps must each do something DIFFERENT. Never write 4 steps that are all the same action with a different color, ingredient, or character. Each step should advance the activity — setup, execution, discovery, extension. A step that repeats the previous step with minor variation is a failed step.
 9. The activity is either a THING TO MAKE or a GAME TO PLAY. Not both muddled together.
 10. If an occasion is provided, theme the activity to it specifically.
 11. Books: ONLY include books if they genuinely enhance this specific activity — a story that connects to the theme, a reference that deepens the experience, or a read-aloud that fits naturally. Skip entirely for purely physical activities (freeze dance, obstacle course, sports games, active movement). When you do include books, provide 2-3 maximum — not 5. Every book must have a clear specific reason it belongs with this exact activity. A wrong author name is worse than no book at all.
@@ -169,7 +170,7 @@ function Pill({ children, color=T.green, bg=T.greenLight }) {
 }
 
 function Btn({ children, onClick, variant='primary', size='md', style:sx={}, disabled, href, target }) {
-  const base = {display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:F,fontWeight:800,borderRadius:50,border:'none',cursor:disabled?'not-allowed':'pointer',textDecoration:'none',transition:'all .15s',...sx}
+  const base = {display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:F,fontWeight:800,borderRadius:10,border:'none',cursor:disabled?'not-allowed':'pointer',textDecoration:'none',transition:'all .15s',...sx}
   const sizes = {sm:{padding:'7px 16px',fontSize:13},md:{padding:'11px 24px',fontSize:15},lg:{padding:'14px 32px',fontSize:16}}
   const variants = {
     primary:{background:T.green,color:'#fff'},dark:{background:T.charcoal,color:T.gold},
@@ -245,7 +246,7 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
         <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
           <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
           <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
-          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>✨ Build</Btn>
+          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>Build</Btn>
         </nav>
       </div>
     </header>
@@ -258,7 +259,7 @@ function HeroPreview() {
   return (
     <div style={{position:'relative',padding:'0 0 20px 20px'}}>
       <Card style={{padding:18,marginBottom:12,background:T.greenDark,border:'none',color:'#fff',boxShadow:'none'}}>
-        <div style={{fontSize:10,color:'rgba(255,255,255,.6)',fontWeight:700,letterSpacing:1,marginBottom:8,fontFamily:F}}>✨ HERE'S YOUR KID'S ACTIVITY!</div>
+        <div style={{fontSize:10,color:'rgba(255,255,255,.6)',fontWeight:700,letterSpacing:1,marginBottom:8,fontFamily:F}}>YOUR KID'S ACTIVITY</div>
         <div style={{display:'flex',alignItems:'flex-start',gap:10}}>
           <div style={{width:36,height:36,background:T.gold,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,flexShrink:0}}>🎨</div>
           <div>
@@ -312,7 +313,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
               Tell us your kid's age, what they love, and what you have at home. We build a personalized activity in just a few minutes. No shopping, no prep, no stress.
             </p>
             <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:24,flexDirection:window.innerWidth<500?'column':'row',alignItems:window.innerWidth<500?'stretch':'center'}}>
-              <Btn size="lg" onClick={onStart}>✨ Build an activity for my kid</Btn>
+              <Btn size="lg" onClick={onStart}>Build an activity for my kid</Btn>
               {savedProfile && <Btn size="lg" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none'}}>Use saved profile</Btn>}
             </div>
             <div style={{background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:T.r,padding:'14px 16px',marginBottom:20,cursor:'pointer'}} onClick={onGift}>
@@ -326,8 +327,8 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
               </div>
             </div>
             <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
-              {[['⚡','Quick to set up'],['🎯','Personalized for your child'],['📦','No shopping required']].map(([e,l])=>(
-                <div key={l} style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:T.gray,fontWeight:600,fontFamily:F}}><span>{e}</span>{l}</div>
+              {['Quick to set up','Personalized for your child','No shopping required'].map((l)=>(
+                <div key={l} style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:T.gray,fontWeight:600,fontFamily:F}}>{l}</div>
               ))}
             </div>
           </div>
@@ -357,7 +358,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
                 <span>{c.e}</span>{c.l}
               </a>
             ))}
-            <button onClick={onStart} style={{display:'flex',alignItems:'center',gap:5,background:T.green,border:'none',borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,color:'#fff',fontFamily:F,cursor:'pointer',whiteSpace:'nowrap'}}>✨ Build something custom</button>
+            <button onClick={onStart} style={{display:'flex',alignItems:'center',gap:5,background:T.green,border:'none',borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,color:'#fff',fontFamily:F,cursor:'pointer',whiteSpace:'nowrap'}}>Build something custom</button>
           </div>
         </div>
       </section>
@@ -580,7 +581,7 @@ function GeneratorShell({ step, setStep, answers, setAnswers, totalSteps, onGene
             <div style={{display:'flex',gap:10,marginTop:24,borderTop:`1px solid ${T.border}`,paddingTop:20}}>
               {step>0&&<Btn variant="subtleGray" onClick={handlePrev}>← Back</Btn>}
               <Btn id="next-btn" onClick={handleNext} style={{flex:1,opacity:canAdvance()?1:0.38,cursor:canAdvance()?'pointer':'default'}}>
-                {step<totalSteps-1?'Next →':'✨ Build my activity'}
+                {step<totalSteps-1?'Next →':'Build my activity'}
               </Btn>
             </div>
             <p style={{fontSize:11,color:T.grayLight,textAlign:'center',marginTop:12,lineHeight:1.6}}>Parents fill this out about their child · No children's data collected</p>
@@ -1011,7 +1012,7 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
           <SLabel color={T.green}>ALSO NEED SOMETHING TO DO TODAY?</SLabel>
           <p style={{margin:'4px 0 12px',fontSize:13,color:T.greenDark,lineHeight:1.5}}>Build a personalized activity based on their age, mood, and what you already have at home.</p>
           <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
-            <Btn size="sm" onClick={onActivity} style={{background:T.green}}>✨ Build an activity</Btn>
+            <Btn size="sm" onClick={onActivity} style={{background:T.green}}>Build an activity</Btn>
             <a href="/ready-made-ideas" style={{fontSize:12,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F}}>Or browse ready-made ideas →</a>
           </div>
         </Card>
@@ -1112,7 +1113,7 @@ function CommunityView({ posts, loading, votedIds, onUpvote, onRefresh, onBuild 
       <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:20,paddingTop:10,borderTop:`1px solid ${T.border}`}}>
         <span style={{fontSize:11,fontWeight:700,color:T.grayLight,alignSelf:'center',fontFamily:F,marginRight:2}}>SORT:</span>
         {[
-          {v:'newest',l:'✨ Newest'},
+          {v:'newest',l:'Newest'},
           {v:'most-loved',l:'🧡 Most loved'},
           {v:'fastest',l:'⚡ Fastest'},
           {v:'lowest-prep',l:'📦 Lowest prep'},
