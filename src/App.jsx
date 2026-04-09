@@ -230,26 +230,44 @@ function SiteFooter() {
 // ── HEADER ────────────────────────────────────────────────────────────────────
 function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
   return (
-    <header style={{background:T.white,borderBottom:`1.5px solid ${T.border}`,position:'sticky',top:0,zIndex:100,boxShadow:'0 1px 8px rgba(0,0,0,0.04)'}}>
-      <style>{`
-        .kNav{display:none}
-        @media(min-width:600px){.kNav{display:block}}
-        @media(max-width:480px){.kLogoFull{display:none !important}.kLogoShort{display:inline !important}}
-        .kLogoShort{display:none}
-      `}</style>
-      <div style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
-        <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
-          <span style={{fontSize:18}}>🎨</span>
-          <span className="kLogoFull" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
-          <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kid do?</span>
+    <>
+      <header style={{background:T.white,borderBottom:`1.5px solid ${T.border}`,position:'sticky',top:0,zIndex:100,boxShadow:'0 1px 8px rgba(0,0,0,0.04)'}}>
+        <style>{`
+          .kNav{display:none}
+          @media(min-width:600px){.kNav{display:block}}
+          @media(max-width:480px){.kLogoFull{display:none !important}.kLogoShort{display:inline !important}}
+          .kLogoShort{display:none}
+          .kBottomNav button,.kBottomNav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:8px 4px;text-decoration:none;line-height:1.2}
+          @media(max-width:599px){body{padding-bottom:68px}}
+        `}</style>
+        <div style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
+          <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
+            <span style={{fontSize:18}}>🎨</span>
+            <span className="kLogoFull" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
+            <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kid do?</span>
+          </button>
+          <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
+            <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
+            <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
+            <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>✨ Build</Btn>
+          </nav>
+        </div>
+      </header>
+      <nav className="kBottomNav" style={{position:'fixed',bottom:0,left:0,right:0,zIndex:200,background:T.white,borderTop:`1.5px solid ${T.border}`,boxShadow:'0 -2px 12px rgba(0,0,0,0.08)',display:'flex',paddingBottom:'env(safe-area-inset-bottom)'}}>
+        <button onClick={()=>onSwitch('community')} style={{color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray}}>
+          <span style={{fontSize:20}}>👥</span>Community
         </button>
-        <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
-          <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
-          <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
-          <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>Build</Btn>
-        </nav>
-      </div>
-    </header>
+        <a href="/ready-made-ideas" style={{color:T.gray}}>
+          <span style={{fontSize:20}}>💡</span>Ideas
+        </a>
+        <button onClick={()=>{onSwitch('generator');setTimeout(()=>{window.location.hash='gift'},50)}} style={{color:T.gray}}>
+          <span style={{fontSize:20}}>🎁</span>Gifts
+        </button>
+        <button onClick={onGeneratorClick} style={{color:T.green}}>
+          <span style={{fontSize:20}}>✨</span>Build
+        </button>
+      </nav>
+    </>
   )
 }
 
@@ -933,7 +951,8 @@ function GiftQuizView({ step, setStep, answers, setAnswers, onGenerate, onCancel
 // ── GIFT RESULT ────────────────────────────────────────────────────────────────
 function GiftResultView({ gift, answers, onNew, onActivity }) {
   const [copied, setCopied] = useState(false)
-  const shareText = `🎁 Gift idea for a ${answers.age} year old who loves ${answers.interests}:\n\n${gift.gift_name} (${gift.price_range})\n${gift.tagline}\n\nMore ideas & alternatives: ${window.location.origin}`
+  const shareUrl = window.location.href
+  const shareText = `🎁 Gift idea for a ${answers.age} year old who loves ${answers.interests}:\n\n${gift.gift_name} (${gift.price_range})\n${gift.tagline}\n\nSee full result + more ideas: ${shareUrl}`
   const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
   const smsUrl = `sms:?body=${encodeURIComponent(shareText)}`
   const copyGift = () => { navigator.clipboard.writeText(shareText).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000)}) }
@@ -1264,6 +1283,16 @@ export default function App() {
     try { const v=localStorage.getItem('voted_ids'); if(v)setVotedIds(new Set(JSON.parse(v))) } catch {}
     if (window.location.hash==='#admin') setIsAdmin(true)
     if (window.location.hash==='#gift') { setMode('gift'); setStage('quiz'); setGiftStep(0); setActiveNav('generator') }
+    // Auto-generate gift from shared URL e.g. #gift?age=4-5&interests=dinosaurs&budget=$20-35
+    if (window.location.hash.startsWith('#gift?')) {
+      const params = new URLSearchParams(window.location.hash.slice(6))
+      const a = params.get('age')||'', i = params.get('interests')||'', b = params.get('budget')||'', o = params.get('occasion')||''
+      if (a && i && b) {
+        const ans = {age:a, interests:i, budget:b, occasion:o}
+        setGiftAnswers(ans); setMode('gift'); setActiveNav('generator')
+        setTimeout(() => generateGift(ans), 100)
+      }
+    }
   }, [])
 
   const saveVoted = ids => { try { localStorage.setItem('voted_ids',JSON.stringify([...ids])) } catch {} }
@@ -1287,6 +1316,9 @@ export default function App() {
     try {
       const result = await callAPI({model:'claude-sonnet-4-20250514',max_tokens:1600,system:GIFT_PROMPT,messages:[{role:'user',content:buildGiftMsg(ans)}]})
       clearInterval(timerRef.current); setGift(result); setStage('gift-result')
+      // Push shareable URL
+      const p = new URLSearchParams({age:ans.age, interests:ans.interests, budget:ans.budget, ...(ans.occasion?{occasion:ans.occasion}:{})})
+      if (history.pushState) history.pushState(null,'',`#gift?${p.toString()}`)
     } catch(e) { clearInterval(timerRef.current); setErrorMsg(e.message||'Something went wrong'); setStage('error') }
   }, [])
 

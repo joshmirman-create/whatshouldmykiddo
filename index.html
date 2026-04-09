@@ -114,17 +114,98 @@
   </head>
   <body>
     <div id="root">
-      <!-- Static fallback for Google AdSense crawler -->
-      <main style="font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;">
-        <h1>What Should My Kid Do Today?</h1>
-        <p>Get a personalized at-home activity for your child in just a few minutes. Tell us your kid's age, interests, and what you have at home — we build a tailored activity using only what you already have. No shopping, no prep, no stress.</p>
-        <h2>How it works</h2>
-        <p>Answer a few quick questions about your child's age, interests, energy level, and available materials. Our activity builder creates a personalized activity instantly, along with book recommendations and optional product suggestions to make it even more special.</p>
-        <h2>Activities for every occasion</h2>
-        <p>Whether it's a rainy day, after school, a holiday, a birthday party, or just a regular afternoon, we have personalized activity ideas for kids of all ages — from infants to teens.</p>
-        <h2>Perfect for busy parents</h2>
-        <p>No more staring at a blank wall wondering what to do. Get a screen-friendly or hands-on activity idea in seconds, built around what your kid loves and what you already have at home.</p>
-      </main>
+      <!-- Static content for crawlers — React mounts over this -->
+      <style>
+        .sk-header{background:#fff;border-bottom:1.5px solid #E8E8E0;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.04)}
+        .sk-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#1A1A2E;text-decoration:none;display:flex;align-items:center;gap:6px}
+        .sk-nav{display:flex;gap:4px;align-items:center}
+        .sk-nav a{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:#718096;text-decoration:none;padding:6px 10px;white-space:nowrap}
+        .sk-btn{background:#2D6A4F;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;padding:8px 16px;border-radius:50px;text-decoration:none;white-space:nowrap}
+        .sk-hero{background:linear-gradient(135deg,#2D6A4F,#40916C);padding:48px 20px 40px;text-align:center;color:#fff}
+        .sk-hero h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(26px,6vw,44px);margin:0 0 14px;line-height:1.15}
+        .sk-hero p{font-size:clamp(15px,3vw,18px);opacity:.9;margin:0 0 24px;line-height:1.6;max-width:560px;margin-left:auto;margin-right:auto}
+        .sk-hero-btn{background:#fff;color:#2D6A4F;font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;padding:14px 32px;border-radius:50px;text-decoration:none;display:inline-block}
+        .sk-body{max-width:720px;margin:0 auto;padding:32px 20px}
+        .sk-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0}
+        .sk-card{background:#fff;border-radius:16px;padding:18px;border:1.5px solid #E8E8E0}
+        .sk-card h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:#1A1A2E;margin:8px 0 6px}
+        .sk-card p{font-size:13px;color:#718096;line-height:1.5;margin:0}
+        .sk-card .sk-icon{font-size:28px}
+        .sk-section-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:#1A1A2E;margin:32px 0 8px}
+        .sk-section-sub{font-size:14px;color:#718096;line-height:1.6;margin:0 0 16px}
+        .sk-links{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 32px}
+        .sk-links a{background:#F0F4F0;color:#2D6A4F;font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;padding:8px 14px;border-radius:50px;text-decoration:none}
+        .sk-faq{border-top:1.5px solid #E8E8E0;padding-top:24px;margin-top:24px}
+        .sk-faq h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:#1A1A2E;margin:0 0 6px}
+        .sk-faq p{font-size:13px;color:#718096;line-height:1.6;margin:0 0 20px}
+        .sk-footer{background:#1A1A2E;padding:20px;text-align:center;font-size:12px;color:rgba(255,255,255,.4);font-family:'Montserrat',sans-serif}
+        @media(max-width:599px){.sk-nav a{display:none}.sk-nav .sk-btn{display:inline-block}}
+      </style>
+
+      <header class="sk-header">
+        <a href="/" class="sk-logo"><span>🎨</span><span>what should my kid do?</span></a>
+        <nav class="sk-nav">
+          <a href="/community">Community</a>
+          <a href="/ready-made-ideas">Ideas</a>
+          <a href="/#gift">🎁 Gifts</a>
+          <a href="/" class="sk-btn">✨ Build</a>
+        </nav>
+      </header>
+
+      <div class="sk-hero">
+        <h1>Turn "I'm bored" into their new favorite activity</h1>
+        <p>Tell us your kid's age, what they love, and what you have at home. We build a personalized activity in minutes — no shopping, no prep, no stress.</p>
+        <a href="/" class="sk-hero-btn">✨ Build an activity — it's free</a>
+      </div>
+
+      <div class="sk-body">
+        <h2 class="sk-section-title">Built for the moments that sneak up on you</h2>
+        <p class="sk-section-sub">Rainy days. Long afternoons. The hour before dinner when everyone is restless. We help you find something that works right now, using what you already have.</p>
+
+        <div class="sk-cards">
+          <div class="sk-card"><div class="sk-icon">🌧️</div><h3>Rainy day activities</h3><p>Indoor ideas that actually hold their attention, from fort building to kitchen science experiments.</p></div>
+          <div class="sk-card"><div class="sk-icon">⚡</div><h3>15-minute activities</h3><p>When you have a short window. Shadow puppets, scavenger hunts, Laundry Day Hoops — all under 15 minutes.</p></div>
+          <div class="sk-card"><div class="sk-icon">🎁</div><h3>Gift finder</h3><p>Tell us what a kid is into and we'll find the perfect gift. Takes 60 seconds, works for any age and budget.</p></div>
+          <div class="sk-card"><div class="sk-icon">🎨</div><h3>Personalized to your kid</h3><p>Obsessed with dinosaurs? Mario? Bluey? Every activity connects to what they love right now.</p></div>
+        </div>
+
+        <h2 class="sk-section-title">Browse by occasion</h2>
+        <p class="sk-section-sub">Every page has full activity steps, parent tips, and variations — ready to use right now.</p>
+        <div class="sk-links">
+          <a href="/rainy-day-activities-for-kids">🌧️ Rainy day</a>
+          <a href="/after-school-activities-for-kids">🏫 After school</a>
+          <a href="/quick-15-minute-activities-for-kids">⚡ 15 minutes</a>
+          <a href="/indoor-activities-for-kids">🏠 Indoor activities</a>
+          <a href="/quiet-activities-for-kids">🤫 Quiet time</a>
+          <a href="/sick-day-activities-for-kids">🤒 Sick day</a>
+          <a href="/low-mess-activities-for-kids">✨ Low mess</a>
+          <a href="/easy-crafts-for-kids-at-home">🎨 Easy crafts</a>
+        </div>
+
+        <h2 class="sk-section-title">Browse by age</h2>
+        <div class="sk-links">
+          <a href="/activities-for-2-year-olds">👶 2 year olds</a>
+          <a href="/activities-for-3-year-olds">🐣 3 year olds</a>
+          <a href="/activities-for-4-year-olds">🌱 4 year olds</a>
+          <a href="/activities-for-5-year-olds">⭐ 5 year olds</a>
+          <a href="/activities-for-6-year-olds">🚀 6 year olds</a>
+          <a href="/activities-for-8-year-olds">🔬 8 year olds</a>
+          <a href="/activities-for-10-year-olds">🎯 10 year olds</a>
+        </div>
+
+        <div class="sk-faq">
+          <h3>What do I need to use this?</h3>
+          <p>Just tell us your child's age, what they're into right now, and what materials you have at home. We build a personalized activity using only what you already have — no shopping required.</p>
+          <h3>How long does it take?</h3>
+          <p>A few minutes to get your activity. Most activities keep kids engaged for 20 to 60 minutes.</p>
+          <h3>What ages does this work for?</h3>
+          <p>Infants through teens. The generator tailors suggestions to the specific age so a 2-year-old and a 10-year-old get completely different activities.</p>
+          <h3>Is this free?</h3>
+          <p>Yes, completely free. We suggest optional products and books, but every activity works with what you already have at home.</p>
+        </div>
+      </div>
+
+      <footer class="sk-footer">© Zen Monkey Studios · whatshouldmykiddo.com &nbsp;·&nbsp; COPPA compliant · No children's data collected</footer>
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
