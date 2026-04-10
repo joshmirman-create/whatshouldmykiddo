@@ -248,7 +248,8 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
           </button>
           <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
             <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
-            <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ready-Made Ideas</a>
+            <a href="/activities" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Activities</a>
+            <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ideas</a>
             <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>✨ Build</Btn>
           </nav>
         </div>
@@ -257,12 +258,12 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
         <button onClick={()=>onSwitch('community')} style={{color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray}}>
           <span style={{fontSize:20}}>👥</span>Community
         </button>
-        <a href="/ready-made-ideas" style={{color:T.gray}}>
-          <span style={{fontSize:20}}>💡</span>Ideas
+        <a href="/activities" style={{color:T.gray}}>
+          <span style={{fontSize:20}}>⚡</span>Activities
         </a>
-        <button onClick={()=>{onSwitch('generator');setTimeout(()=>{window.location.hash='gift'},50)}} style={{color:T.gray}}>
+        <a href="/#gift" style={{color:T.gray}}>
           <span style={{fontSize:20}}>🎁</span>Gifts
-        </button>
+        </a>
         <button onClick={onGeneratorClick} style={{color:T.green}}>
           <span style={{fontSize:20}}>✨</span>Build
         </button>
