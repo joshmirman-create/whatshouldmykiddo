@@ -235,18 +235,17 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
         <style>{`
           .kNav{display:none}
           @media(min-width:600px){.kNav{display:block}}
-          @media(max-width:480px){.kLogoFull{display:none !important}.kLogoShort{display:inline !important}}
-          .kLogoShort{display:none}
           .kBottomNav button,.kBottomNav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;padding:8px 4px;text-decoration:none;line-height:1.2}
           @media(max-width:599px){body{padding-bottom:68px}}
+          @media(max-width:599px){.kHeader{flex-direction:column;align-items:flex-start;height:auto;padding:10px 14px;gap:6px}}
+          @media(max-width:599px){.kHeaderNav{width:100%;justify-content:flex-start}}
         `}</style>
-        <div style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
+        <div className="kHeader" style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
           <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
             <span style={{fontSize:18}}>🎨</span>
-            <span className="kLogoFull" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
-            <span className="kLogoShort" style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>kid do?</span>
+            <span style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
           </button>
-          <nav style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
+          <nav className="kHeaderNav" style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
             <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
             <a href="/activities" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Activities</a>
             <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ideas</a>
