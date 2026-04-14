@@ -241,7 +241,7 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
           @media(max-width:599px){.kHeaderNav{width:100%;justify-content:flex-start}}
         `}</style>
         <div className="kHeader" style={{maxWidth:1200,margin:'0 auto',padding:'0 14px',display:'flex',alignItems:'center',justifyContent:'space-between',height:52}}>
-          <button onClick={()=>onSwitch('generator')} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
+          <button onClick={()=>{onSwitch('generator');onGeneratorClick()}} style={{background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
             <span style={{fontSize:18}}>🎨</span>
             <span style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
           </button>
@@ -260,8 +260,7 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
         <a href="/activities" style={{color:T.gray}}>
           <span style={{fontSize:20}}>⚡</span>Activities
         </a>
-        <a href="/#gift" style={{color:T.gray}}>
-          <span style={{fontSize:20}}>🎁</span>Gifts
+        <a href="/#gift" style={{color:T.gray}}>          <span style={{fontSize:20}}>🎁</span>Gifts
         </a>
         <button onClick={onGeneratorClick} style={{color:T.green}}>
           <span style={{fontSize:20}}>✨</span>Build
@@ -1283,6 +1282,11 @@ export default function App() {
     try { const v=localStorage.getItem('voted_ids'); if(v)setVotedIds(new Set(JSON.parse(v))) } catch {}
     if (window.location.hash==='#admin') setIsAdmin(true)
     if (window.location.hash==='#gift') { setMode('gift'); setStage('quiz'); setGiftStep(0); setActiveNav('generator') }
+    // Support ?gift=1 from static pages (/#gift gets eaten by router)
+    if (new URLSearchParams(window.location.search).get('gift') === '1') {
+      setMode('gift'); setStage('quiz'); setGiftStep(0); setActiveNav('generator')
+      if (history.replaceState) history.replaceState(null,'',location.pathname)
+    }
     // Auto-generate gift from shared URL e.g. #gift?age=4-5&interests=dinosaurs&budget=$20-35
     if (window.location.hash.startsWith('#gift?')) {
       const params = new URLSearchParams(window.location.hash.slice(6))
