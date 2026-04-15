@@ -333,7 +333,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
               <Btn size="lg" onClick={onStart}>Build an activity for my kid</Btn>
               {savedProfile && <Btn size="lg" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none'}}>Use saved profile</Btn>}
             </div>
-            <div style={{background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:T.r,padding:'14px 16px',marginBottom:20,cursor:'pointer'}} onClick={onGift}>
+            <div style={{background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:T.r,padding:'14px 16px',marginBottom:12,cursor:'pointer'}} onClick={onGift}>
               <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
                 <span style={{fontSize:24}}>🎁</span>
                 <div style={{flex:1,minWidth:200}}>
@@ -341,6 +341,16 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
                   <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>Tell us their age and what they love. Works great for grandparents, family friends, or that kid whose party is this weekend and all you know is they're into Super Mario.</div>
                 </div>
                 <Btn size="sm" variant="gold" onClick={onGift} style={{flexShrink:0}}>🎁 Find a gift →</Btn>
+              </div>
+            </div>
+            <div style={{background:'#F0F4FF',border:'1.5px solid #C7D2FE',borderRadius:T.r,padding:'14px 16px',marginBottom:20}}>
+              <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
+                <span style={{fontSize:24}}>🎀</span>
+                <div style={{flex:1,minWidth:200}}>
+                  <div style={{fontWeight:800,fontSize:14,color:'#1B2B4B',fontFamily:F,marginBottom:2}}>Need a gift for someone older?</div>
+                  <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>Partners, parents, teachers, anyone. Tell us one thing you know about them and we'll find the perfect gift.</div>
+                </div>
+                <a href="https://www.whatgiftshouldibuy.com" target="_blank" rel="noopener" style={{flexShrink:0,background:'#1B2B4B',color:'#fff',borderRadius:50,padding:'8px 16px',fontSize:12,fontWeight:800,fontFamily:F,textDecoration:'none',whiteSpace:'nowrap'}}>Find a gift →</a>
               </div>
             </div>
             <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
