@@ -1,5 +1,7 @@
 // Netlify function: /api/amazon-image
-// Amazon Creators API v3 — LwA OAuth2, JSON body, lowerCamelCase payload
+// Uses amazon-creators-api npm package (official SDK wrapper)
+
+const { ApiClient, SearchItemsRequestContent, SearchItemsResource, DefaultApi } = require('amazon-creators-api')
 
 exports.handler = async (event) => {
   const cors = {
@@ -23,115 +25,47 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: 'Amazon credentials not configured' }) }
     }
 
-    // Step 1: Get LwA access token — v3 uses JSON body with credentials in payload
-    const tokenRes = await fetch('https://api.amazon.com/auth/o2/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        grant_type: 'client_credentials',
-        client_id: clientId,
-        client_secret: clientSecret,
-      }),
-    })
+    const apiClient = new ApiClient()
+    apiClient.credentialId = clientId
+    apiClient.credentialSecret = clientSecret
+    apiClient.version = '3.1'
 
-    const tokenData = await tokenRes.json()
+    const api = new DefaultApi(apiClient)
+    const marketplace = 'www.amazon.com'
 
-    if (!tokenData.access_token) {
-      // Try form-encoded as fallback (v2 style)
-      const tokenRes2 = await fetch('https://api.amazon.com/auth/o2/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          grant_type: 'client_credentials',
-          client_id: clientId,
-          client_secret: clientSecret,
-        }).toString(),
-      })
-      const tokenData2 = await tokenRes2.json()
-      if (!tokenData2.access_token) {
-        return { statusCode: 401, headers: cors, body: JSON.stringify({ error: 'Auth failed', detail: tokenData2 }) }
-      }
-      tokenData.access_token = tokenData2.access_token
+    const searchRequest = new SearchItemsRequestContent(partnerTag, keywords)
+    searchRequest.resources = [
+      'images.primary.large',
+      'images.primary.medium',
+      'itemInfo.title',
+      'offersV2.listings.price',
+    ].map(r => SearchItemsResource.constructFromObject(r))
+    searchRequest.itemCount = 1
+
+    const response = await api.searchItems(marketplace, searchRequest)
+
+    if (!response?.searchResult?.items?.length) {
+      return { statusCode: 404, headers: cors, body: JSON.stringify({ error: 'No results found' }) }
     }
 
-    const accessToken = tokenData.access_token
+    const item = response.searchResult.items[0]
+    const imageUrl = item.images?.primary?.large?.url || item.images?.primary?.medium?.url || null
+    const title = item.itemInfo?.title?.displayValue || null
+    const price = item.offersV2?.listings?.[0]?.price?.displayAmount || null
+    const asin = item.asin || null
+    const productUrl = asin ? `https://www.amazon.com/dp/${asin}?tag=${partnerTag}` : null
 
-    // Step 2: Call Creators API SearchItems
-    // v3 uses lowerCamelCase keys and different endpoint
-    const payload = {
-      keywords: keywords,
-      partnerTag: partnerTag,
-      partnerType: 'Associates',
-      marketplace: 'www.amazon.com',
-      resources: [
-        'Images.Primary.Large',
-        'Images.Primary.Medium',
-        'ItemInfo.Title',
-        'Offers.Listings.Price',
-      ],
-      itemCount: 1,
+    return {
+      statusCode: 200,
+      headers: cors,
+      body: JSON.stringify({ image_url: imageUrl, title, price, asin, product_url: productUrl }),
     }
-
-    // Try Creators API endpoint first
-    const searchRes = await fetch('https://affiliate-program.amazon.com/paapi5/searchitems', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(payload),
-    })
-
-    const data = await searchRes.json()
-
-    // If Creators API endpoint fails, try legacy webservices endpoint
-    if (!searchRes.ok || !data.SearchResult?.Items?.length) {
-      const searchRes2 = await fetch('https://webservices.amazon.com/paapi5/searchitems', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          // Also try PascalCase for legacy endpoint
-          Keywords: keywords,
-          PartnerTag: partnerTag,
-          PartnerType: 'Associates',
-          Marketplace: 'www.amazon.com',
-          Resources: [
-            'Images.Primary.Large',
-            'Images.Primary.Medium',
-            'ItemInfo.Title',
-            'Offers.Listings.Price',
-          ],
-          ItemCount: 1,
-        }),
-      })
-      const data2 = await searchRes2.json()
-      if (!searchRes2.ok || !data2.SearchResult?.Items?.length) {
-        return { statusCode: 404, headers: cors, body: JSON.stringify({ error: 'No results', detail1: data, detail2: data2 }) }
-      }
-      return buildResponse(data2, partnerTag, cors)
-    }
-
-    return buildResponse(data, partnerTag, cors)
 
   } catch (e) {
-    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: e.message }) }
-  }
-}
-
-function buildResponse(data, partnerTag, cors) {
-  const item = data.SearchResult.Items[0]
-  const imageUrl = item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL || null
-  const title = item.ItemInfo?.Title?.DisplayValue || null
-  const price = item.Offers?.Listings?.[0]?.Price?.DisplayAmount || null
-  const asin = item.ASIN || null
-  const productUrl = asin ? `https://www.amazon.com/dp/${asin}?tag=${partnerTag}` : null
-
-  return {
-    statusCode: 200,
-    headers: cors,
-    body: JSON.stringify({ image_url: imageUrl, title, price, asin, product_url: productUrl }),
+    return {
+      statusCode: 500,
+      headers: cors,
+      body: JSON.stringify({ error: e.message, stack: e.stack?.slice(0, 500) })
+    }
   }
 }
