@@ -1,7 +1,25 @@
 // Netlify function: /api/amazon-image
-// Uses amazon-creators-api npm package (official SDK wrapper)
+// Direct implementation using official Amazon Creators API v3 auth
+// Scope: creatorsapi::default, LWA JSON body, version 3.1
 
-const { ApiClient, SearchItemsRequestContent, SearchItemsResource, DefaultApi } = require('amazon-creators-api')
+const https = require('https')
+
+function httpsPost(hostname, path, headers, body) {
+  return new Promise((resolve, reject) => {
+    const data = typeof body === 'string' ? body : JSON.stringify(body)
+    const req = https.request({ hostname, path, method: 'POST', headers }, (res) => {
+      let raw = ''
+      res.on('data', chunk => raw += chunk)
+      res.on('end', () => {
+        try { resolve({ status: res.statusCode, body: JSON.parse(raw) }) }
+        catch(e) { resolve({ status: res.statusCode, body: raw }) }
+      })
+    })
+    req.on('error', reject)
+    req.write(data)
+    req.end()
+  })
+}
 
 exports.handler = async (event) => {
   const cors = {
@@ -25,30 +43,55 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: 'Amazon credentials not configured' }) }
     }
 
-    const apiClient = new ApiClient()
-    apiClient.credentialId = clientId
-    apiClient.credentialSecret = clientSecret
-    apiClient.version = '3.1'
+    // Step 1: Get LWA token — v3.1 uses JSON body with scope creatorsapi::default
+    const tokenRes = await httpsPost(
+      'api.amazon.com',
+      '/auth/o2/token',
+      { 'Content-Type': 'application/json' },
+      {
+        grant_type: 'client_credentials',
+        client_id: clientId,
+        client_secret: clientSecret,
+        scope: 'creatorsapi::default'
+      }
+    )
 
-    const api = new DefaultApi(apiClient)
-    const marketplace = 'www.amazon.com'
-
-    const searchRequest = new SearchItemsRequestContent(partnerTag, keywords)
-    searchRequest.resources = [
-      'images.primary.large',
-      'images.primary.medium',
-      'itemInfo.title',
-      'offersV2.listings.price',
-    ].map(r => SearchItemsResource.constructFromObject(r))
-    searchRequest.itemCount = 1
-
-    const response = await api.searchItems(marketplace, searchRequest)
-
-    if (!response?.searchResult?.items?.length) {
-      return { statusCode: 404, headers: cors, body: JSON.stringify({ error: 'No results found' }) }
+    if (!tokenRes.body.access_token) {
+      return { statusCode: 401, headers: cors, body: JSON.stringify({ error: 'Token failed', detail: tokenRes.body }) }
     }
 
-    const item = response.searchResult.items[0]
+    const token = tokenRes.body.access_token
+
+    // Step 2: Call Creators API SearchItems
+    const payload = {
+      partnerTag: partnerTag,
+      partnerType: 'Associates',
+      keywords: keywords,
+      searchIndex: 'All',
+      itemCount: 1,
+      resources: [
+        'images.primary.large',
+        'images.primary.medium',
+        'itemInfo.title',
+        'offersV2.listings.price',
+      ]
+    }
+
+    const searchRes = await httpsPost(
+      'creatorsapi.amazon',
+      '/paapi5/searchitems',
+      {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      payload
+    )
+
+    if (searchRes.status !== 200 || !searchRes.body.searchResult?.items?.length) {
+      return { statusCode: 404, headers: cors, body: JSON.stringify({ error: 'No results', detail: searchRes.body }) }
+    }
+
+    const item = searchRes.body.searchResult.items[0]
     const imageUrl = item.images?.primary?.large?.url || item.images?.primary?.medium?.url || null
     const title = item.itemInfo?.title?.displayValue || null
     const price = item.offersV2?.listings?.[0]?.price?.displayAmount || null
@@ -62,10 +105,6 @@ exports.handler = async (event) => {
     }
 
   } catch (e) {
-    return {
-      statusCode: 500,
-      headers: cors,
-      body: JSON.stringify({ error: e.message, stack: e.stack?.slice(0, 500) })
-    }
+    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: e.message }) }
   }
 }
