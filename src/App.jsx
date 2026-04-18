@@ -1,6 +1,93 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 
 // ── DESIGN TOKENS ──────────────────────────────────────────────────────────────
+
+
+// Activity illustration library
+// Specific slugs map to their custom illustrations
+// Categories map to generic illustrations as we build them out
+const ACTIVITY_IMAGES = {
+  // Specific activity illustrations (uploaded to /images/)
+  'color-scavenger-hunt': '/images/color-scavenger-hunt.png',
+  'avalanche': '/images/avalanche.png',
+  'laundry-day-hoops': '/images/laundry-day-hoops.png',
+  'stuffy-hideout': '/images/stuffy-hideout.png',
+  'mt-mom-and-dad': '/images/mt-mom-and-dad.png',
+  'tape-spider-web': '/images/tape-spider-web.png',
+  'tattoo-parlor': '/images/tattoo-parlor.png',
+  // Category illustrations (to be built out in /images/activities/)
+  'art-drawing': '/images/activities/art-drawing.png',
+  'building-construction': '/images/activities/building-construction.png',
+  'science-experiment': '/images/activities/science-experiment.png',
+  'active-physical': '/images/activities/active-physical.png',
+  'music-dance': '/images/activities/music-dance.png',
+  'sensory-messy': '/images/activities/sensory-messy.png',
+  'pretend-play': '/images/activities/pretend-play.png',
+  'puzzle-logic': '/images/activities/puzzle-logic.png',
+  'outdoor': '/images/activities/outdoor.png',
+  'cooking-baking': '/images/activities/cooking-baking.png',
+  'reading-storytelling': '/images/activities/reading-storytelling.png',
+  'water-play': '/images/activities/water-play.png',
+  'nature-exploration': '/images/activities/nature-exploration.png',
+  'craft-making': '/images/activities/craft-making.png',
+  'social-game': '/images/activities/social-game.png',
+}
+const getActivityImage = (category) => ACTIVITY_IMAGES[category] || null
+
+const GIFT_IMAGES = {
+  'lego-building': '/images/gifts/lego-building.png',
+  'art-supplies': '/images/gifts/art-supplies.png',
+  'science-stem': '/images/gifts/science-stem.png',
+  'outdoor-sports': '/images/gifts/outdoor-sports.png',
+  'books-reading': '/images/gifts/books-reading.png',
+  'board-games-puzzles': '/images/gifts/board-games-puzzles.png',
+  'music-instruments': '/images/gifts/music-instruments.png',
+  'pretend-play-dolls': '/images/gifts/pretend-play-dolls.png',
+  'tech-gadgets': '/images/gifts/tech-gadgets.png',
+  'collectibles-figures': '/images/gifts/collectibles-figures.png',
+  'fashion-accessories': '/images/gifts/fashion-accessories.png',
+  'cooking-baking': '/images/gifts/cooking-baking.png',
+  'animals-nature': '/images/gifts/animals-nature.png',
+  'creative-writing-journal': '/images/gifts/creative-writing-journal.png',
+  'retro-vintage-gaming': '/images/gifts/retro-vintage-gaming.png',
+  'sports-equipment': '/images/gifts/sports-equipment.png',
+  'bath-spa-wellness': '/images/gifts/bath-spa-wellness.png',
+  'garden-plants': '/images/gifts/garden-plants.png',
+  'pets-animals': '/images/gifts/pets-animals.png',
+  'travel-adventure': '/images/gifts/travel-adventure.png',
+  'cars-vehicles': '/images/gifts/cars-vehicles.png',
+  'space-astronomy': '/images/gifts/space-astronomy.png',
+  'dinosaurs-fossils': '/images/gifts/dinosaurs-fossils.png',
+  'superheroes-comics': '/images/gifts/superheroes-comics.png',
+  'princess-fairy': '/images/gifts/princess-fairy.png',
+  'construction-tools': '/images/gifts/construction-tools.png',
+  'dance-performance': '/images/gifts/dance-performance.png',
+  'yoga-mindfulness': '/images/gifts/yoga-mindfulness.png',
+  'photography-art': '/images/gifts/photography-art.png',
+  'magic-tricks': '/images/gifts/magic-tricks.png',
+  'coding-robotics': '/images/gifts/coding-robotics.png',
+  'slime-sensory': '/images/gifts/slime-sensory.png',
+  'candles-home': '/images/gifts/candles-home.png',
+  'jewelry-making': '/images/gifts/jewelry-making.png',
+  'fitness-exercise': '/images/gifts/fitness-exercise.png',
+  'camping-outdoors': '/images/gifts/camping-outdoors.png',
+  'ocean-beach': '/images/gifts/ocean-beach.png',
+  'theater-drama': '/images/gifts/theater-drama.png',
+  'mystery-detective': '/images/gifts/mystery-detective.png',
+  'fantasy-dragons': '/images/gifts/fantasy-dragons.png',
+  'history-culture': '/images/gifts/history-culture.png',
+  'math-logic': '/images/gifts/math-logic.png',
+  'languages-culture': '/images/gifts/languages-culture.png',
+  'charity-giving': '/images/gifts/charity-giving.png',
+  'experience-tickets': '/images/gifts/experience-tickets.png',
+  'subscription-box': '/images/gifts/subscription-box.png',
+  'handmade-craft': '/images/gifts/handmade-craft.png',
+  'food-snacks': '/images/gifts/food-snacks.png',
+  'plants-terrarium': '/images/gifts/plants-terrarium.png',
+  'card-games': '/images/gifts/card-games.png',
+}
+const getGiftImage = (category) => GIFT_IMAGES[category] || null
+
 const T = {
   green:'#2D6A4F', greenDark:'#1B4332', greenMid:'#40916C', greenLight:'#D8F3DC', greenPale:'#F0FAF4',
   gold:'#F4A261', goldLight:'#FFF3E0', cream:'#FAFAF5', white:'#FFFFFF', charcoal:'#1A2E1A',
@@ -36,7 +123,7 @@ STRICT RULES:
 16. Include setup_time (e.g. "5 min") and cleanup_level (Low/Medium/High).
 
 Respond with ONLY a JSON object. No text before or after. No markdown:
-{"activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}],"kiwico_angle":"one sentence"}`
+{"image_category":"best matching category from: art-drawing, building-construction, science-experiment, active-physical, music-dance, sensory-messy, pretend-play, puzzle-logic, outdoor, cooking-baking, reading-storytelling, water-play, nature-exploration, craft-making, social-game","activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}],"kiwico_angle":"one sentence"}`
 
 const GIFT_PROMPT = `You are a children's gift recommendation expert. Recommend the single best gift for this child.
 
@@ -47,7 +134,7 @@ RULES:
 4. Be specific. "Minecraft Handbook" is better than "a gaming book."
 
 Respond with ONLY a JSON object. No text before or after:
-{"gift_name":"Specific product","tagline":"Why perfect","why_theyll_love_it":"2-3 sentences specific to interests and age","price_range":"$25-40","amazon_search":"search term","amazon_asin":"real Amazon ASIN like B08XYZ123 — search Amazon to find the actual product, or null if unsure","what_parents_say":"2-3 sentence summary of what parents generally report. Write as genuine summary not fake quote.","age_appropriateness":"one sentence","book":{"title":"Real book title","author":"Real author name","why":"one sentence why this book fits this child","type":"picture book / graphic novel / activity book / etc"},"alternatives":[{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"}]}`
+{"gift_name":"Specific product","tagline":"Why perfect","why_theyll_love_it":"2-3 sentences specific to interests and age","price_range":"$25-40","image_category":"one of: lego-building, art-supplies, science-stem, outdoor-sports, books-reading, board-games-puzzles, music-instruments, pretend-play-dolls, tech-gadgets, collectibles-figures, fashion-accessories, cooking-baking, animals-nature, creative-writing-journal, retro-vintage-gaming, sports-equipment, bath-spa-wellness, garden-plants, pets-animals, travel-adventure, cars-vehicles, space-astronomy, dinosaurs-fossils, superheroes-comics, princess-fairy, construction-tools, dance-performance, yoga-mindfulness, photography-art, magic-tricks, coding-robotics, slime-sensory, candles-home, jewelry-making, fitness-exercise, camping-outdoors, ocean-beach, theater-drama, mystery-detective, fantasy-dragons, history-culture, math-logic, languages-culture, charity-giving, experience-tickets, subscription-box, handmade-craft, food-snacks, plants-terrarium, card-games","amazon_search":"very specific search term — include brand, model, and key descriptor so the first Amazon result is the exact product","what_parents_say":"2-3 sentence summary of what parents generally report. Write as genuine summary not fake quote.","age_appropriateness":"one sentence","book":{"title":"Real book title","author":"Real author name","why":"one sentence why this book fits this child","type":"picture book / graphic novel / activity book / etc"},"alternatives":[{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"}]}`
 
 const AGE_GROUPS = [
   {v:'0-1',l:'0-1',e:'🍼',d:'Infant'},{v:'2-3',l:'2-3',e:'🐣',d:'Toddler'},
@@ -679,6 +766,18 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
         </div>
       </div>
 
+      {/* Activity illustration */}
+      {getActivityImage(act.image_category) && (
+        <div style={{maxWidth:700,margin:'-8px auto 0',padding:'0 14px'}}>
+          <img
+            src={getActivityImage(act.image_category)}
+            alt={act.activity_name}
+            style={{width:'100%',borderRadius:16,display:'block',boxShadow:'0 4px 24px rgba(0,0,0,.12)'}}
+            onError={e=>e.target.style.display='none'}
+          />
+        </div>
+      )}
+
       {/* Two-column layout */}
       <div style={{maxWidth:1100,margin:'0 auto',padding:'20px 14px',display:'grid',gridTemplateColumns:window.innerWidth>=900?'1fr 340px':'1fr',gap:16}}>
 
@@ -949,8 +1048,8 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
           <p style={{margin:'0 0 10px',fontSize:14,color:T.charcoal,lineHeight:1.6}}>{gift.why_theyll_love_it}</p>
           {gift.age_appropriateness && <p style={{margin:'0 0 14px',fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
           {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
-          {productImage && <img src={productImage} alt={gift.gift_name} style={{width:'100%',maxHeight:200,objectFit:'contain',borderRadius:10,marginBottom:14,background:'#fff'}} onError={e=>e.target.style.display='none'}/>}
-          <Btn href={productUrl || (gift.amazon_asin ? `https://www.amazon.com/dp/${gift.amazon_asin}?tag=zenmonkeystud-20` : AMZN(gift.amazon_search))} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
+          {(productImage || getGiftImage(gift.image_category)) && <img src={productImage || getGiftImage(gift.image_category)} alt={gift.gift_name} style={{width:'100%',maxHeight:200,objectFit:'contain',borderRadius:10,marginBottom:14,background:'#fff'}} onError={e=>e.target.style.display='none'}/>}
+          <Btn href={productUrl || AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
         {gift.alternatives?.length > 0 && (
           <Card style={{padding:'16px 18px',marginBottom:14}}>
