@@ -47,7 +47,7 @@ RULES:
 4. Be specific. "Minecraft Handbook" is better than "a gaming book."
 
 Respond with ONLY a JSON object. No text before or after:
-{"gift_name":"Specific product","tagline":"Why perfect","why_theyll_love_it":"2-3 sentences specific to interests and age","price_range":"$25-40","amazon_search":"search term","what_parents_say":"2-3 sentence summary of what parents generally report. Write as genuine summary not fake quote.","age_appropriateness":"one sentence","book":{"title":"Real book title","author":"Real author name","why":"one sentence why this book fits this child","type":"picture book / graphic novel / activity book / etc"},"alternatives":[{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"}]}`
+{"gift_name":"Specific product","tagline":"Why perfect","why_theyll_love_it":"2-3 sentences specific to interests and age","price_range":"$25-40","amazon_search":"search term","amazon_asin":"real Amazon ASIN like B08XYZ123 — search Amazon to find the actual product, or null if unsure","what_parents_say":"2-3 sentence summary of what parents generally report. Write as genuine summary not fake quote.","age_appropriateness":"one sentence","book":{"title":"Real book title","author":"Real author name","why":"one sentence why this book fits this child","type":"picture book / graphic novel / activity book / etc"},"alternatives":[{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"},{"name":"Alt","reason":"why fit","search":"search"}]}`
 
 const AGE_GROUPS = [
   {v:'0-1',l:'0-1',e:'🍼',d:'Infant'},{v:'2-3',l:'2-3',e:'🐣',d:'Toddler'},
@@ -950,7 +950,7 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
           {gift.age_appropriateness && <p style={{margin:'0 0 14px',fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
           {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
           {productImage && <img src={productImage} alt={gift.gift_name} style={{width:'100%',maxHeight:200,objectFit:'contain',borderRadius:10,marginBottom:14,background:'#fff'}} onError={e=>e.target.style.display='none'}/>}
-          <Btn href={productUrl || AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
+          <Btn href={productUrl || (gift.amazon_asin ? `https://www.amazon.com/dp/${gift.amazon_asin}?tag=zenmonkeystud-20` : AMZN(gift.amazon_search))} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
         {gift.alternatives?.length > 0 && (
           <Card style={{padding:'16px 18px',marginBottom:14}}>
