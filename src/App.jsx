@@ -322,7 +322,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
           </div>
           <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:50,padding:'8px 18px',cursor:'pointer'}} onClick={onGift}>
             <span style={{fontSize:16}}>🎁</span>
-            <span style={{fontSize:13,fontWeight:700,color:'#C05621',fontFamily:F}}>Looking for a gift instead?</span>
+            <span style={{fontSize:13,fontWeight:700,color:'#C05621',fontFamily:F}}>Need to figure out a personal gift instead?</span>
             <span style={{fontSize:12,color:'#C05621',fontWeight:700}}>→</span>
           </div>
         </div>
