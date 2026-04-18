@@ -78,7 +78,7 @@ const MATERIAL_CATS = [
   {id:'cardboard',l:'Cardboard & boxes',desc:'cardboard boxes, toilet paper rolls, egg cartons',e:'📦'},
   {id:'tape',l:'Tape',desc:'scotch tape, masking tape, or duct tape',e:'🩹'},
   {id:'glue-scissors',l:'Glue & scissors',desc:'glue stick, white glue, and scissors',e:'✂️'},
-  {id:'aluminum-foil',l:'Aluminum foil',desc:'aluminum foil',e:'✨'},
+  {id:'aluminum-foil',l:'Aluminum foil',desc:'aluminum foil',e:'🛠️'},
   {id:'dried-food',l:'Pantry items',desc:'dried pasta, beans, rice, flour, salt, sugar',e:'🫙'},
   {id:'baking',l:'Baking supplies',desc:'baking soda, vinegar, food coloring, cornstarch',e:'🧪'},
   {id:'fabric-yarn',l:'Fabric & yarn',desc:'fabric scraps, yarn, string, ribbon, old socks',e:'🧵'},
@@ -246,25 +246,17 @@ function SiteHeader({ activeNav, onSwitch, onGeneratorClick }) {
             <span style={{fontSize:13,fontWeight:900,color:T.charcoal,fontFamily:F,whiteSpace:'nowrap'}}>what should my kid do?</span>
           </button>
           <nav className="kHeaderNav" style={{display:'flex',gap:2,alignItems:'center',flexShrink:0}}>
-            <button onClick={()=>onSwitch('community')} className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray,borderBottom:activeNav==='community'||activeNav==='bestof'?`2px solid ${T.green}`:'2px solid transparent',fontFamily:F,whiteSpace:'nowrap'}}>Community</button>
             <a href="/activities" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Activities</a>
-            <a href="/ready-made-ideas" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>Ideas</a>
-            <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>✨ Build</Btn>
+            <a href="https://www.whatgiftshouldibuy.com" className="kNav" style={{background:'none',border:'none',cursor:'pointer',padding:'6px 10px',fontSize:13,fontWeight:700,color:'#718096',fontFamily:"'Montserrat',sans-serif",whiteSpace:'nowrap',textDecoration:'none'}}>🎁 Gifts</a>
+            <Btn size="sm" onClick={onGeneratorClick} style={{marginLeft:8,whiteSpace:'nowrap'}}>🛠️ Build</Btn>
           </nav>
         </div>
       </header>
       <nav className="kBottomNav" style={{position:'fixed',bottom:0,left:0,right:0,zIndex:200,background:T.white,borderTop:`1.5px solid ${T.border}`,boxShadow:'0 -2px 12px rgba(0,0,0,0.08)',display:'flex',paddingBottom:'env(safe-area-inset-bottom)'}}>
-        <button onClick={()=>onSwitch('community')} style={{color:activeNav==='community'||activeNav==='bestof'?T.green:T.gray}}>
-          <span style={{fontSize:20}}>👥</span>Community
-        </button>
-        <a href="/activities" style={{color:T.gray}}>
-          <span style={{fontSize:20}}>⚡</span>Activities
-        </a>
-        <a href="/#gift" style={{color:T.gray}}>          <span style={{fontSize:20}}>🎁</span>Gifts
-        </a>
-        <button onClick={onGeneratorClick} style={{color:T.green}}>
-          <span style={{fontSize:20}}>✨</span>Build
-        </button>
+          <a href="/activities" className="kBottomNavBtn"><span style={{fontSize:20}}>⚡</span>Activities</a>
+          <a href="/saved" className="kBottomNavBtn"><span style={{fontSize:20}}>❤️</span>Saved</a>
+          <a href="https://www.whatgiftshouldibuy.com" className="kBottomNavBtn"><span style={{fontSize:20}}>🎁</span>Gifts</a>
+          <button onClick={onGeneratorClick} className="kBottomNavBtn" style={{color:T.green,fontWeight:900,flex:1}}><span style={{fontSize:20}}>🛠️</span>Build</button>
       </nav>
     </>
   )
@@ -316,145 +308,85 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
   return (
     <div>
       {/* Hero */}
-      <section style={{background:T.cream,padding:'40px 16px 48px'}}>
-        <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:window.innerWidth>=900?'1fr 1fr':'1fr',gap:32,alignItems:'center'}}>
-          <div>
-            <div style={{display:'inline-flex',alignItems:'center',gap:6,background:T.goldLight,border:`1px solid ${T.gold}`,borderRadius:50,padding:'5px 14px',marginBottom:18}}>
-              <span style={{fontSize:14}}>⭐</span>
-              <span style={{fontSize:12,fontWeight:700,color:'#C05621',fontFamily:F}}>Personalized fun for kids at home</span>
-            </div>
-            <h1 style={{fontSize:'clamp(24px,6vw,50px)',fontWeight:900,color:T.charcoal,margin:'0 0 14px',lineHeight:1.15,fontFamily:F}}>
-              Turn <em style={{color:T.green,fontStyle:'normal'}}>"I'm bored!"</em><br/>into their new favorite activity
-            </h1>
-            <p style={{fontSize:'clamp(15px,2vw,17px)',color:T.gray,margin:'0 0 28px',lineHeight:1.6,maxWidth:480}}>
-              Tell us your kid's age, what they love, and what you have at home. We build a personalized activity in just a few minutes. No shopping, no prep, no stress.
-            </p>
-            <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:24,flexDirection:window.innerWidth<500?'column':'row',alignItems:window.innerWidth<500?'stretch':'center'}}>
-              <Btn size="lg" onClick={onStart}>Build an activity for my kid</Btn>
-              {savedProfile && <Btn size="lg" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none'}}>Use saved profile</Btn>}
-            </div>
-            <div style={{background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:T.r,padding:'14px 16px',marginBottom:12,cursor:'pointer'}} onClick={onGift}>
-              <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
-                <span style={{fontSize:24}}>🎁</span>
-                <div style={{flex:1,minWidth:200}}>
-                  <div style={{fontWeight:800,fontSize:14,color:T.charcoal,fontFamily:F,marginBottom:2}}>Looking for a gift idea instead?</div>
-                  <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>Tell us their age and what they love. Works great for grandparents, family friends, or that kid whose party is this weekend and all you know is they're into Super Mario.</div>
-                </div>
-                <Btn size="sm" variant="gold" onClick={onGift} style={{flexShrink:0}}>🎁 Find a gift →</Btn>
-              </div>
-            </div>
-            <div style={{background:'#F0F4FF',border:'1.5px solid #C7D2FE',borderRadius:T.r,padding:'14px 16px',marginBottom:20}}>
-              <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
-                <span style={{fontSize:24}}>🎀</span>
-                <div style={{flex:1,minWidth:200}}>
-                  <div style={{fontWeight:800,fontSize:14,color:'#1B2B4B',fontFamily:F,marginBottom:2}}>Need a gift for someone older?</div>
-                  <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>Partners, parents, teachers, anyone. Tell us one thing you know about them and we'll find the perfect gift.</div>
-                </div>
-                <a href="https://www.whatgiftshouldibuy.com" target="_blank" rel="noopener" style={{flexShrink:0,background:'#1B2B4B',color:'#fff',borderRadius:50,padding:'8px 16px',fontSize:12,fontWeight:800,fontFamily:F,textDecoration:'none',whiteSpace:'nowrap'}}>Find a gift →</a>
-              </div>
-            </div>
-            <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
-              {['Quick to set up','Personalized for your child','No shopping required'].map((l)=>(
-                <div key={l} style={{display:'flex',alignItems:'center',gap:5,fontSize:13,color:T.gray,fontWeight:600,fontFamily:F}}>{l}</div>
-              ))}
-            </div>
+      <section style={{background:T.cream,padding:'40px 16px 36px'}}>
+        <div style={{maxWidth:600,margin:'0 auto',textAlign:'center'}}>
+          <h1 style={{fontSize:'clamp(26px,6vw,48px)',fontWeight:900,color:T.charcoal,margin:'0 0 12px',lineHeight:1.15,fontFamily:F}}>
+            Turn <em style={{color:T.green,fontStyle:'normal'}}>"I'm bored!"</em> into their new favorite activity
+          </h1>
+          <p style={{fontSize:'clamp(14px,2vw,16px)',color:T.gray,margin:'0 0 24px',lineHeight:1.6,maxWidth:440,marginLeft:'auto',marginRight:'auto'}}>
+            Tell us your kid's age, what they love, and what you have at home. We build something they can start right now.
+          </p>
+          <div style={{display:'flex',gap:10,justifyContent:'center',flexWrap:'wrap',marginBottom:20}}>
+            <Btn size="lg" onClick={onStart}>🛠️ Build an activity for my kid</Btn>
+            {savedProfile && <Btn size="lg" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none'}}>Use saved profile</Btn>}
           </div>
-          {window.innerWidth >= 900 && <HeroPreview />}
-        </div>
-
-      </section>
-
-      {/* Quick jump strip — one compact section */}
-      <section style={{padding:'20px 20px',background:T.white,borderBottom:`1px solid ${T.border}`}}>
-        <div style={{maxWidth:1000,margin:'0 auto'}}>
-          <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
-            <span style={{fontSize:11,fontWeight:800,color:T.grayLight,letterSpacing:1,textTransform:'uppercase',fontFamily:F,whiteSpace:'nowrap',marginRight:4}}>Quick jump:</span>
-            {[
-              {e:'⚡',l:'15 min',href:'/quick-15-minute-activities-for-kids'},
-              {e:'🌧️',l:'Rainy day',href:'/rainy-day-activities-for-kids'},
-              {e:'🛋️',l:'Sick day',href:'/sick-day-activities-for-kids'},
-              {e:'☁️',l:'Quiet time',href:'/quiet-activities-for-kids'},
-              {e:'🎒',l:'After school',href:'/after-school-activities-for-kids'},
-              {e:'📦',l:'Cardboard',href:'/activities-with-cardboard'},
-              {e:'✏️',l:'Crayons',href:'/activities-with-crayons-and-paper'},
-              {e:'✅',l:'Low mess',href:'/low-mess-activities-for-kids'},
-            ].map(c=>(
-              <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:5,background:T.grayPale,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'5px 12px',textDecoration:'none',fontSize:12,fontWeight:700,color:T.gray,fontFamily:F,whiteSpace:'nowrap'}}
-                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
-                onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.gray}}>
-                <span>{c.e}</span>{c.l}
-              </a>
-            ))}
-            <button onClick={onStart} style={{display:'flex',alignItems:'center',gap:5,background:T.green,border:'none',borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,color:'#fff',fontFamily:F,cursor:'pointer',whiteSpace:'nowrap'}}>Build something custom</button>
+          <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:50,padding:'8px 18px',cursor:'pointer'}} onClick={onGift}>
+            <span style={{fontSize:16}}>🎁</span>
+            <span style={{fontSize:13,fontWeight:700,color:'#C05621',fontFamily:F}}>Looking for a gift instead?</span>
+            <span style={{fontSize:12,color:'#C05621',fontWeight:700}}>→</span>
           </div>
         </div>
       </section>
 
-      {/* Ready-Made Ideas — featured cards */}
-      <section style={{padding:'52px 20px',background:T.white}}>
-        <div style={{maxWidth:1000,margin:'0 auto'}}>
-          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:10,marginBottom:24}}>
+      {/* Quick jump */}
+      <section style={{padding:'14px 20px',background:T.white,borderBottom:`1px solid ${T.border}`}}>
+        <div style={{maxWidth:700,margin:'0 auto',display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',justifyContent:'center'}}>
+          {[
+            {e:'⚡',l:'15 min',href:'/quick-15-minute-activities-for-kids'},
+            {e:'🌧️',l:'Rainy day',href:'/rainy-day-activities-for-kids'},
+            {e:'😴',l:'Tired parents',href:'/low-prep-activities-for-tired-parents'},
+            {e:'📵',l:'Screen free',href:'/screen-free-activities-for-kids'},
+            {e:'🔢',l:'By age',href:'/activities'},
+          ].map(c=>(
+            <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:5,background:T.grayPale,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'6px 14px',textDecoration:'none',fontSize:13,fontWeight:700,color:T.gray,fontFamily:F,whiteSpace:'nowrap'}}
+              onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
+              onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.gray}}>
+              <span>{c.e}</span>{c.l}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Collections */}
+      <section style={{padding:'40px 20px 48px',background:T.white}}>
+        <div style={{maxWidth:900,margin:'0 auto'}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:10,marginBottom:20}}>
             <div>
-              <h2 style={{fontSize:'clamp(20px,4vw,28px)',fontWeight:900,color:T.charcoal,margin:'0 0 4px',fontFamily:F}}>Ready-Made Ideas</h2>
+              <h2 style={{fontSize:'clamp(18px,4vw,24px)',fontWeight:900,color:T.charcoal,margin:'0 0 2px',fontFamily:F}}>Ready-made collections</h2>
               <p style={{fontSize:13,color:T.gray,margin:0}}>No quiz needed. Pick one and go.</p>
             </div>
-            <a href="/ready-made-ideas" style={{fontSize:13,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F}}>See all collections →</a>
+            <a href="/activities" style={{fontSize:13,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F}}>Browse all →</a>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:14,marginBottom:20}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:12,marginBottom:28}}>
             {[
-              {e:'⚡',title:'15-Minute Activities',desc:'Eight fully written activities you can start in under a minute. Full steps, no shopping.',href:'/quick-15-minute-activities-for-kids',tag:'8 activities'},
-              {e:'🌧️',title:'Rainy Day Activities',desc:'When the weather kills every plan. Activities that work inside with what you have.',href:'/rainy-day-activities-for-kids',tag:'All ages'},
-              {e:'🎒',title:'After School Wind-Down',desc:'The hour after school is hard. These help kids decompress without more screen time.',href:'/after-school-activities-for-kids',tag:'Ages 4-12'},
-              {e:'☁️',title:'Quiet Time Activities',desc:'Low-energy, genuinely absorbing activities for when you need the volume turned down.',href:'/quiet-activities-for-kids',tag:'No mess'},
+              {e:'⚡',title:'15-Minute Activities',desc:'Start in under a minute. Full steps, no shopping.',href:'/quick-15-minute-activities-for-kids',tag:'8 activities'},
+              {e:'🌧️',title:'Rainy Day',desc:'Stuck inside? Activities that work with what you have.',href:'/rainy-day-activities-for-kids',tag:'All ages'},
+              {e:'😴',title:'Tired Parent Approved',desc:'You lie down. They stay busy. Everyone wins.',href:'/low-prep-activities-for-tired-parents',tag:'Low prep'},
+              {e:'☁️',title:'Quiet Time',desc:'Low energy, genuinely absorbing, no mess.',href:'/quiet-activities-for-kids',tag:'No mess'},
+              {e:'🎒',title:'After School',desc:'That hard hour between school and dinner.',href:'/after-school-activities-for-kids',tag:'Ages 4-12'},
+              {e:'📵',title:'Screen Free',desc:'Activities worth putting the tablet down for.',href:'/screen-free-activities-for-kids',tag:'Any age'},
             ].map(c=>(
-              <a key={c.title} href={c.href} style={{background:T.grayPale,borderRadius:T.r,padding:'20px',textDecoration:'none',color:T.charcoal,display:'block',border:`1.5px solid ${T.border}`,transition:'all .15s'}}
+              <a key={c.title} href={c.href} style={{background:T.grayPale,borderRadius:T.r,padding:'18px',textDecoration:'none',color:T.charcoal,display:'block',border:`1.5px solid ${T.border}`,transition:'all .15s'}}
                 onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green}}
                 onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border}}>
-                <div style={{fontSize:28,marginBottom:10}}>{c.e}</div>
-                <div style={{fontSize:12,fontWeight:700,color:T.green,marginBottom:6,fontFamily:F,letterSpacing:.5}}>{c.tag}</div>
-                <div style={{fontSize:15,fontWeight:800,color:T.charcoal,marginBottom:6,fontFamily:F,lineHeight:1.3}}>{c.title}</div>
+                <div style={{fontSize:26,marginBottom:8}}>{c.e}</div>
+                <div style={{fontSize:11,fontWeight:700,color:T.green,marginBottom:5,fontFamily:F,letterSpacing:.5}}>{c.tag}</div>
+                <div style={{fontSize:14,fontWeight:800,color:T.charcoal,marginBottom:5,fontFamily:F,lineHeight:1.3}}>{c.title}</div>
                 <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>{c.desc}</div>
               </a>
             ))}
           </div>
           <div style={{textAlign:'center'}}>
-            <a href="/ready-made-ideas" style={{fontSize:13,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F,padding:'10px 20px',border:`1.5px solid ${T.green}`,borderRadius:50,display:'inline-block'}}>Browse all ready-made collections →</a>
+            <Btn size="lg" onClick={onStart}>🛠️ Build a personalized activity →</Btn>
           </div>
         </div>
       </section>
 
-
-      {/* Examples */}
-      <section style={{padding:'64px 20px',background:T.cream}}>
-        <div style={{maxWidth:1000,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:36}}>
-            <h2 style={{fontSize:'clamp(20px,4vw,30px)',fontWeight:900,color:T.charcoal,margin:'0 0 8px',fontFamily:F}}>Example activities</h2>
-            <p style={{fontSize:14,color:T.gray,margin:0}}>Here's a taste of what we build for families like yours.</p>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:14,marginBottom:24}}>
-            {SAMPLE_ACTIVITIES.map((a,i)=>(
-              <Card key={i} style={{padding:20}}>
-                <div style={{display:'flex',gap:8,marginBottom:10,flexWrap:'wrap'}}>
-                  <Pill bg={T.greenLight} color={T.green}>{a.age}</Pill>
-                  <Pill bg={T.goldLight} color='#C05621'>{a.time}</Pill>
-                  <Pill bg={T.grayPale} color={T.gray}>{a.energy}</Pill>
-                </div>
-                <div style={{fontSize:15,fontWeight:800,color:T.charcoal,marginBottom:6,fontFamily:F,lineHeight:1.3}}>{a.title}</div>
-                <div style={{fontSize:13,color:T.gray,lineHeight:1.5}}>{a.summary}</div>
-              </Card>
-            ))}
-          </div>
-          <div style={{textAlign:'center'}}><Btn size="lg" onClick={onStart}>Build your own activity →</Btn></div>
-        </div>
-      </section>
-
-
-      <SiteFooter />
     </div>
   )
 }
 
-// ── GENERATOR PREVIEW SIDEBAR ──────────────────────────────────────────────────
+
 function PreviewSidebar({ answers:a }) {
   const ag = AGE_GROUPS.find(x=>x.v===a.age)
   const occ = OCCASIONS.find(x=>x.v===a.occasion)
@@ -960,6 +892,41 @@ function GiftQuizView({ step, setStep, answers, setAnswers, onGenerate, onCancel
 // ── GIFT RESULT ────────────────────────────────────────────────────────────────
 function GiftResultView({ gift, answers, onNew, onActivity }) {
   const [copied, setCopied] = useState(false)
+  const [productImage, setProductImage] = React.useState(null)
+  const [productUrl, setProductUrl] = React.useState(null)
+  const [altImages, setAltImages] = React.useState({})
+
+  React.useEffect(() => {
+    if (!gift?.amazon_search) return
+    fetch('/api/amazon-image', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ keywords: gift.amazon_search })
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (d.image_url) setProductImage(d.image_url)
+      if (d.product_url) setProductUrl(d.product_url)
+    })
+    .catch(() => {})
+  }, [gift?.amazon_search])
+
+  React.useEffect(() => {
+    if (!gift?.alternatives?.length) return
+    gift.alternatives.forEach((alt, i) => {
+      if (!alt.search) return
+      fetch('/api/amazon-image', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ keywords: alt.search })
+      })
+      .then(r => r.json())
+      .then(d => {
+        if (d.image_url) setAltImages(prev => ({...prev, [i]: { image_url: d.image_url, product_url: d.product_url }}))
+      })
+      .catch(() => {})
+    })
+  }, [gift?.alternatives])
   const shareUrl = window.location.href
   const shareText = `🎁 Gift idea for a ${answers.age} year old who loves ${answers.interests}:\n\n${gift.gift_name} (${gift.price_range})\n${gift.tagline}\n\nSee full result + more ideas: ${shareUrl}`
   const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
@@ -982,7 +949,8 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
           <p style={{margin:'0 0 10px',fontSize:14,color:T.charcoal,lineHeight:1.6}}>{gift.why_theyll_love_it}</p>
           {gift.age_appropriateness && <p style={{margin:'0 0 14px',fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
           {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
-          <Btn href={AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
+          {productImage && <img src={productImage} alt={gift.gift_name} style={{width:'100%',maxHeight:200,objectFit:'contain',borderRadius:10,marginBottom:14,background:'#fff'}} onError={e=>e.target.style.display='none'}/>}
+          <Btn href={productUrl || AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
         {gift.alternatives?.length > 0 && (
           <Card style={{padding:'16px 18px',marginBottom:14}}>
@@ -990,9 +958,13 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
             <div style={{display:'grid',gap:10}}>
             {gift.alternatives.map((alt,i)=>(
               <div key={i} style={{background:'#F8F5FF',border:'1px solid #E8D5FF',borderRadius:T.rSm,padding:'12px 14px'}}>
+                {altImages[i]?.image_url
+                  ? <img src={altImages[i].image_url} alt={alt.name} style={{width:'100%',height:90,objectFit:'contain',borderRadius:6,marginBottom:8,background:'#fff'}} onError={e=>e.target.style.display='none'}/>
+                  : null
+                }
                 <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:'#5B21B6',marginBottom:3,lineHeight:1.3}}>{alt.name}</div>
                 <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:8}}>{alt.reason}</div>
-                <Btn size="sm" href={AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
+                <Btn size="sm" href={altImages[i]?.product_url || AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
               </div>
             ))}
             </div>
