@@ -801,7 +801,7 @@ function ShareSheet({ activity, onCopy, onClose }) {
 
 
 // ── RESULT PAGE ────────────────────────────────────────────────────────────────
-function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileSaved, emailSent, savedProfile, shareMsg, hiddenProducts, setHiddenProducts, sharedToCommunity, showShareSheet, onUpvote, onSave, onEmail, onShare, onShareToCommunity, copyActivity, closeShareSheet, onNew, onNewSaved, onTweakAnswers }) {
+function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileSaved, emailSent, savedProfile, shareMsg, hiddenProducts, setHiddenProducts, sharedToCommunity, showShareSheet, onUpvote, onSave, onEmail, onShare, onShareToCommunity, copyActivity, closeShareSheet, onNew, onNewSaved, onTweakAnswers, onSaveActivity, activitySaved }) {
   const [bookIndex, setBookIndex] = useState(0)
   const [spiceIndexes, setSpiceIndexes] = useState({})
   const [showVar, setShowVar] = useState(false)
@@ -830,6 +830,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
           <h1 style={{fontSize:'clamp(22px,5vw,40px)',fontWeight:900,color:'#fff',margin:'0 0 10px',lineHeight:1.15,fontFamily:F}}>{act.activity_name}</h1>
           <p style={{color:'rgba(255,255,255,.9)',fontSize:'clamp(14px,2vw,17px)',margin:'0 0 20px',lineHeight:1.5}}>{act.tagline}</p>
           <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+            <Btn variant={activitySaved?"gold":"ghost"} size="sm" onClick={onSaveActivity}>{activitySaved?'✓ Saved!':'🤍 Save'}</Btn>
             <Btn variant="ghost" size="sm" onClick={onEmail}>{emailSent?'✓ Emailed!':'✉ Email to myself'}</Btn>
             <Btn variant="ghost" size="sm" onClick={onShare}>↗ Share activity</Btn>
             <Btn variant="ghost" size="sm" onClick={onNew}>+ New activity</Btn>
@@ -1428,6 +1429,7 @@ export default function App() {
   const [sharedToCommunity, setSharedToCommunity] = useState(false)
   const [showShareSheet, setShowShareSheet] = useState(false)
   const [showEmailCapture, setShowEmailCapture] = useState(false)
+  const [activitySaved, setActivitySaved] = useState(false)
   const timerRef = useRef(null)
 
   useEffect(() => {
@@ -1523,10 +1525,25 @@ export default function App() {
     if (tab==='bestof') loadBestOf()
   }
 
-  const startFresh = () => { setMode('activity'); setStage('quiz'); setStep(0); setActivity(null); setErrorMsg(''); setAnswers({age:'',occasion:'',holiday:'',vacationWhere:'',birthdayDetails:'',interests:'',energy:'',materialCategories:[],materialsExtra:'',difficulty:''}); setProfileSaved(false); setEmailSent(false); setActiveNav('generator'); setHiddenProducts(new Set()); setSharedToCommunity(false) }
+  const startFresh = () => { setMode('activity'); setStage('quiz'); setStep(0); setActivity(null); setErrorMsg(''); setAnswers({age:'',occasion:'',holiday:'',vacationWhere:'',birthdayDetails:'',interests:'',energy:'',materialCategories:[],materialsExtra:'',difficulty:''}); setProfileSaved(false); setEmailSent(false); setActiveNav('generator'); setHiddenProducts(new Set()); setSharedToCommunity(false); setActivitySaved(false) }
   const startGift = () => { setMode('gift'); setStage('quiz'); setGiftStep(0); setGift(null); setErrorMsg(''); setGiftAnswers({age:'',interests:'',budget:'',occasion:''}); setActiveNav('generator') }
   const startSaved = () => { if(!savedProfile)return; setMode('activity'); setAnswers({...savedProfile}); setStep(5); setStage('quiz'); setProfileSaved(true); setEmailSent(false); setActivity(null); setActiveNav('generator') }
   const doSaveProfile = () => { saveProfileLocal(answers); setSavedProfile({...answers}); setProfileSaved(true); setTimeout(()=>setShowEmailCapture(true), 800) }
+  const handleSaveActivity = () => {
+    if (!activity) return
+    // Save to localStorage
+    try {
+      const saved = JSON.parse(localStorage.getItem('savedActivities') || '[]')
+      const entry = { name: activity.activity_name, tagline: activity.tagline, url: window.location.href, savedAt: Date.now() }
+      const exists = saved.some(s => s.name === activity.activity_name)
+      if (!exists) { saved.unshift(entry); localStorage.setItem('savedActivities', JSON.stringify(saved.slice(0, 50))) }
+    } catch {}
+    setActivitySaved(true)
+    // Show email capture if not already subscribed
+    if (!localStorage.getItem('email_subscribed')) {
+      setTimeout(() => setShowEmailCapture(true), 600)
+    }
+  }
 
   const handleShare = () => {
     const url = window.location.href
@@ -1588,7 +1605,7 @@ export default function App() {
   // Loading
   if (showEmailCapture) return (
     <>
-      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} showShareSheet={showShareSheet} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} copyActivity={copyActivity} closeShareSheet={closeShareSheet} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')}/> }
+      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} showShareSheet={showShareSheet} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} copyActivity={copyActivity} closeShareSheet={closeShareSheet} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')} onSaveActivity={handleSaveActivity} activitySaved={activitySaved}/> }
       <EmailCapture onClose={()=>setShowEmailCapture(false)}/>
     </>
   )
@@ -1605,7 +1622,7 @@ export default function App() {
     <div style={{fontFamily:F2,minHeight:'100vh',background:T.cream,color:T.charcoal}}>
       <SiteHeader activeNav={activeNav} onSwitch={switchNav} onGeneratorClick={startFresh}/>
       {stage==='error' && <ErrorView msg={errorMsg} onRetry={()=>mode==='gift'?generateGift(giftAnswers):generate(answers)} onBack={()=>setStage('quiz')}/>}
-      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} showShareSheet={showShareSheet} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} copyActivity={copyActivity} closeShareSheet={closeShareSheet} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')}/>}
+      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} showShareSheet={showShareSheet} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} copyActivity={copyActivity} closeShareSheet={closeShareSheet} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')} onSaveActivity={handleSaveActivity} activitySaved={activitySaved}/>}
       {stage==='gift-result' && activeNav==='generator' && <GiftResultView gift={gift} answers={giftAnswers} onNew={startGift} onActivity={()=>{setMode('activity');setStage('landing')}}/>}
       {activeNav==='community' && <CommunityView posts={communityPosts} loading={communityLoading} votedIds={votedIds} onUpvote={handleUpvote} onRefresh={loadCommunity} onBuild={startFresh}/>}
       {activeNav==='bestof' && <BestOfView posts={bestOf} loading={bestOfLoading} filter={bestFilter} setFilter={setBestFilter} votedIds={votedIds} onUpvote={handleUpvote} onRefresh={loadBestOf}/>}
