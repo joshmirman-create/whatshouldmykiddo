@@ -281,7 +281,9 @@ function SLabel({ children, color=T.green }) {
 }
 
 function AdUnit({ style:sx={} }) {
-  return <div style={{background:T.greenPale,border:`1.5px dashed ${T.greenLight}`,borderRadius:T.rSm,padding:16,textAlign:'center',minHeight:80,display:'flex',alignItems:'center',justifyContent:'center',...sx}}><span style={{fontSize:11,color:'#A5D6A7',fontWeight:700,letterSpacing:1}}>ADVERTISEMENT</span></div>
+  // Returns null until AdSense is approved and serving real ads
+  // Replace null with actual ad code when ready
+  return null
 }
 
 function Spinner() {
@@ -308,6 +310,10 @@ function SiteFooter() {
       <div style={{maxWidth:1100,margin:'0 auto',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8}}>
         <div style={{fontSize:13,color:'rgba(255,255,255,.5)',fontFamily:F}}>© Zen Monkey Studios · whatshouldmykiddo.com</div>
         <div style={{fontSize:12,color:'rgba(255,255,255,.3)',fontFamily:F}}>COPPA compliant · No children's data collected</div>
+        <div style={{display:'flex',gap:16,marginTop:6}}>
+          <a href="/about" style={{fontSize:11,color:'rgba(255,255,255,.35)',fontFamily:F,textDecoration:'none'}}>About</a>
+          <a href="/privacy" style={{fontSize:11,color:'rgba(255,255,255,.35)',fontFamily:F,textDecoration:'none'}}>Privacy Policy</a>
+        </div>
       </div>
     </footer>
   )
@@ -759,8 +765,8 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
           <h1 style={{fontSize:'clamp(22px,5vw,40px)',fontWeight:900,color:'#fff',margin:'0 0 10px',lineHeight:1.15,fontFamily:F}}>{act.activity_name}</h1>
           <p style={{color:'rgba(255,255,255,.9)',fontSize:'clamp(14px,2vw,17px)',margin:'0 0 20px',lineHeight:1.5}}>{act.tagline}</p>
           <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-            <Btn variant="gold" size="sm">▶ Start now</Btn>
             <Btn variant="ghost" size="sm" onClick={onEmail}>{emailSent?'✓ Emailed!':'✉ Email to myself'}</Btn>
+            <Btn variant="ghost" size="sm" onClick={onShare}>↗ Share activity</Btn>
             <Btn variant="ghost" size="sm" onClick={onNew}>+ New activity</Btn>
           </div>
         </div>
@@ -772,7 +778,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
           <img
             src={getActivityImage(act.image_category)}
             alt={act.activity_name}
-            style={{width:'100%',borderRadius:16,display:'block',boxShadow:'0 4px 24px rgba(0,0,0,.12)'}}
+            style={{width:'100%',maxHeight:'clamp(220px,40vw,420px)',objectFit:'cover',objectPosition:'center',borderRadius:16,display:'block',boxShadow:'0 4px 24px rgba(0,0,0,.12)'}}
             onError={e=>e.target.style.display='none'}
           />
         </div>
@@ -1457,11 +1463,16 @@ export default function App() {
   const doSaveProfile = () => { saveProfileLocal(answers); setSavedProfile({...answers}); setProfileSaved(true) }
 
   const handleShare = () => {
-    const txt = `We just did "${activity?.activity_name}" with things we already had at home and my kid LOVED it. Try whatshouldmykiddo.com`
-    const url = 'https://whatshouldmykiddo.com'
+    const url = window.location.href
+    const name = activity?.activity_name || 'a great activity'
+    const tagline = activity?.tagline || ''
+    const duration = activity?.duration || ''
+    const txt = `🎨 "${name}" — ${tagline}${duration ? ` (${duration})` : ''}\n\nBuilt free at whatshouldmykiddo.com — personalized activities using only what you have at home.\n\n${url}`
     if (navigator.share) {
-      navigator.share({text:txt, url}).catch(()=>{})
+      navigator.share({ title: name, text: txt, url }).catch(()=>{})
     } else {
+      // Fall back to clipboard copy + show share sheet
+      navigator.clipboard?.writeText(txt).catch(()=>{})
       setShowShareSheet(true)
     }
   }
