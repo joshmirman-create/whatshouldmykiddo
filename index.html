@@ -121,8 +121,9 @@
     </style>
   </head>
   <body>
-    <div id="root">
-      <!-- Static content for crawlers — React mounts over this -->
+    <!-- Pre-rendered content: visible to crawlers AND users before React loads -->
+<div id="static-site">
+<!-- Static content for crawlers — React mounts over this -->
       <style>
         .sk-header{background:#fff;border-bottom:1.5px solid #E8E8E0;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.04)}
         .sk-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:#1A1A2E;text-decoration:none;display:flex;align-items:center;gap:6px}
@@ -238,7 +239,23 @@
       </div>
 
       <footer class="sk-footer">© Zen Monkey Studios · whatshouldmykiddo.com &nbsp;·&nbsp; COPPA compliant · No children's data collected</footer>
-    </div>
-    <script type="module" src="/src/main.jsx"></script>
+</div>
+<!-- React app mounts here and shows the interactive version -->
+<div id="root"></div>
+<script>
+  // Hide static content once React has mounted
+  document.addEventListener('DOMContentLoaded', function() {
+    // React will mount into #root; once it renders, hide the static version
+    var observer = new MutationObserver(function(mutations) {
+      if (document.getElementById('root').children.length > 0) {
+        var staticEl = document.getElementById('static-site');
+        if (staticEl) staticEl.style.display = 'none';
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.getElementById('root'), {childList: true});
+  });
+</script>
+<script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
