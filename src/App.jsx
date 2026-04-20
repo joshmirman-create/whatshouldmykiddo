@@ -685,6 +685,71 @@ function ErrorView({ msg, onRetry, onBack }) {
 }
 
 
+
+// ── EMAIL CAPTURE ─────────────────────────────────────────────────────────────
+function EmailCapture({ onClose }) {
+  const [email, setEmail] = React.useState('')
+  const [status, setStatus] = React.useState('idle') // idle | loading | success | error
+
+  const submit = async () => {
+    if (!email || !email.includes('@')) return
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email })
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus('success')
+        setTimeout(onClose, 2000)
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  return (
+    <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:300,display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:T.white,borderRadius:'20px 20px 0 0',padding:'24px 20px 32px',width:'100%',maxWidth:480}}>
+        <div style={{width:36,height:4,background:T.border,borderRadius:2,margin:'0 auto 16px'}}/>
+        {status === 'success' ? (
+          <div style={{textAlign:'center',padding:'8px 0'}}>
+            <div style={{fontSize:32,marginBottom:8}}>🎉</div>
+            <div style={{fontFamily:F,fontWeight:800,fontSize:16,color:T.charcoal,marginBottom:4}}>You're in!</div>
+            <div style={{fontSize:13,color:T.gray}}>One new activity idea, every week.</div>
+          </div>
+        ) : (
+          <>
+            <div style={{fontFamily:F,fontWeight:900,fontSize:17,color:T.charcoal,marginBottom:6}}>Want a new activity idea every week?</div>
+            <div style={{fontSize:13,color:T.gray,lineHeight:1.6,marginBottom:16}}>One email a week. One activity. No fluff. Unsubscribe anytime.</div>
+            <div style={{display:'flex',gap:8}}>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={e=>setEmail(e.target.value)}
+                onKeyDown={e=>e.key==='Enter'&&submit()}
+                style={{flex:1,border:`1.5px solid ${T.border}`,borderRadius:10,padding:'10px 14px',fontSize:14,fontFamily:F,outline:'none'}}
+              />
+              <button
+                onClick={submit}
+                disabled={status==='loading'}
+                style={{background:T.green,color:'#fff',border:'none',borderRadius:10,padding:'10px 18px',fontFamily:F,fontWeight:800,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}
+              >{status==='loading'?'...':'Sign me up'}</button>
+            </div>
+            {status==='error' && <div style={{fontSize:12,color:'#E53E3E',marginTop:8}}>Something went wrong — try again.</div>}
+            <button onClick={onClose} style={{display:'block',margin:'12px auto 0',background:'none',border:'none',fontSize:12,color:T.gray,cursor:'pointer',fontFamily:F}}>No thanks</button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── SHARE SHEET ───────────────────────────────────────────────────────────────
 function ShareSheet({ activity, onCopy, onClose }) {
   const name = activity?.activity_name || 'this activity'
@@ -1362,6 +1427,7 @@ export default function App() {
   const [hiddenProducts, setHiddenProducts] = useState(new Set())
   const [sharedToCommunity, setSharedToCommunity] = useState(false)
   const [showShareSheet, setShowShareSheet] = useState(false)
+  const [showEmailCapture, setShowEmailCapture] = useState(false)
   const timerRef = useRef(null)
 
   useEffect(() => {
@@ -1460,7 +1526,7 @@ export default function App() {
   const startFresh = () => { setMode('activity'); setStage('quiz'); setStep(0); setActivity(null); setErrorMsg(''); setAnswers({age:'',occasion:'',holiday:'',vacationWhere:'',birthdayDetails:'',interests:'',energy:'',materialCategories:[],materialsExtra:'',difficulty:''}); setProfileSaved(false); setEmailSent(false); setActiveNav('generator'); setHiddenProducts(new Set()); setSharedToCommunity(false) }
   const startGift = () => { setMode('gift'); setStage('quiz'); setGiftStep(0); setGift(null); setErrorMsg(''); setGiftAnswers({age:'',interests:'',budget:'',occasion:''}); setActiveNav('generator') }
   const startSaved = () => { if(!savedProfile)return; setMode('activity'); setAnswers({...savedProfile}); setStep(5); setStage('quiz'); setProfileSaved(true); setEmailSent(false); setActivity(null); setActiveNav('generator') }
-  const doSaveProfile = () => { saveProfileLocal(answers); setSavedProfile({...answers}); setProfileSaved(true) }
+  const doSaveProfile = () => { saveProfileLocal(answers); setSavedProfile({...answers}); setProfileSaved(true); setTimeout(()=>setShowEmailCapture(true), 800) }
 
   const handleShare = () => {
     const url = window.location.href
@@ -1520,6 +1586,12 @@ export default function App() {
   if (isAdmin) return <AdminView unlocked={adminUnlocked} setUnlocked={setAdminUnlocked} data={adminData} loading={adminLoading} age={adminAge} setAge={setAdminAge} load={loadAdminData} export={exportCSV} onExit={()=>{setIsAdmin(false);if(history.pushState)history.pushState('','',location.pathname)}}/>
 
   // Loading
+  if (showEmailCapture) return (
+    <>
+      {stage==='result' && activeNav==='generator' && <ResultView activity={activity} answers={answers} currentPostId={currentPostId} votedIds={votedIds} profileSaved={profileSaved} emailSent={emailSent} savedProfile={savedProfile} shareMsg={shareMsg} hiddenProducts={hiddenProducts} setHiddenProducts={setHiddenProducts} sharedToCommunity={sharedToCommunity} showShareSheet={showShareSheet} onUpvote={handleUpvote} onSave={doSaveProfile} onEmail={handleEmail} onShare={handleShare} onShareToCommunity={handleShareToCommunity} copyActivity={copyActivity} closeShareSheet={closeShareSheet} onNew={startFresh} onNewSaved={startSaved} onTweakAnswers={()=>setStage('quiz')}/> }
+      <EmailCapture onClose={()=>setShowEmailCapture(false)}/>
+    </>
+  )
   if (stage==='loading') return <LoadingView stage={loadStage} interests={mode==='gift'?giftAnswers.interests:answers.interests}/>
 
   // Quiz
