@@ -44,9 +44,16 @@ exports.handler = async (event) => {
 
     const data = await res.json()
 
-    // 204 = created, 400 with "Contact already exist" = already subscribed (treat as success)
-    if (res.status === 201 || res.status === 204 || (res.status === 400 && data.message?.includes('already exist'))) {
+    // 201 = created, treat any 400 "duplicate" as success too
+    if (res.status === 201 || res.status === 204) {
       return { statusCode: 200, headers: cors, body: JSON.stringify({ success: true }) }
+    }
+    // Brevo returns 400 when contact already exists — treat as success
+    if (res.status === 400) {
+      const msg = (data.message || '').toLowerCase()
+      if (msg.includes('exist') || msg.includes('duplicate') || msg.includes('already')) {
+        return { statusCode: 200, headers: cors, body: JSON.stringify({ success: true }) }
+      }
     }
 
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: data.message || 'Could not subscribe' }) }
