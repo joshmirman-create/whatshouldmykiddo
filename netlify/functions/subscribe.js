@@ -12,7 +12,13 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
 
   try {
-    const { email, firstName } = JSON.parse(event.body)
+    if (!event.body) {
+      return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'No body received' }) }
+    }
+    const rawBody = event.isBase64Encoded
+      ? Buffer.from(event.body, 'base64').toString('utf8')
+      : event.body
+    const { email, firstName } = JSON.parse(rawBody)
     if (!email || !email.includes('@')) {
       return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Valid email required' }) }
     }
