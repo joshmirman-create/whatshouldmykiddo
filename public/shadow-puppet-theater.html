@@ -201,5 +201,39 @@ function initSave(slug, title) {
   <a href="/paper-airplane-lab" class="anav-btn anav-next"><span style="font-size:18px">→</span><span class="anav-label">Paper Airplane Lab</span></a>
 </div>
 <script>document.addEventListener('DOMContentLoaded', function(){ initSave("shadow-puppet-theater", "Shadow Puppet Theater") });</script>
+
+<div id="email-capture-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px">
+    <div style="width:36px;height:4px;background:#E2E8E0;border-radius:2px;margin:0 auto 16px"></div>
+    <div id="email-capture-inner">
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:17px;color:#1A2E1A;margin-bottom:6px">Want a new activity idea every week?</div>
+      <div style="font-size:13px;color:#718096;line-height:1.6;margin-bottom:16px">One email a week. One activity. No fluff. Unsubscribe anytime.</div>
+      <div style="display:flex;gap:8px">
+        <input id="email-input" type="email" placeholder="your@email.com" style="flex:1;border:1.5px solid #E2E8E0;border-radius:10px;padding:10px 14px;font-size:14px;font-family:'Montserrat',sans-serif;outline:none"/>
+        <button onclick="submitEmail()" style="background:#2D6A4F;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap">Sign me up</button>
+      </div>
+      <button onclick="closeEmailCapture()" style="display:block;margin:12px auto 0;background:none;border:none;font-size:12px;color:#718096;cursor:pointer;font-family:'Montserrat',sans-serif">No thanks</button>
+    </div>
+  </div>
+</div>
+<script>
+function showEmailCapture(){if(localStorage.getItem('email_subscribed'))return;var m=document.getElementById('email-capture-modal');if(m)m.style.display='flex';}
+function closeEmailCapture(){var m=document.getElementById('email-capture-modal');if(m)m.style.display='none';}
+function submitEmail(){
+  var email=document.getElementById('email-input').value;
+  if(!email||!email.includes('@'))return;
+  var inner=document.getElementById('email-capture-inner');
+  fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.success){
+      localStorage.setItem('email_subscribed','1');
+      inner.innerHTML='<div style="text-align:center;padding:8px 0"><div style="font-size:32px;margin-bottom:8px">🎉</div><div style="font-family:\'Montserrat\',sans-serif;font-weight:800;font-size:16px;color:#1A2E1A;margin-bottom:4px">You\'re in!</div><div style="font-size:13px;color:#718096">One new activity idea, every week.</div></div>';
+      setTimeout(closeEmailCapture,2000);
+    }
+  }).catch(function(){});
+}
+document.getElementById('email-capture-modal').addEventListener('click',function(e){if(e.target===this)closeEmailCapture();});
+</script>
 </body>
 </html>
