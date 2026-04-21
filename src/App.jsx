@@ -397,6 +397,50 @@ function HeroPreview() {
   )
 }
 
+
+function HomeEmailCapture() {
+  const [email, setEmail] = React.useState('')
+  const [status, setStatus] = React.useState('idle')
+
+  const submit = async () => {
+    if (!email || !email.includes('@')) return
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email })
+      })
+      const data = await res.json()
+      setStatus(data.success ? 'success' : 'error')
+    } catch { setStatus('error') }
+  }
+
+  if (status === 'success') return (
+    <div style={{color:'#fff',fontFamily:F,fontWeight:800,fontSize:15}}>🎉 You're in! See you next week.</div>
+  )
+  return (
+    <div>
+      <div style={{display:'flex',gap:8,maxWidth:400,margin:'0 auto'}}>
+        <input
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={e=>setEmail(e.target.value)}
+          onKeyDown={e=>e.key==='Enter'&&submit()}
+          style={{flex:1,border:'none',borderRadius:10,padding:'12px 16px',fontSize:14,fontFamily:F,outline:'none'}}
+        />
+        <button
+          onClick={submit}
+          disabled={status==='loading'}
+          style={{background:'#fff',color:T.green,border:'none',borderRadius:10,padding:'12px 20px',fontFamily:F,fontWeight:900,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}
+        >{status==='loading'?'...':'Sign up'}</button>
+      </div>
+      {status==='error' && <div style={{color:'rgba(255,255,255,.8)',fontSize:12,marginTop:8}}>Something went wrong — try again.</div>}
+    </div>
+  )
+}
+
 function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
   return (
     <div>
@@ -472,6 +516,16 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
           <div style={{textAlign:'center'}}>
             <Btn size="lg" onClick={onStart}>🛠️ Build a personalized activity →</Btn>
           </div>
+        </div>
+      </section>
+
+      {/* Weekly email signup */}
+      <section style={{padding:'0 20px 48px',background:T.white}}>
+        <div style={{maxWidth:560,margin:'0 auto',background:T.green,borderRadius:16,padding:'28px 24px',textAlign:'center'}}>
+          <div style={{fontSize:24,marginBottom:8}}>📬</div>
+          <div style={{fontFamily:F,fontWeight:900,fontSize:18,color:'#fff',marginBottom:8}}>One new activity idea, every week</div>
+          <div style={{fontSize:13,color:'rgba(255,255,255,.8)',marginBottom:18,lineHeight:1.6}}>Free. One email. Real activities that work with what you have at home.</div>
+          <HomeEmailCapture/>
         </div>
       </section>
 

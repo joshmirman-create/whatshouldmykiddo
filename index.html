@@ -220,6 +220,36 @@
         <p>Rainy Saturday mornings. The hour after school before dinner. A sick day when screens have already run out of mileage. A long car ride with nothing packed. These are the moments parents actually need help with — not Pinterest-perfect craft projects that require a trip to the store.</p>
         <p>Every activity on this site uses materials most families already have: paper, crayons, tape, cardboard boxes, socks, a flashlight. The generator never suggests something that requires buying anything. If it calls for materials, they're on your list of what you said you have at home.</p>
 
+
+        <div style="background:#2D6A4F;border-radius:16px;padding:28px 24px;margin:32px 0;text-align:center">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:#fff;margin-bottom:8px">📬 One new activity idea, every week</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:18px;line-height:1.6">Free. One email. No fluff. Real activities that work with what you already have at home.</div>
+          <div style="display:flex;gap:8px;max-width:400px;margin:0 auto" id="sk-email-row">
+            <input id="sk-email" type="email" placeholder="your@email.com" style="flex:1;border:none;border-radius:10px;padding:12px 16px;font-size:14px;font-family:'Montserrat',sans-serif;outline:none"/>
+            <button onclick="skSubscribe()" style="background:#fff;color:#2D6A4F;border:none;border-radius:10px;padding:12px 20px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap">Sign up</button>
+          </div>
+          <div id="sk-email-msg" style="font-size:12px;color:rgba(255,255,255,.8);margin-top:10px;min-height:18px"></div>
+        </div>
+        <script>
+        function skSubscribe(){
+          var email=document.getElementById('sk-email').value;
+          var msg=document.getElementById('sk-email-msg');
+          if(!email||!email.includes('@')){msg.textContent='Please enter a valid email.';return;}
+          msg.textContent='Signing you up...';
+          fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})})
+          .then(function(r){return r.json();})
+          .then(function(d){
+            if(d.success){
+              document.getElementById('sk-email-row').style.display='none';
+              msg.textContent='🎉 You're in! See you next week.';
+              msg.style.fontSize='15px';
+              msg.style.fontWeight='700';
+            } else {
+              msg.textContent='Something went wrong — try again.';
+            }
+          }).catch(function(){msg.textContent='Something went wrong — try again.';});
+        }
+        </script>
         <div class="sk-faq">
           <h3>What do I need to use this?</h3>
           <p>Just tell us your child's age, what they're into right now, and what materials you have at home. We build a personalized activity using only what you already have — no shopping required.</p>
