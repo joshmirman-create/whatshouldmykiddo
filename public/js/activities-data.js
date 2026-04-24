@@ -98,6 +98,12 @@ window.ACTIVITIES_DATA = {
     tags: ["indoor","physical","active","high-energy","no-mess","under-15-min","music","competitive","ages-3-up","game","dancing","listening"],
     books: ["15-minute-pack","active-pack","game-pack"],
     age_min: 3
+  },
+  "shape-builder": {
+    title: "Shape Builder",
+    tags: ["indoor","quiet","no-mess","screen-free","creative","learning","math","shapes","craft","ages-3-up","low-prep","tired-parent","after-school","building"],
+    books: ["quiet-pack","screen-free-pack","learning-pack"],
+    age_min: 3
   }
 };
 
