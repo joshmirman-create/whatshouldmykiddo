@@ -37,7 +37,7 @@ exports.handler = async (event) => {
 
     const clientId = process.env.AMAZON_CLIENT_ID
     const clientSecret = process.env.AMAZON_CLIENT_SECRET
-    const partnerTag = process.env.AMAZON_PARTNER_TAG || 'zenmonkeystud-20'
+    const partnerTag = process.env.AMAZON_PARTNER_TAG || 'whatshouldmykiddo-20'
 
     if (!clientId || !clientSecret) {
       return { statusCode: 500, body: JSON.stringify({ error: 'Amazon credentials not configured' }) }

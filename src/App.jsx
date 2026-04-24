@@ -190,7 +190,7 @@ const LOAD_STAGES = [
 ]
 const ADMIN_KEY = 'zsadmin2026'
 const KIWICO = 'https://www.kiwico.com/?ref=YOURAFFILIATEID'
-const AMZN = q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}&tag=zenmonkeystud-20`
+const AMZN = q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}&tag=whatshouldmykiddo-20`
 const BOOKSHOP = (title) => `https://bookshop.org/search?keywords=${encodeURIComponent(title)}&affiliate=122560`
 const BAM = (title) => `https://www.booksamillion.com/search?query=${encodeURIComponent(title)}&id=101712536-11173806`
 const SAMPLE_ACTIVITIES = [
