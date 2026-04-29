@@ -315,6 +315,10 @@ function SiteFooter() {
           <a href="/privacy" style={{fontSize:11,color:'rgba(255,255,255,.35)',fontFamily:F,textDecoration:'none'}}>Privacy Policy</a>
         </div>
       </div>
+      <div style={{maxWidth:1100,margin:'10px auto 0',paddingTop:10,borderTop:'1px solid rgba(255,255,255,.1)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8}}>
+        <span style={{fontSize:11,color:'rgba(255,255,255,.35)',fontFamily:F}}>Some links are affiliate links. We earn a small commission at no cost to you.</span>
+        <a href="https://www.whatgiftshouldibuy.com" style={{fontSize:12,color:'rgba(255,255,255,.6)',fontFamily:F,fontWeight:700,textDecoration:'none'}}>🎁 Need a gift? whatgiftshouldibuy.com →</a>
+      </div>
     </footer>
   )
 }
@@ -519,12 +523,51 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
         </div>
       </section>
 
+      {/* Gift site crosslink */}
+      <section style={{padding:'0 20px 0',background:T.white}}>
+        <div style={{maxWidth:900,margin:'0 auto',paddingBottom:24,borderBottom:`1px solid ${T.border}`}}>
+          <a href="https://www.whatgiftshouldibuy.com" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',justifyContent:'space-between',background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:12,padding:'14px 20px',textDecoration:'none',flexWrap:'wrap',gap:8}}>
+            <div>
+              <div style={{fontSize:13,fontWeight:800,color:'#C05621',fontFamily:F,marginBottom:2}}>🎁 Need a gift for a kid's birthday or holiday?</div>
+              <div style={{fontSize:12,color:'#92400E'}}>Tell us who it's for and we'll find something they'll actually use. whatgiftshouldibuy.com →</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      {/* Invented by real kids */}
+      <section style={{padding:'0 20px 48px',background:T.cream}}>
+        <div style={{maxWidth:900,margin:'0 auto'}}>
+          <div style={{marginBottom:20}}>
+            <h2 style={{fontSize:'clamp(18px,4vw,24px)',fontWeight:900,color:T.charcoal,margin:'0 0 4px',fontFamily:F}}>Invented by real kids</h2>
+            <p style={{fontSize:13,color:T.gray,margin:0}}>These started as actual kid ideas. We just wrote down the rules.</p>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:12}}>
+            {[
+              {e:'🎨',title:'Shape Builder',desc:'Color some popsicle sticks. Call out a shape. They build it. Zero prep, secretly teaches geometry.',href:'/shape-builder',credit:'Invented by Levi, age 4'},
+              {e:'📦',title:'Number Box',desc:'Write 0 to 9 on a cardboard box. Small numbers are harder. Throw socks for points. First to 50 wins.',href:'/number-box',credit:'Invented by Levi, age 4'},
+              {e:'🧶',title:'Yarn Ball Racing',desc:'Unroll the yarn to make the track. Race the balls back down the line. No setup because the setup is the game.',href:'/yarn-ball-racing',credit:'Invented by Levi, age 4'},
+              {e:'🏔️',title:'Avalanche',desc:'Stack cushions on the grass. Climb without triggering a full collapse. Shifting cushions just make it harder.',href:'/avalanche',credit:'Invented by Levi and Daddy'},
+            ].map(c=>(
+              <a key={c.title} href={c.href} style={{background:T.white,borderRadius:T.r,padding:'18px',textDecoration:'none',color:T.charcoal,display:'block',border:`1.5px solid ${T.border}`,transition:'all .15s'}}
+                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green}}
+                onMouseOut={e=>{e.currentTarget.style.background=T.white;e.currentTarget.style.borderColor=T.border}}>
+                <div style={{fontSize:26,marginBottom:8}}>{c.e}</div>
+                <div style={{fontSize:11,fontWeight:700,color:T.green,marginBottom:5,fontFamily:F,letterSpacing:.5}}>⭐ {c.credit}</div>
+                <div style={{fontSize:14,fontWeight:800,color:T.charcoal,marginBottom:5,fontFamily:F,lineHeight:1.3}}>{c.title}</div>
+                <div style={{fontSize:12,color:T.gray,lineHeight:1.5}}>{c.desc}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Weekly email signup */}
       <section style={{padding:'0 20px 48px',background:T.white}}>
         <div style={{maxWidth:560,margin:'0 auto',background:T.green,borderRadius:16,padding:'28px 24px',textAlign:'center'}}>
           <div style={{fontSize:24,marginBottom:8}}>📬</div>
-          <div style={{fontFamily:F,fontWeight:900,fontSize:18,color:'#fff',marginBottom:8}}>One new activity idea, every week</div>
-          <div style={{fontSize:13,color:'rgba(255,255,255,.8)',marginBottom:18,lineHeight:1.6}}>Free. One email. Real activities that work with what you have at home.</div>
+          <div style={{fontFamily:F,fontWeight:900,fontSize:18,color:'#fff',marginBottom:8}}>One activity idea, every week. That's it.</div>
+          <div style={{fontSize:13,color:'rgba(255,255,255,.8)',marginBottom:18,lineHeight:1.6}}>No sponsored content, no 47-step crafts, no trip to the store required. Just one thing your kid can actually do today.</div>
           <HomeEmailCapture/>
         </div>
       </section>
