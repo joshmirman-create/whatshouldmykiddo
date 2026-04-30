@@ -1539,6 +1539,15 @@ export default function App() {
       setMode('gift'); setStage('quiz'); setGiftStep(0); setActiveNav('generator')
       if (history.replaceState) history.replaceState(null,'',location.pathname)
     }
+    // Pre-fill activity generator from ?prompt= URL param
+    // e.g. whatshouldmykiddo.com/?prompt=rainy+day+activities+for+a+kid+who+loves+dinosaurs
+    const urlPrompt = new URLSearchParams(window.location.search).get('prompt')
+    if (urlPrompt) {
+      setAnswers(prev => ({...prev, interests: decodeURIComponent(urlPrompt)}))
+      setMode('activity'); setStage('quiz'); setStep(2); setActiveNav('generator')
+      if (history.replaceState) history.replaceState(null,'',location.pathname)
+      if (typeof gtag !== 'undefined') gtag('event','prompt_prefill',{prompt:urlPrompt.slice(0,100)})
+    }
     // Auto-generate gift from shared URL e.g. #gift?age=4-5&interests=dinosaurs&budget=$20-35
     if (window.location.hash.startsWith('#gift?')) {
       const params = new URLSearchParams(window.location.hash.slice(6))
