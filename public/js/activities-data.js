@@ -104,6 +104,18 @@ window.ACTIVITIES_DATA = {
     tags: ["indoor","quiet","no-mess","screen-free","creative","learning","math","shapes","craft","ages-3-up","low-prep","tired-parent","after-school","building"],
     books: ["quiet-pack","screen-free-pack","learning-pack"],
     age_min: 3
+  },
+  "yarn-ball-racing": {
+    title: "Yarn Ball Racing",
+    tags: ["indoor","active","yarn","no-mess","under-15-min","minimal-effort","competitive","ages-3-up","game","high-energy","invented-by-kids","movement","household-items"],
+    books: ["active-pack","15-minute-pack","game-pack"],
+    age_min: 3
+  },
+  "bathtime-shooting-range": {
+    title: "Bathtime Shooting Range",
+    tags: ["indoor","bath","active","no-mess","under-15-min","zero-effort","water","game","competitive","ages-2-up","high-energy","bedtime-routine","household-items","low-prep","tired-parent"],
+    books: ["active-pack","15-minute-pack","game-pack"],
+    age_min: 2
   }
 };
 
