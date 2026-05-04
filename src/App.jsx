@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 
+// ── ANALYTICS HELPER ───────────────────────────────────────────────────────────
+const track = (event, params={}) => {
+  try { if (typeof gtag !== 'undefined') gtag('event', event, params) } catch(e) {}
+}
+
 // ── DESIGN TOKENS ──────────────────────────────────────────────────────────────
 
 
@@ -191,6 +196,7 @@ const LOAD_STAGES = [
 const ADMIN_KEY = 'zsadmin2026'
 const KIWICO = 'https://www.kiwico.com/?ref=YOURAFFILIATEID'
 const AMZN = q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}&tag=whatshouldmykiddo-20`
+const trackAmzn = (q, label='amazon_link') => { track('amazon_click', {item: label, query: q.slice(0,80)}) }
 const BOOKSHOP = (title) => `https://bookshop.org/search?keywords=${encodeURIComponent(title)}&affiliate=122560`
 const BAM = (title) => `https://www.booksamillion.com/search?query=${encodeURIComponent(title)}&id=101712536-11173806`
 const SAMPLE_ACTIVITIES = [
@@ -410,6 +416,7 @@ function HomeEmailCapture() {
     if (!email || !email.includes('@')) return
     setStatus('loading')
     try {
+      track('email_signup', {location: 'modal'})
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -1067,7 +1074,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                 </div>
               </div>
               <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                <Btn size="sm" href={AMZN(`${book.title} children book`)} target="_blank" style={{background:'#7C3AED',fontSize:12}}>Amazon</Btn>
+                <Btn size="sm" href={AMZN(`${book.title} children book`)} target="_blank" onClick={()=>trackAmzn(book.title,'book_activity_result')} style={{background:'#7C3AED',fontSize:12}}>Amazon</Btn>
                 <Btn size="sm" href={BOOKSHOP(book.title)} target="_blank" style={{background:'#1A1A2E',fontSize:12}}>Bookshop.org</Btn>
                 <Btn size="sm" href={BAM(book.title)} target="_blank" style={{background:'#CC0000',fontSize:12}}>Books-A-Million</Btn>
                 {bookIndex < books.length-1 && <>
@@ -1094,7 +1101,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                     <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:T.charcoal,marginBottom:3,lineHeight:1.3}}>{cur.name}</div>
                     <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:8}}>{cur.why}</div>
                     <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                      <Btn size="sm" href={AMZN(cur.search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Love it! Buy it</Btn>
+                      <Btn size="sm" href={AMZN(cur.search)} target="_blank" onClick={()=>trackAmzn(cur.search,'buy_activity_supply')} style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Love it! Buy it</Btn>
                       {hasMore ? <>
                         <Btn size="sm" variant="success" onClick={()=>setSpiceIndexes(p=>({...p,[i]:idx+1}))} style={{fontSize:11}}>Already have it</Btn>
                         <Btn size="sm" variant="danger" onClick={()=>setSpiceIndexes(p=>({...p,[i]:idx+1}))} style={{fontSize:11}}>Not for us</Btn>
@@ -1218,7 +1225,7 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
           {gift.age_appropriateness && <p style={{margin:'0 0 14px',fontSize:12,color:T.gray,lineHeight:1.4,fontStyle:'italic'}}>{gift.age_appropriateness}</p>}
           {gift.what_parents_say && <div style={{background:'#F5F3FF',borderRadius:T.rSm,padding:'12px 14px',marginBottom:14}}><SLabel color='#7C3AED'>WHAT PARENTS SAY</SLabel><p style={{margin:0,fontSize:13,color:'#5B21B6',lineHeight:1.6}}>{gift.what_parents_say}</p></div>}
           {(productImage || getGiftImage(gift.image_category)) && <img src={productImage || getGiftImage(gift.image_category)} alt={gift.gift_name} style={{width:'100%',maxHeight:200,objectFit:'contain',borderRadius:10,marginBottom:14,background:'#fff'}} onError={e=>e.target.style.display='none'}/>}
-          <Btn href={productUrl || AMZN(gift.amazon_search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
+          <Btn href={productUrl || AMZN(gift.amazon_search)} target="_blank" onClick={()=>trackAmzn(gift.amazon_search,'buy_gift_main')} style={{background:'#FF9900',color:T.charcoal,display:'block',textAlign:'center'}}>Find on Amazon</Btn>
         </Card>
         {gift.alternatives?.length > 0 && (
           <Card style={{padding:'16px 18px',marginBottom:14}}>
@@ -1232,7 +1239,7 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
                 }
                 <div style={{fontSize:13,fontWeight:900,fontFamily:F,color:'#5B21B6',marginBottom:3,lineHeight:1.3}}>{alt.name}</div>
                 <div style={{fontSize:11,color:T.gray,lineHeight:1.4,marginBottom:8}}>{alt.reason}</div>
-                <Btn size="sm" href={altImages[i]?.product_url || AMZN(alt.search)} target="_blank" style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
+                <Btn size="sm" href={altImages[i]?.product_url || AMZN(alt.search)} target="_blank" onClick={()=>trackAmzn(alt.search,'buy_gift_alt')} style={{background:'#7C3AED',fontSize:11}}>See on Amazon</Btn>
               </div>
             ))}
             </div>
@@ -1256,7 +1263,7 @@ function GiftResultView({ gift, answers, onNew, onActivity }) {
                 {gift.book.author && <div style={{fontSize:11,color:T.grayLight,marginBottom:5}}>by {gift.book.author}</div>}
                 <div style={{fontSize:12,color:'#5B21B6',lineHeight:1.5,fontStyle:'italic',marginBottom:10}}>{gift.book.why}</div>
                 <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                  <Btn size="sm" href={AMZN(`${gift.book.title} children book`)} target="_blank" style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Amazon</Btn>
+                  <Btn size="sm" href={AMZN(`${gift.book.title} children book`)} target="_blank" onClick={()=>trackAmzn(gift.book.title,'book_gift_result')} style={{background:'#FF9900',color:T.charcoal,fontSize:11}}>Amazon</Btn>
                   <Btn size="sm" href={BOOKSHOP(gift.book.title)} target="_blank" style={{background:'#1A1A2E',fontSize:11}}>Bookshop.org</Btn>
                   <Btn size="sm" href={BAM(gift.book.title)} target="_blank" style={{background:'#CC0000',fontSize:11}}>Books-A-Million</Btn>
                 </div>
@@ -1323,7 +1330,7 @@ function CommCard({ post, voted, onUpvote }) {
         {(post.books||(post.book?[post.book]:[])).slice(0,1).map((b,i)=>(
           <div key={i} style={{marginTop:8,background:'#F5F3FF',borderRadius:T.rSm,padding:'9px 12px',fontSize:12,color:'#5B21B6',display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
             <span><strong>📖 Read after:</strong> <em>{b.title}</em> by {b.author}</span>
-            <Btn size="sm" href={AMZN(`${b.title} children book`)} target="_blank" style={{background:'#7C3AED',fontSize:10,padding:'3px 9px'}}>Amazon</Btn>
+            <Btn size="sm" href={AMZN(`${b.title} children book`)} target="_blank" onClick={()=>trackAmzn(b.title,'book_community')} style={{background:'#7C3AED',fontSize:10,padding:'3px 9px'}}>Amazon</Btn>
             <Btn size="sm" href={BOOKSHOP(b.title)} target="_blank" style={{background:'#1A1A2E',fontSize:10,padding:'3px 9px'}}>Bookshop</Btn>
             <Btn size="sm" href={BAM(b.title)} target="_blank" style={{background:'#CC0000',fontSize:10,padding:'3px 9px'}}>BAM</Btn>
           </div>
@@ -1331,7 +1338,7 @@ function CommCard({ post, voted, onUpvote }) {
         {(post.spice_ups||[]).slice(0,2).map((sp,i)=>(
           <div key={i} style={{marginTop:6,background:T.greenPale,borderRadius:T.rSm,padding:'9px 12px',fontSize:12,color:T.green,display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
             <span><strong>Try:</strong> {sp.name}</span>
-            <Btn size="sm" href={AMZN(sp.search)} target="_blank" style={{background:'#FF9900',color:T.charcoal,fontSize:10,padding:'3px 9px'}}>Amazon</Btn>
+            <Btn size="sm" href={AMZN(sp.search)} target="_blank" onClick={()=>trackAmzn(sp.search,'buy_community_supply')} style={{background:'#FF9900',color:T.charcoal,fontSize:10,padding:'3px 9px'}}>Amazon</Btn>
           </div>
         ))}
       </details>
@@ -1570,9 +1577,11 @@ export default function App() {
 
   const generate = useCallback(async (ans) => {
     setStage('loading'); setErrorMsg(''); setHiddenProducts(new Set()); setSharedToCommunity(false); startLoadAnim()
+    track('activity_generator_start', {age: ans.age, energy: ans.energy})
     try {
       const result = await callAPI({model:'claude-sonnet-4-20250514',max_tokens:3000,system:SYSTEM_PROMPT,messages:[{role:'user',content:buildActivityMsg(ans)}]})
       clearInterval(timerRef.current); setActivity(result); setStage('result'); setActiveNav('generator')
+      track('activity_generator_result', {title: result?.title || 'unknown'})
     } catch(e) { clearInterval(timerRef.current); setErrorMsg(e.message||'Something went wrong'); setStage('error') }
   }, [])
 
