@@ -124,13 +124,13 @@ STRICT RULES:
 12. Spice-up products: specific items under $25. Provide 4 alternatives per product.
 12b. AGE RULE — this is critical: if the child is 10 or older, do NOT generate craft-table or make-and-create activities unless that is explicitly their interest. A 13-year-old who plays guitar wants to record a song, write tabs, learn a riff, build a setlist, or jam — not tape containers together. A 12-year-old who loves gaming wants to design a game, speedrun a challenge, or build a controller mod — not make a board game out of cardboard. Meet them at their actual level. Activities for 10+ should feel like something they would choose themselves, not something a teacher assigned.
 12c. Variation labels must match age. For ages 10+, replace childish labels: instead of "Make it sillier" use "Crank it up", instead of "Make it easier" use "Simpler version", instead of "Add a sibling" use "Add a friend".
-13. Parent tip must end with: Think of this as your spark — change it, add your own twist, make it completely yours!
+13. Parent tip must end with: Think of this as a starting point. Change whatever you want.
 14. Include variations: easier, more_active, quieter, sibling.
 15. Include materials_checklist as a simple list of items needed.
 16. Include setup_time (e.g. "5 min") and cleanup_level (Low/Medium/High).
 
 Respond with ONLY a JSON object. No text before or after. No markdown:
-{"image_category":"best matching category from: art-drawing, building-construction, science-experiment, active-physical, music-dance, sensory-messy, pretend-play, puzzle-logic, outdoor, cooking-baking, reading-storytelling, water-play, nature-exploration, craft-making, social-game","activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}]}`
+{"image_category":"best matching category from: art-drawing, building-construction, science-experiment, active-physical, music-dance, sensory-messy, pretend-play, puzzle-logic, outdoor, cooking-baking, reading-storytelling, water-play, nature-exploration, craft-making, social-game","activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"honest tip from one parent to another. End with a sentence about letting the kid take it somewhere unexpected.","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}]}`
 
 const GIFT_PROMPT = `You are a children's gift recommendation expert. Recommend the single best gift for this child.
 
@@ -192,7 +192,7 @@ const BUDGETS = [{v:'10-20',l:'Up to $20',e:'💚'},{v:'20-40',l:'$20-$40',e:'�
 const LOAD_STAGES = [
   {label:"Reading your kid's profile...",pct:15},{label:"Matching age and attention span...",pct:28},
   {label:"Looking at your available materials...",pct:45},{label:"Tuning for energy level...",pct:62},
-  {label:"Adding the finishing touches...",pct:78},{label:"Building your activity...",pct:92},
+  {label:"Adding the finishing touches...",pct:78},{label:"Working on it...",pct:92},
   {label:"Almost ready!",pct:98},
 ]
 const ADMIN_KEY = 'zsadmin2026'
@@ -449,7 +449,7 @@ function HomeEmailCapture() {
           style={{background:'#fff',color:T.green,border:'none',borderRadius:10,padding:'12px 20px',fontFamily:F,fontWeight:900,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}
         >{status==='loading'?'...':'Sign up'}</button>
       </div>
-      {status==='error' && <div style={{color:'rgba(255,255,255,.8)',fontSize:12,marginTop:8}}>Something went wrong — try again.</div>}
+      {status==='error' && <div style={{color:'rgba(255,255,255,.8)',fontSize:12,marginTop:8}}>Something went wrong. Try again. — try again.</div>}
     </div>
   )
 }
@@ -458,42 +458,62 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
   return (
     <div>
       {/* Hero */}
-      <section style={{background:T.cream,padding:'40px 16px 36px'}}>
-        <div style={{maxWidth:600,margin:'0 auto',textAlign:'center'}}>
-          <h1 style={{fontSize:'clamp(26px,6vw,48px)',fontWeight:900,color:T.charcoal,margin:'0 0 12px',lineHeight:1.15,fontFamily:F}}>
-            Turn <em style={{color:T.green,fontStyle:'normal'}}>"I'm bored!"</em> into their new favorite activity
+      <section style={{background:T.cream,padding:'28px 16px 24px',borderBottom:`1px solid ${T.border}`}}>
+        <div style={{maxWidth:560,margin:'0 auto',textAlign:'center'}}>
+          <h1 style={{fontSize:'clamp(24px,5vw,36px)',fontWeight:900,color:T.charcoal,margin:'0 0 4px',lineHeight:1.2,fontFamily:F}}>
+            What should my kid do right now?
           </h1>
-          <p style={{fontSize:'clamp(14px,2vw,16px)',color:T.gray,margin:'0 0 24px',lineHeight:1.6,maxWidth:440,marginLeft:'auto',marginRight:'auto'}}>
-            Tell us your kid's age, what they love, and what you have at home. We build something they can start right now.
+          <p style={{fontSize:'clamp(13px,2vw,15px)',color:T.gray,margin:'0 0 20px',lineHeight:1.5}}>
+            One thing your kid can actually do today, with whatever is already in your house.
           </p>
-          <div style={{display:'flex',gap:10,justifyContent:'center',flexWrap:'wrap',marginBottom:20}}>
-            <Btn size="lg" onClick={onStart}>🛠️ Build an activity for my kid</Btn>
-            {savedProfile && <Btn size="lg" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none'}}>Use saved profile</Btn>}
-          </div>
-          <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'#FFF8F0',border:`1.5px solid ${T.gold}`,borderRadius:50,padding:'8px 18px',cursor:'pointer'}} onClick={onGift}>
-            <span style={{fontSize:16}}>🎁</span>
-            <span style={{fontSize:13,fontWeight:700,color:'#C05621',fontFamily:F}}>Need to figure out a personal gift instead?</span>
-            <span style={{fontSize:12,color:'#C05621',fontWeight:700}}>→</span>
-          </div>
-        </div>
-      </section>
 
-      {/* Quick jump */}
-      <section style={{padding:'14px 20px',background:T.white,borderBottom:`1px solid ${T.border}`}}>
-        <div style={{maxWidth:700,margin:'0 auto',display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',justifyContent:'center'}}>
-          {[
-            {e:'⚡',l:'15 min',href:'/quick-15-minute-activities-for-kids'},
-            {e:'🌧️',l:'Rainy day',href:'/rainy-day-activities-for-kids'},
-            {e:'😴',l:'Tired parents',href:'/low-prep-activities-for-tired-parents'},
-            {e:'📵',l:'Screen free',href:'/screen-free-activities-for-kids'},
-            {e:'🔢',l:'By age',href:'/activities'},
-          ].map(c=>(
-            <a key={c.l} href={c.href} style={{display:'flex',alignItems:'center',gap:5,background:T.grayPale,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'6px 14px',textDecoration:'none',fontSize:13,fontWeight:700,color:T.gray,fontFamily:F,whiteSpace:'nowrap'}}
-              onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
-              onMouseOut={e=>{e.currentTarget.style.background=T.grayPale;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.gray}}>
-              <span>{c.e}</span>{c.l}
-            </a>
-          ))}
+          {/* Primary route cards — big, tappable, immediate */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:14,maxWidth:480,marginLeft:'auto',marginRight:'auto'}}>
+            {[
+              {e:'⚡',l:'I need something now',sub:'15 min or less',href:'/quick-15-minute-activities-for-kids',color:'#FFF7E6',border:'#F4A261'},
+              {e:'🌧️',l:'Rainy day',sub:'For when leaving the house is not happening',href:'/rainy-day-activities-for-kids',color:'#EEF4FF',border:'#7B9FE0'},
+              {e:'😴',l:'Low prep please',sub:'You are on the couch. That is fine.',href:'/low-prep-activities-for-tired-parents',color:'#F0FAF4',border:'#2D6A4F'},
+              {e:'📵',l:'Screen free',sub:'Good enough to earn the tablet back after',href:'/screen-free-activities-for-kids',color:'#F9F0FF',border:'#9B5DE5'},
+            ].map(c=>(
+              <a key={c.l} href={c.href}
+                onClick={()=>track('category_click',{category:c.href})}
+                style={{display:'flex',flexDirection:'column',alignItems:'flex-start',gap:3,background:c.color,border:`2px solid ${c.border}`,borderRadius:16,padding:'16px 14px',textDecoration:'none',transition:'all .15s',minHeight:90}}
+                onMouseOver={e=>{e.currentTarget.style.opacity='0.85'}}
+                onMouseOut={e=>{e.currentTarget.style.opacity='1'}}>
+                <span style={{fontSize:26,marginBottom:2,lineHeight:1}}>{c.e}</span>
+                <span style={{fontSize:14,fontWeight:900,color:T.charcoal,fontFamily:F,lineHeight:1.2}}>{c.l}</span>
+                <span style={{fontSize:11,color:T.grayLight,fontFamily:F}}>{c.sub}</span>
+              </a>
+            ))}
+          </div>
+
+          {/* Age pills */}
+          <div style={{display:'flex',gap:6,flexWrap:'wrap',justifyContent:'center',marginBottom:18}}>
+            <span style={{fontSize:11,fontWeight:700,color:T.grayLight,fontFamily:F,alignSelf:'center',paddingRight:2}}>By age:</span>
+            {[
+              {l:'Toddler (1-2)',href:'/activities-for-2-year-olds'},
+              {l:'Ages 3-4',href:'/activities-for-3-year-olds'},
+              {l:'Ages 5-6',href:'/activities-for-5-year-olds'},
+              {l:'Ages 7+',href:'/activities-for-7-year-olds'},
+            ].map(c=>(
+              <a key={c.l} href={c.href}
+                onClick={()=>track('category_click',{category:c.href})}
+                style={{background:T.white,border:`1.5px solid ${T.border}`,borderRadius:50,padding:'7px 14px',fontSize:12,fontWeight:700,color:T.charcoal,fontFamily:F,textDecoration:'none',whiteSpace:'nowrap'}}
+                onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green;e.currentTarget.style.color=T.green}}
+                onMouseOut={e=>{e.currentTarget.style.background=T.white;e.currentTarget.style.borderColor=T.border;e.currentTarget.style.color=T.charcoal}}>
+                {c.l}
+              </a>
+            ))}
+          </div>
+
+          {/* Generator CTA — secondary, below routing */}
+          <div style={{background:T.white,border:`1.5px solid ${T.border}`,borderRadius:14,padding:'14px 16px',marginBottom:4}}>
+            <p style={{margin:'0 0 10px',fontSize:13,color:T.gray,fontFamily:F,lineHeight:1.5}}>If you want something built around who your kid actually is right now, the generator does that.</p>
+            <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+              <Btn size="sm" onClick={onStart} style={{fontSize:13}}>🛠️ Build something for my kid</Btn>
+              {savedProfile && <Btn size="sm" onClick={onStartSaved} style={{background:T.greenLight,color:T.green,border:'none',fontSize:13}}>Use saved profile</Btn>}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -503,18 +523,18 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:10,marginBottom:20}}>
             <div>
               <h2 style={{fontSize:'clamp(18px,4vw,24px)',fontWeight:900,color:T.charcoal,margin:'0 0 2px',fontFamily:F}}>Ready-made collections</h2>
-              <p style={{fontSize:13,color:T.gray,margin:0}}>No quiz needed. Pick one and go.</p>
+              <p style={{fontSize:13,color:T.gray,margin:0}}>Pick whatever sounds right. They all have full instructions.</p>
             </div>
             <a href="/activities" style={{fontSize:13,fontWeight:700,color:T.green,textDecoration:'none',fontFamily:F}}>Browse all →</a>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:12,marginBottom:28}}>
             {[
-              {e:'⚡',title:'15-Minute Activities',desc:'Start in under a minute. Full steps, no shopping.',href:'/quick-15-minute-activities-for-kids',tag:'8 activities'},
-              {e:'🌧️',title:'Rainy Day',desc:'Stuck inside? Activities that work with what you have.',href:'/rainy-day-activities-for-kids',tag:'All ages'},
-              {e:'😴',title:'Tired Parent Approved',desc:'You lie down. They stay busy. Everyone wins.',href:'/low-prep-activities-for-tired-parents',tag:'Low prep'},
-              {e:'☁️',title:'Quiet Time',desc:'Low energy, genuinely absorbing, no mess.',href:'/quiet-activities-for-kids',tag:'No mess'},
-              {e:'🎒',title:'After School',desc:'That hard hour between school and dinner.',href:'/after-school-activities-for-kids',tag:'Ages 4-12'},
-              {e:'📵',title:'Screen Free',desc:'Activities worth putting the tablet down for.',href:'/screen-free-activities-for-kids',tag:'Any age'},
+              {e:'⚡',title:'15-Minute Activities',desc:'Runs in under 15 minutes. Everything is already in your house.',href:'/quick-15-minute-activities-for-kids',tag:'8 activities'},
+              {e:'🌧️',title:'Rainy Day',desc:'For the days when you are inside whether you like it or not.',href:'/rainy-day-activities-for-kids',tag:'All ages'},
+              {e:'😴',title:'Tired Parent Approved',desc:'For when you are running on fumes and they still have opinions about being bored.',href:'/low-prep-activities-for-tired-parents',tag:'Low prep'},
+              {e:'☁️',title:'Quiet Time',desc:'Low energy. Genuinely absorbing. The kind of quiet that actually lasts.',href:'/quiet-activities-for-kids',tag:'No mess'},
+              {e:'🎒',title:'After School',desc:'The hour between school pickup and dinner where nobody knows what to do.',href:'/after-school-activities-for-kids',tag:'Ages 4-12'},
+              {e:'📵',title:'Screen Free',desc:'Activities good enough that they will actually put the tablet down.',href:'/screen-free-activities-for-kids',tag:'Any age'},
             ].map(c=>(
               <a key={c.title} href={c.href} style={{background:T.grayPale,borderRadius:T.r,padding:'18px',textDecoration:'none',color:T.charcoal,display:'block',border:`1.5px solid ${T.border}`,transition:'all .15s'}}
                 onMouseOver={e=>{e.currentTarget.style.background=T.greenPale;e.currentTarget.style.borderColor=T.green}}
@@ -544,7 +564,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
         </div>
       </section>
 
-      {/* Invented by real kids */}
+      {/* These ones came from actual kids */}
       <section style={{padding:'0 20px 48px',background:T.cream}}>
         <div style={{maxWidth:900,margin:'0 auto'}}>
           <div style={{marginBottom:20}}>
@@ -576,7 +596,7 @@ function HomePage({ onStart, onStartSaved, savedProfile, onGift }) {
         <div style={{maxWidth:560,margin:'0 auto',background:T.green,borderRadius:16,padding:'28px 24px',textAlign:'center'}}>
           <div style={{fontSize:24,marginBottom:8}}>📬</div>
           <div style={{fontFamily:F,fontWeight:900,fontSize:18,color:'#fff',marginBottom:8}}>One activity idea, every week. That's it.</div>
-          <div style={{fontSize:13,color:'rgba(255,255,255,.8)',marginBottom:18,lineHeight:1.6}}>No sponsored content, no 47-step crafts, no trip to the store required. Just one thing your kid can actually do today.</div>
+          <div style={{fontSize:13,color:'rgba(255,255,255,.8)',marginBottom:18,lineHeight:1.6}}>No 47-step crafts. No trip to the store. Just one thing your kid can actually do today.</div>
           <HomeEmailCapture/>
         </div>
       </section>
@@ -627,12 +647,12 @@ function OTile({ selected, onClick, emoji, label, desc, wide }) {
 }
 
 function AgeStep({ a, set }) {
-  return (<><QQ c="How old is your child?" /><QS c="Age helps us tune difficulty, attention span, and activity complexity." /><div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>{AGE_GROUPS.map(ag=><OTile key={ag.v} selected={a.age===ag.v} onClick={()=>set(x=>({...x,age:ag.v}))} emoji={ag.e} label={ag.l} desc={ag.d}/>)}</div></>)
+  return (<><QQ c="How old is your child?" /><QS c="Helps us figure out what they can actually do without losing interest in the first three minutes." /><div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>{AGE_GROUPS.map(ag=><OTile key={ag.v} selected={a.age===ag.v} onClick={()=>set(x=>({...x,age:ag.v}))} emoji={ag.e} label={ag.l} desc={ag.d}/>)}</div></>)
 }
 
 function OccasionStep({ a, set }) {
   return (<>
-    <QQ c="What's the occasion?" /><QS c="This helps us theme the activity and match the vibe of the day." />
+    <QQ c="What's the occasion?" /><QS c="A birthday party for eight kids needs something different than a slow Tuesday afternoon." />
     <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8,marginBottom:a.occasion==='holiday'||a.occasion==='vacation'||a.occasion==='birthday'?16:0}}>
       {OCCASIONS.map(o=><OTile key={o.v} selected={a.occasion===o.v} onClick={()=>set(x=>({...x,occasion:o.v,holiday:'',vacationWhere:'',birthdayDetails:''}))} emoji={o.e} label={o.l} wide/>)}
     </div>
@@ -652,7 +672,7 @@ function InterestsStep({ a, set }) {
   }
   return (<>
     <QQ c="What is your child into right now?" />
-    <QS c={<>The more specific, the better. Tell us what they love, obsess over, or talk about non-stop.<br/><em style={{color:T.grayLight}}>e.g. "She loves shapes, counting, building tall towers"</em></>} />
+    <QS c={<>The more specific the better. What are they into right now, what do they talk about constantly, what would they do if you left them alone for an hour?<br/><em style={{color:T.grayLight}}>e.g. "She loves shapes, counting, building tall towers"</em></>} />
     <textarea id="interests-ta" defaultValue={a.interests} placeholder="Tell us about your kid's interests, passions, and current obsessions..."
       style={{width:'100%',border:`2px solid ${a.interests.trim().length>3?T.green:T.border}`,borderRadius:T.rSm,padding:'13px 15px',fontSize:14,fontFamily:F2,resize:'vertical',minHeight:110,color:T.charcoal,background:T.white,outline:'none',boxSizing:'border-box',lineHeight:1.7}}
       onFocus={e=>e.target.style.borderColor=T.green}
@@ -664,14 +684,14 @@ function InterestsStep({ a, set }) {
 }
 
 function EnergyStep({ a, set }) {
-  return (<><QQ c="What's their energy level right now?" /><QS c="This shapes whether the activity is seated and focused, or gets them moving." /><div style={{display:'flex',flexDirection:'column',gap:10}}>{ENERGY.map(e=><OTile key={e.v} selected={a.energy===e.v} onClick={()=>set(x=>({...x,energy:e.v}))} emoji={e.e} label={e.l} desc={e.d} wide/>)}</div></>)
+  return (<><QQ c="How are they doing right now, honestly?" /><QS c="This changes everything about what we suggest." /><div style={{display:'flex',flexDirection:'column',gap:10}}>{ENERGY.map(e=><OTile key={e.v} selected={a.energy===e.v} onClick={()=>set(x=>({...x,energy:e.v}))} emoji={e.e} label={e.l} desc={e.d} wide/>)}</div></>)
 }
 
 function MaterialsStep({ a, set }) {
   const toggle = id => set(x => { const cats=x.materialCategories||[]; return {...x,materialCategories:cats.includes(id)?cats.filter(c=>c!==id):[...cats,id]} })
   const sel = a.materialCategories || []
   return (<>
-    <QQ c="What do you have at home?" /><QS c="Check each item you actually have. The more specific, the better the activity." />
+    <QQ c="What is actually in your house right now?" /><QS c="Check what you actually have. The more honest this is, the more useful the activity will be." />
     <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8,marginBottom:14}}>
       {MATERIAL_CATS.map(c=>{
         const s = sel.includes(c.id)
@@ -683,7 +703,7 @@ function MaterialsStep({ a, set }) {
     </div>
     {sel.length > 0 && <div style={{background:T.greenPale,borderRadius:T.rSm,padding:'10px 14px',marginBottom:12}}><div style={{fontSize:11,fontWeight:700,color:T.green,marginBottom:6,fontFamily:F}}>SELECTED ({sel.length}):</div><div style={{display:'flex',flexWrap:'wrap',gap:5}}>{sel.map(id=>{const c=MATERIAL_CATS.find(m=>m.id===id);return c?<span key={id} style={{background:T.green,color:'#fff',borderRadius:50,padding:'3px 9px',fontSize:11,fontWeight:700}}>{c.e} {c.l}</span>:null})}</div></div>}
     <div style={{fontSize:11,fontWeight:800,color:T.grayLight,marginBottom:6,fontFamily:F}}>ANYTHING SPECIAL TO ADD?</div>
-    <textarea id="mats-extra-ta" defaultValue={a.materialsExtra} placeholder="Favorite toys, holiday decorations, unique items... anything goes!"
+    <textarea id="mats-extra-ta" defaultValue={a.materialsExtra} placeholder="Anything specific to your house — favorite toys, weird stuff in a drawer, holiday things still sitting out."
       style={{width:'100%',border:`1.5px solid ${T.border}`,borderRadius:T.rSm,padding:'11px 14px',fontSize:13,fontFamily:F2,resize:'vertical',minHeight:70,color:T.charcoal,background:T.white,outline:'none',boxSizing:'border-box',lineHeight:1.6}}
       onFocus={e=>e.target.style.borderColor=T.green}
       onChange={e=>set(x=>({...x,materialsExtra:e.target.value}))}
@@ -830,8 +850,8 @@ function EmailCapture({ onClose }) {
           </div>
         ) : (
           <>
-            <div style={{fontFamily:F,fontWeight:900,fontSize:17,color:T.charcoal,marginBottom:6}}>Want a new activity idea every week?</div>
-            <div style={{fontSize:13,color:T.gray,lineHeight:1.6,marginBottom:16}}>One email a week. One activity. No fluff. Unsubscribe anytime.</div>
+            <div style={{fontFamily:F,fontWeight:900,fontSize:17,color:T.charcoal,marginBottom:6}}>One new activity idea every week, in your inbox.</div>
+            <div style={{fontSize:13,color:T.gray,lineHeight:1.6,marginBottom:16}}>Just one idea per week. If it stops being useful you can unsubscribe, no hard feelings.</div>
             <div style={{display:'flex',gap:8}}>
               <input
                 type="email"
@@ -939,7 +959,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             <Btn variant={activitySaved?"gold":"ghost"} size="sm" onClick={onSaveActivity}>{activitySaved?'✓ Saved!':'🤍 Save'}</Btn>
             <Btn variant="ghost" size="sm" onClick={onEmail}>{emailSent?'✓ Emailed!':'✉ Email to myself'}</Btn>
             <Btn variant="ghost" size="sm" onClick={onShare}>↗ Share activity</Btn>
-            <Btn variant="ghost" size="sm" onClick={onNew}>+ New activity</Btn>
+            <Btn variant="ghost" size="sm" onClick={onNew}>Start over</Btn>
           </div>
         </div>
       </div>
@@ -987,8 +1007,8 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
 
 
           <Card style={{padding:'16px 18px',marginBottom:16}}>
-            <SLabel>NOT QUITE RIGHT? SWAP ONE THING</SLabel>
-            <p style={{margin:'2px 0 12px',fontSize:12,color:T.gray,lineHeight:1.5}}>Keep your kid's profile. Just nudge the activity.</p>
+            <SLabel>NOT QUITE RIGHT?</SLabel>
+            <p style={{margin:'2px 0 12px',fontSize:12,color:T.gray,lineHeight:1.5}}>Keep everything else the same. Just nudge one thing.</p>
             <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
               {[
                 ...(a?.age && parseInt(a.age) >= 10 ? [
@@ -1028,19 +1048,19 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             <SLabel>ADD TO THE COMMUNITY VOTE BOARD?</SLabel>
             <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',marginTop:4}}>
               {!sharedToCommunity
-                ? <Btn size="sm" onClick={onShareToCommunity}>Add to community board</Btn>
+                ? <Btn size="sm" onClick={onShareToCommunity}>Add to the community board</Btn>
                 : <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
                     <span style={{background:T.greenLight,color:T.green,borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,fontFamily:F}}>✓ Added!</span>
                     <button onClick={()=>currentPostId&&onUpvote(currentPostId)} style={{display:'flex',alignItems:'center',gap:5,background:voted?T.greenLight:T.grayPale,border:`1.5px solid ${voted?T.green:T.border}`,borderRadius:50,padding:'5px 12px',cursor:voted?'default':'pointer',fontSize:12,fontWeight:700,fontFamily:F,color:voted?T.green:T.gray}}>{voted?'🧡 Upvoted!':'🤍 Upvote it'}</button>
                   </div>
               }
-              <Btn size="sm" variant="outline" onClick={onShare}>↗ Share with friends</Btn>
+              <Btn size="sm" variant="outline" onClick={onShare}>↗ Share this</Btn>
             </div>
             {shareMsg && <div style={{marginTop:8,fontSize:12,color:T.green,fontWeight:700}}>{shareMsg}</div>}
           </Card>
 
           <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:8}}>
-            {!profileSaved ? <Btn size="sm" variant="outline" onClick={onSave}>💾 Save profile</Btn> : <span style={{background:T.greenLight,color:T.green,borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,fontFamily:F}}>✓ Profile saved</span>}
+            {!profileSaved ? <Btn size="sm" variant="outline" onClick={onSave}>💾 Save this kid</Btn> : <span style={{background:T.greenLight,color:T.green,borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:700,fontFamily:F}}>✓ Profile saved</span>}
             <Btn size="sm" variant="subtleGray" onClick={onTweakAnswers}>Tweak my answers</Btn>
             {savedProfile && <Btn size="sm" variant="subtleGray" onClick={onNewSaved}>Quick new</Btn>}
           </div>
@@ -1050,7 +1070,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
         <div className="resultSidebar">
           {(act.materials_checklist||act.materials_used||[]).length > 0 && (
             <Card style={{padding:'16px 18px',marginBottom:14}}>
-              <SLabel>✅ MATERIALS CHECKLIST</SLabel>
+              <SLabel>✅ WHAT YOU NEED</SLabel>
               <p style={{fontSize:12,color:T.grayLight,margin:'0 0 10px'}}>Use what you have at home:</p>
               {(act.materials_checklist||act.materials_used||[]).map((m,i)=>(
                 <div key={i} onClick={()=>{const s=new Set(checked);s.has(i)?s.delete(i):s.add(i);setChecked(s)}} style={{display:'flex',alignItems:'center',gap:8,padding:'6px 0',cursor:'pointer',borderBottom:`1px solid ${T.border}`}}>
@@ -1099,7 +1119,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
 
           {(act.spice_ups||[]).length > 0 && (
             <Card style={{padding:'16px 18px',marginBottom:12}}>
-              <SLabel>SPICE UP PLAYTIME</SLabel>
+              <SLabel>OPTIONAL EXTRAS</SLabel>
               {(act.spice_ups||[]).map((sp,i)=>{
                 const idx = spiceIndexes[i]||0
                 if (idx===-1) return null
@@ -1410,7 +1430,7 @@ function CommunityView({ posts, loading, votedIds, onUpvote, onRefresh, onBuild 
       </div>
 
       {loading ? <Spinner/> : sorted.length===0
-        ? <EmptyState icon="🌱" title="No activities yet" sub="Generate an activity and add it to the community board using the button on your result page."><Btn onClick={onBuild} style={{marginTop:4}}>Build an activity</Btn></EmptyState>
+        ? <EmptyState icon="🌱" title="No activities yet" sub="Generate an activity and use the button on the result page to add it here."><Btn onClick={onBuild} style={{marginTop:4}}>Build an activity</Btn></EmptyState>
         : sorted.map((p,i)=>(
           <React.Fragment key={p.id||p.ts}>
             <CommCard post={p} voted={votedIds.has(p.id)} onUpvote={onUpvote}/>
