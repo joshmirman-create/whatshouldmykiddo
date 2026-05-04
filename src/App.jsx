@@ -981,7 +981,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                 <SLabel style={{margin:0}}>🔄 VARIATIONS & TWISTS</SLabel>
                 <span style={{fontSize:13,color:T.green,fontWeight:700}}>{showVar?'▲ Hide':'▼ Show'}</span>
               </button>
-              {showVar && <div style={{marginTop:12,display:'grid',gap:8}}>{(answers?.age && parseInt(answers.age) >= 10 ? [['easier','🔧 Simpler version'],['more_active','🔥 Crank it up'],['quieter','🎯 Tone it down'],['sibling','🤝 With a friend']] : [['easier','😊 Make it easier'],['more_active','🏃 More active'],['quieter','🤫 Make it quieter'],['sibling','👫 Sibling version']]).map(([k,l])=>act.variations[k]&&<div key={k} style={{background:T.grayPale,borderRadius:T.rSm,padding:'10px 14px'}}><div style={{fontSize:12,fontWeight:800,color:T.gray,marginBottom:3,fontFamily:F}}>{l}</div><div style={{fontSize:13,color:T.charcoal,lineHeight:1.5}}>{act.variations[k]}</div></div>)}</div>}
+              {showVar && <div style={{marginTop:12,display:'grid',gap:8}}>{(a?.age && parseInt(a.age) >= 10 ? [['easier','🔧 Simpler version'],['more_active','🔥 Crank it up'],['quieter','🎯 Tone it down'],['sibling','🤝 With a friend']] : [['easier','😊 Make it easier'],['more_active','🏃 More active'],['quieter','🤫 Make it quieter'],['sibling','👫 Sibling version']]).map(([k,l])=>act.variations[k]&&<div key={k} style={{background:T.grayPale,borderRadius:T.rSm,padding:'10px 14px'}}><div style={{fontSize:12,fontWeight:800,color:T.gray,marginBottom:3,fontFamily:F}}>{l}</div><div style={{fontSize:13,color:T.charcoal,lineHeight:1.5}}>{act.variations[k]}</div></div>)}</div>}
             </Card>
           )}
 
@@ -991,7 +991,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             <p style={{margin:'2px 0 12px',fontSize:12,color:T.gray,lineHeight:1.5}}>Keep your kid's profile. Just nudge the activity.</p>
             <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
               {[
-                ...(answers?.age && parseInt(answers.age) >= 10 ? [
+                ...(a?.age && parseInt(a.age) >= 10 ? [
                   {l:'Too messy',e:'🧹',t:'quieter'},
                   {l:'Too active',e:'🪑',t:'quieter'},
                   {l:'Less setup',e:'⚡',t:'easier'},
