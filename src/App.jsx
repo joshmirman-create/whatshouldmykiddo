@@ -122,13 +122,15 @@ STRICT RULES:
 10. If an occasion is provided, theme the activity to it specifically.
 11. Books: ONLY include books if they genuinely enhance this specific activity — a story that connects to the theme, a reference that deepens the experience, or a read-aloud that fits naturally. Skip entirely for purely physical activities (freeze dance, obstacle course, sports games, active movement). When you do include books, provide 2-3 maximum — not 5. Every book must have a clear specific reason it belongs with this exact activity. A wrong author name is worse than no book at all.
 12. Spice-up products: specific items under $25. Provide 4 alternatives per product.
+12b. AGE RULE — this is critical: if the child is 10 or older, do NOT generate craft-table or make-and-create activities unless that is explicitly their interest. A 13-year-old who plays guitar wants to record a song, write tabs, learn a riff, build a setlist, or jam — not tape containers together. A 12-year-old who loves gaming wants to design a game, speedrun a challenge, or build a controller mod — not make a board game out of cardboard. Meet them at their actual level. Activities for 10+ should feel like something they would choose themselves, not something a teacher assigned.
+12c. Variation labels must match age. For ages 10+, replace childish labels: instead of "Make it sillier" use "Crank it up", instead of "Make it easier" use "Simpler version", instead of "Add a sibling" use "Add a friend".
 13. Parent tip must end with: Think of this as your spark — change it, add your own twist, make it completely yours!
 14. Include variations: easier, more_active, quieter, sibling.
 15. Include materials_checklist as a simple list of items needed.
 16. Include setup_time (e.g. "5 min") and cleanup_level (Low/Medium/High).
 
 Respond with ONLY a JSON object. No text before or after. No markdown:
-{"image_category":"best matching category from: art-drawing, building-construction, science-experiment, active-physical, music-dance, sensory-messy, pretend-play, puzzle-logic, outdoor, cooking-baking, reading-storytelling, water-play, nature-exploration, craft-making, social-game","activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}],"kiwico_angle":"one sentence"}`
+{"image_category":"best matching category from: art-drawing, building-construction, science-experiment, active-physical, music-dance, sensory-messy, pretend-play, puzzle-logic, outdoor, cooking-baking, reading-storytelling, water-play, nature-exploration, craft-making, social-game","activity_name":"Name","tagline":"One sentence YES","duration":"20-30 min","setup_time":"5 min","cleanup_level":"Low","activity_type":"type","steps":["Step 1","Step 2","Step 3","Step 4"],"why_kids_love_it":"reason","parent_tip":"tip ending with: Think of this as your spark — change it, add your own twist, make it completely yours!","materials_used":["item1"],"materials_checklist":["item1","item2"],"variations":{"easier":"how","more_active":"how","quieter":"how","sibling":"how"},"books":[] or [{"title":"Real title","author":"Real author — verify this is correct","why":"specific reason this book fits this exact activity"}] — omit books array entirely if no genuine fit exists,"spice_ups":[{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]},{"name":"Product","why":"how it helps","search":"Amazon search","alternatives":[{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"},{"name":"Alt","why":"why","search":"search"}]}]}`
 
 const GIFT_PROMPT = `You are a children's gift recommendation expert. Recommend the single best gift for this child.
 
@@ -274,7 +276,7 @@ function Btn({ children, onClick, variant='primary', size='md', style:sx={}, dis
     subtleGray:{background:T.grayPale,color:T.gray,border:`1.5px solid ${T.border}`},
   }
   const s = {...base,...sizes[size],...variants[variant],opacity:disabled?.4:1}
-  if (href) return <a href={href} target={target} style={s}>{children}</a>
+  if (href) return <a href={href} target={target} onClick={onClick} style={s}>{children}</a>
   return <button onClick={disabled?undefined:onClick} style={s}>{children}</button>
 }
 
@@ -979,7 +981,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
                 <SLabel style={{margin:0}}>🔄 VARIATIONS & TWISTS</SLabel>
                 <span style={{fontSize:13,color:T.green,fontWeight:700}}>{showVar?'▲ Hide':'▼ Show'}</span>
               </button>
-              {showVar && <div style={{marginTop:12,display:'grid',gap:8}}>{[['easier','😊 Make it easier'],['more_active','🏃 More active'],['quieter','🤫 Make it quieter'],['sibling','👫 Sibling version']].map(([k,l])=>act.variations[k]&&<div key={k} style={{background:T.grayPale,borderRadius:T.rSm,padding:'10px 14px'}}><div style={{fontSize:12,fontWeight:800,color:T.gray,marginBottom:3,fontFamily:F}}>{l}</div><div style={{fontSize:13,color:T.charcoal,lineHeight:1.5}}>{act.variations[k]}</div></div>)}</div>}
+              {showVar && <div style={{marginTop:12,display:'grid',gap:8}}>{(answers?.age && parseInt(answers.age) >= 10 ? [['easier','🔧 Simpler version'],['more_active','🔥 Crank it up'],['quieter','🎯 Tone it down'],['sibling','🤝 With a friend']] : [['easier','😊 Make it easier'],['more_active','🏃 More active'],['quieter','🤫 Make it quieter'],['sibling','👫 Sibling version']]).map(([k,l])=>act.variations[k]&&<div key={k} style={{background:T.grayPale,borderRadius:T.rSm,padding:'10px 14px'}}><div style={{fontSize:12,fontWeight:800,color:T.gray,marginBottom:3,fontFamily:F}}>{l}</div><div style={{fontSize:13,color:T.charcoal,lineHeight:1.5}}>{act.variations[k]}</div></div>)}</div>}
             </Card>
           )}
 
@@ -989,12 +991,21 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             <p style={{margin:'2px 0 12px',fontSize:12,color:T.gray,lineHeight:1.5}}>Keep your kid's profile. Just nudge the activity.</p>
             <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
               {[
-                {l:'Too messy',e:'🧹',t:'quieter'},
-                {l:'Too active',e:'🪑',t:'quieter'},
-                {l:'Less setup',e:'⚡',t:'easier'},
-                {l:'Make it sillier',e:'🤪',t:'more_active'},
-                {l:'Make it calmer',e:'🌿',t:'quieter'},
-                {l:'Add a sibling',e:'👫',t:'sibling'},
+                ...(answers?.age && parseInt(answers.age) >= 10 ? [
+                  {l:'Too messy',e:'🧹',t:'quieter'},
+                  {l:'Too active',e:'🪑',t:'quieter'},
+                  {l:'Less setup',e:'⚡',t:'easier'},
+                  {l:'Crank it up',e:'🔥',t:'more_active'},
+                  {l:'Tone it down',e:'🎯',t:'quieter'},
+                  {l:'Add a friend',e:'🤝',t:'sibling'},
+                ] : [
+                  {l:'Too messy',e:'🧹',t:'quieter'},
+                  {l:'Too active',e:'🪑',t:'quieter'},
+                  {l:'Less setup',e:'⚡',t:'easier'},
+                  {l:'Make it sillier',e:'🤪',t:'more_active'},
+                  {l:'Make it calmer',e:'🌿',t:'quieter'},
+                  {l:'Add a sibling',e:'👫',t:'sibling'},
+                ]),
               ].map(sw=>(
                 <button key={sw.l} onClick={()=>{
                   if(act.variations&&act.variations[sw.t]){setSwapMsg(act.variations[sw.t])}
@@ -1116,7 +1127,7 @@ function ResultView({ activity:act, answers:a, currentPostId, votedIds, profileS
             </Card>
           )}
 
-          {act.kiwico_angle && <Card style={{padding:'14px 16px',marginBottom:12,background:'#FFF5F5',border:'1.5px solid #FECACA',boxShadow:'none'}}><SLabel color='#DC2626'>WANT A KIT LIKE THIS EVERY MONTH?</SLabel><p style={{margin:'0 0 10px',fontSize:12,color:'#7F1D1D',lineHeight:1.5}}>{act.kiwico_angle}</p><Btn size="sm" href={KIWICO} target="_blank" style={{background:'#DC2626',fontSize:12}}>Try KiwiCo</Btn></Card>}
+          {/* KiwiCo removed — affiliate pending */}
           <AdUnit style={{marginBottom:12}}/>
         </div>
       </div>
